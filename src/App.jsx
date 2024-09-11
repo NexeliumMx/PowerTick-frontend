@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 
 //Pages Routes
 import Dashboard from './pages/Dashboard/Dashboard.jsx';
-import Downloads from './pages/Downloads/Downloads.jsx';
+import Downloads from './pages/DownloadsPage/Downloads.jsx'
 import Home from './pages/Home/Home.jsx';
 import LoadCenter from './pages/LoadCenter/LoadCenter.jsx';
 import Locations from './pages/Locations/Locations.jsx';
