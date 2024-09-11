@@ -12,6 +12,30 @@
   .gauge-section {
     margin-top: 2rem;
     display: flex;
-    justify-content: center;
+    flex-wrap: wrap; // Permite que las tarjetas se ajusten en filas
+    gap: 2rem; // Espaciado entre tarjetas
+    justify-content: center; // Centra las tarjetas horizontalmente
+    overflow-y: auto; // Permite el scroll hacia abajo cuando sea necesario
+    max-height: 100vh; // Limita la altura para permitir el scroll
   }
   
+  .gauge-container {
+    flex: 1 1 calc(50% - 2rem); // Ocupa el 50% del ancho (2 tarjetas por fila)
+    max-width: 50%; // Limita el ancho máximo de cada tarjeta al 50%
+    background-color: #1b2a41;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease-in-out;
+  
+    @media (max-width: 1200px) {
+      flex: 1 1 calc(100% - 2rem); // En pantallas más pequeñas, ocupa el 100% del ancho
+      max-width: 100%;
+    }
+  }
+  
+      
