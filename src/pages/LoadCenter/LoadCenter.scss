@@ -1,0 +1,17 @@
+.page-container {
+    display: flex;
+  }
+  
+  .page-content {
+    flex-grow: 1;
+    background-color: #0d1b2a; // Color de fondo
+    padding: 2rem;
+    color: white;
+  }
+  
+  .gauge-section {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+  
