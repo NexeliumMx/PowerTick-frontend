@@ -2,12 +2,8 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import MUIComponentsTest from './pages/MUIComponentsTest';
-<<<<<<< HEAD
-import LayoutWithSidebarAndNavbar from './components/LayoutWithSidebarAndNavbar';
-import LoadCenter from './pages/LoadCenter/LoadCenter';
-=======
 import MainLayout from './layout/MainLayout';
->>>>>>> 43def01a7dbc250efede61e52dee904a8d42c451
+import LoadCenter from './pages/LoadCenter/LoadCenter';
 
 function App() {
   return (
