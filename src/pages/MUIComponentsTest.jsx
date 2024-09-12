@@ -1,6 +1,5 @@
 import { Box, Button, Container, Typography, Link, Grid2, Paper } from "@mui/material";
 import { styled } from '@mui/system'; // Import styled from MUI System
-import ToggleColorMode from "../components/ToggleColorMode";
 import BluuCard from "../components/BluuCard";
 
 
@@ -37,7 +36,6 @@ export default function MUIComponentsTest() {
         <Typography variant="h2" color="secondary">Box</Typography>
         <Button>Button</Button>
         {/* Assuming ToggleColorMode is a custom component */}
-        <ToggleColorMode />
       </Box>
 
 
