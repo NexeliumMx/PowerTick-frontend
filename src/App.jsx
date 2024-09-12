@@ -2,8 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import MUIComponentsTest from './pages/MUIComponentsTest';
-
-
+import LayoutWithSidebarAndNavbar from './components/LayoutWithSidebarAndNavbar';
 
 function App() {
   return (
@@ -11,10 +10,12 @@ function App() {
       {/* Routes without Navbar and Sidebar */}
       <Route path="/" element={<Home />} />
       <Route path="*" element={<NotFound />} />
-      <Route path="/mui-components-test" element={<MUIComponentsTest />} />
 
-    {/* Routes with Navbar and Sidebar */}
-    </Routes>    
+      {/* Routes with Navbar (and Sidebar in the future) */}
+      <Route element={<LayoutWithSidebarAndNavbar />}>
+        <Route path="/mui-components-test" element={<MUIComponentsTest />} />
+      </Route>
+    </Routes>
   );
 }
 
