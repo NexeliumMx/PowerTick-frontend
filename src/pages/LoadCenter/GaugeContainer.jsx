@@ -14,6 +14,7 @@ const GaugeContainer = ({ title, darkMode, children }) => {
         alignItems: 'stretch', // Asegura que los elementos hijos ocupen todo el ancho
         transition: 'background-color 0.3s ease',
         width: '100%', // Asegura que el Box también ocupe todo el ancho disponible
+        height: '100%', // Esto ayuda a que la tarjeta crezca según el contenido
       }}
     >
       {/* Título del centro de carga */}
@@ -23,7 +24,7 @@ const GaugeContainer = ({ title, darkMode, children }) => {
           backgroundColor: darkMode ? '#3b4a67' : '#e0e0e0',
           color: darkMode ? '#ffffff' : '#000000',
           padding: '1rem',
-          width: 'auto',  // Asegura que ocupe todo el ancho del contenedor
+          width: '100%',  // Asegura que ocupe todo el ancho del contenedor
           textAlign: 'center',
           borderTopLeftRadius: '1rem', // Redondeo en el borde superior izquierdo
           borderTopRightRadius: '1rem', // Redondeo en el borde superior derecho

@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import MUIComponentsTest from './pages/MUIComponentsTest';
 import LayoutWithSidebarAndNavbar from './components/LayoutWithSidebarAndNavbar';
+import LoadCenter from './pages/LoadCenter/LoadCenter';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       {/* Routes with Navbar (and Sidebar in the future) */}
       <Route element={<LayoutWithSidebarAndNavbar />}>
         <Route path="/mui-components-test" element={<MUIComponentsTest />} />
+        <Route path="/LoadCenter" element={<LoadCenter />} />
       </Route>
     </Routes>
   );
