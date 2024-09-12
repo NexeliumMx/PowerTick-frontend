@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import MUIComponentsTest from './pages/MUIComponentsTest';
+import LoadCenter from '../src/pages/LoadCenter/LoadCenter';
 
 
 
@@ -14,6 +15,8 @@ function App() {
       <Route path="/mui-components-test" element={<MUIComponentsTest />} />
 
     {/* Routes with Navbar and Sidebar */}
+    <Route path="/LoadCenter" element={<LoadCenter/>} />
+
     </Routes>    
   );
 }
