@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Typography } from '@mui/material';
-import ToggleColorMode from "../components/ToggleColorMode";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -41,8 +40,6 @@ export default function Home() {
           Go to NotFound Page
         </Button>
       </Box>
-
-      <ToggleColorMode />
     </Box>
   );
 }
