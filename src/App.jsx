@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import MUIComponentsTest from './pages/MUIComponentsTest';
-import LayoutWithSidebarAndNavbar from './components/LayoutWithSidebarAndNavbar';
+import MainLayout from './layout/MainLayout';
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
       <Route path="*" element={<NotFound />} />
 
       {/* Routes with Navbar (and Sidebar in the future) */}
-      <Route element={<LayoutWithSidebarAndNavbar />}>
+      <Route element={<MainLayout />}>
         <Route path="/mui-components-test" element={<MUIComponentsTest />} />
       </Route>
     </Routes>
