@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, ToggleButton, ToggleButtonGroup, CardActionArea, Box } from '@mui/material';
+import { Card, CardHeader, CardContent, Typography, ToggleButton, ToggleButtonGroup, CardActionArea, Box } from '@mui/material';
 import { BarChart } from '@mui/x-charts'; // MUI X Charts BarChart
 
 const consumptionData = [
@@ -36,10 +36,11 @@ const ConsumptionHistory = () => {
 
   return (
     <Card sx={{ height: '100%', minHeight: '300px', display: 'flex', flexDirection: 'column' }}>
+      <CardHeader
+        title="Consumption History"
+      />
+
       <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="h6" gutterBottom>
-          Consumption History
-        </Typography>
         <BarChart
           series={[{ dataKey: 'y', label: 'kWh', valueFormatter }]}
           yAxis={[{ scaleType: 'band', dataKey: 'x' }]}

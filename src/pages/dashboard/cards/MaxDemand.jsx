@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, ToggleButton, ToggleButtonGroup, CardActionArea, Box } from '@mui/material';
+import { Card, CardHeader, CardContent, Typography, ToggleButton, ToggleButtonGroup, CardActionArea, Box } from '@mui/material';
 
 const MaxDemand = () => {
   const [maxDemandPeriod, setMaxDemandPeriod] = useState('daily'); // Track the selected time period for Max Demand
@@ -12,10 +12,11 @@ const MaxDemand = () => {
 
   return (
     <Card sx={{ flexGrow: 1, height: '100%', width: '100%' }}> {/* Ensure full size of its parent container */}
+      <CardHeader
+        title="Max Demand"
+      />
+      
       <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Max Demand
-        </Typography>
         <Typography variant="h4" color="primary">
           10,000 kW
         </Typography>

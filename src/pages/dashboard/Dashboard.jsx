@@ -26,7 +26,7 @@ const Dashboard = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, padding: "16px" }}>
+    <Box sx={{ flexGrow: 1}}>
         {/* First row of 4 cards */}
         <Grid container spacing={3}>
         <Grid size={3}>

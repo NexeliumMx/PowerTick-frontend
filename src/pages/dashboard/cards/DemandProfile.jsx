@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Card, CardContent, Typography, ToggleButton, ToggleButtonGroup, CardActionArea } from '@mui/material';
+import { Box, Card, CardHeader, CardContent, Typography, ToggleButton, ToggleButtonGroup, CardActionArea } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { useTheme } from '@mui/material/styles';
 
@@ -33,10 +33,11 @@ const DemandProfile = () => {
 
   return (
     <Card sx={{ height: '100%', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
+      <CardHeader
+        title="Demand Profile"
+      />
+      
       <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        <Typography variant="h6" gutterBottom>
-          Demand Profile
-        </Typography>
         <Box sx={{ flexGrow: 1, display: 'flex' }}>
           <LineChart
             sx={{ width: '100%', height: '100%' }} // Use full width and height of the parent container

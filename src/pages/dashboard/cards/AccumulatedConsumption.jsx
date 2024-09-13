@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, ToggleButton, ToggleButtonGroup, CardActionArea, Box } from '@mui/material';
+import { Card, CardHeader, CardContent, Typography, ToggleButton, ToggleButtonGroup, CardActionArea, Box } from '@mui/material';
 
 const AccumulatedConsumption = () => {
   const [accumulatedPeriod, setAccumulatedPeriod] = useState('daily'); // Track the selected time period for Accumulated Consumption
@@ -12,10 +12,11 @@ const AccumulatedConsumption = () => {
 
   return (
     <Card sx={{ flexGrow: 1, height: '100%', width: '100%' }}> {/* Ensure full size of its parent container */}
+      <CardHeader
+        title="Accumulated Consumption"
+      />
+
       <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Accumulated Consumption
-        </Typography>
         <Typography variant="h4" color="primary">
           70,000 kWh
         </Typography>

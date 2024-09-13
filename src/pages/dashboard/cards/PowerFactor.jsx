@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardHeader, CardContent, Typography } from '@mui/material';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 
 const PowerFactor = () => {
@@ -7,11 +7,11 @@ const PowerFactor = () => {
 
   return (
     <Card sx={{ flexGrow: 1, height: '100%', width: '100%' }}> {/* Ensure full size of its parent container */}
+      <CardHeader
+        title="Power Factor"
+      />
+      
       <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Power Factor
-        </Typography>
-
         {/* Gauge component for Power Factor */}
         <div style={{ height: 150, width: '100%' }}> {/* Define a height for the container */}
           <Gauge
