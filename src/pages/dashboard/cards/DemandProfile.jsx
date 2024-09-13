@@ -1,66 +1,80 @@
-import React from 'react';
-import { Card, CardHeader, CardMedia, CardContent, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Card, CardContent, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { useTheme } from '@mui/material/styles';
 
 const demandProfileData = [
-  { x: 'January', y: 240 },
-  { x: 'February', y: 720 },
-  { x: 'March', y: 480 },
-  { x: 'April', y: 360 },
+  { x: 'Jan', y: 240 },
+  { x: 'Feb', y: 720 },
+  { x: 'Mar', y: 480 },
+  { x: 'Apr', y: 360 },
   { x: 'May', y: 300 },
-  { x: 'June', y: 450 },
-  { x: 'July', y: 260 },
-  { x: 'August', y: 750 },
-  { x: 'September', y: 320 },
-  { x: 'October', y: 600 },
-  { x: 'November', y: 400 },
-  { x: 'December', y: 550 },
+  { x: 'Jun', y: 450 },
+  { x: 'Jul', y: 260 },
+  { x: 'Aug', y: 750 },
+  { x: 'Sept', y: 320 },
+  { x: 'Oct', y: 600 },
+  { x: 'Nov', y: 400 },
+  { x: 'Dec', y: 550 },
 ];
 
 const DemandProfile = () => {
   const theme = useTheme();
-  
+  const [demandPeriod, setDemandPeriod] = useState('yearly');
+
+  const handleDemandPeriodChange = (event, newPeriod) => {
+    if (newPeriod !== null) {
+      setDemandPeriod(newPeriod);
+    }
+  };
+
   const uData = demandProfileData.map((item) => item.y); // Extract y-values
   const xLabels = demandProfileData.map((item) => item.x); // Extract x-axis labels
 
   return (
-    <Card sx={{ flexGrow: 1, height: '100%' , width: '100%'}}> {/* Ensure full size of its parent container */}
-      {/* CardHeader for the title */}
-      <CardHeader
-        title="Demand Profile"
-        titleTypographyProps={{ variant: 'h6' }}
-      />
-      
-      {/* CardMedia for the Line Chart */}
-      <CardMedia>
-        <LineChart
-        
-          width={500}
-          height={300}
-          series={[
-            {
-              data: uData, // Feed the y-values
-              label: 'kW',
-              area: true,
-              showMark: false,
-              curve: 'linear',
-            },
-          ]}
-          xAxis={[
-            {
-              scaleType: 'point',
-              data: xLabels, // Feed the x-axis labels
-            },
-          ]}
-        />
-      </CardMedia>
-
-      {/* Optional CardContent for additional information */}
-      <CardContent>
-        <Typography variant="body2" color="textSecondary">
-          Monthly demand data for the year.
+    <Card sx={{ height: '100%', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
+      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        <Typography variant="h6" gutterBottom>
+          Demand Profile
         </Typography>
+        <Box sx={{ flexGrow: 1, display: 'flex' }}>
+          <LineChart
+            sx={{ width: '100%', height: '100%' }} // Use full width and height of the parent container
+            series={[
+              {
+                data: uData,
+                label: 'kW',
+                area: true,
+                showMark: false,
+                curve: 'linear',
+              },
+            ]}
+            xAxis={[
+              {
+                scaleType: 'point',
+                data: xLabels,
+              },
+            ]}
+          />
+        </Box>
+        {/* Toggle buttons below the chart */}
+        <ToggleButtonGroup
+          value={demandPeriod}
+          exclusive
+          onChange={handleDemandPeriodChange}
+          aria-label="Demand Profile Period"
+          sx={{ mt: 2 }}
+        >
+          <ToggleButton value="yearly" aria-label="Yearly">
+            Yearly
+          </ToggleButton>
+          <ToggleButton value="monthly" aria-label="Monthly">
+            Monthly
+          </ToggleButton>
+          <ToggleButton value="daily" aria-label="Daily">
+            Daily
+          </ToggleButton>
+        </ToggleButtonGroup>
       </CardContent>
     </Card>
   );
