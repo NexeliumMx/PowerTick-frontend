@@ -29,7 +29,16 @@ const themeOptions = {
 const theme = createTheme({
   palette: {
     mode: 'light', // Default light mode
-    // Light theme colors will be the default MUI theme colors
+    primary: {
+      main: '#69B2A6',
+    },
+    secondary: {
+      main: '#F2A007',
+    },
+    background: {
+      default: '#eef2f6',
+      paper: '#ffffff',
+    },
   },
   colorSchemes: {
     dark: {

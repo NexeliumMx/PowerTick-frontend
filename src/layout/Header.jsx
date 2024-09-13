@@ -39,7 +39,6 @@ const Header = ({ handleDrawerToggle }) => {
         alignItems: 'center', 
         padding: '16px 24px',
         backgroundColor: theme.palette.background.paper, 
-        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.05)', 
         width: '100%' 
       }}
     >
@@ -49,7 +48,7 @@ const Header = ({ handleDrawerToggle }) => {
         <img 
           src="src/assets/logoipsum-288.svg" 
           alt="Logo" 
-          style={{ width: '200px', height: '40px', cursor: 'pointer' }}
+          style={{ width: '150px', height: '40px', cursor: 'pointer' }}
           onClick={() => navigate('/')} 
         />
         
@@ -66,7 +65,7 @@ const Header = ({ handleDrawerToggle }) => {
           alignItems: 'center', 
           backgroundColor: theme.palette.background.default, 
           borderRadius: '8px', 
-          padding: '0 8px', 
+          padding: '0.5rem', 
           width: '300px' 
         }}
       >
