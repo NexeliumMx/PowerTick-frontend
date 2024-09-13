@@ -1,18 +1,59 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App.jsx';
-import './styles/global.scss';
 
-// Find the root element
-const rootElement = document.getElementById('root');
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { BrowserRouter } from 'react-router-dom';
 
-// Create the root container using createRoot
-const root = createRoot(rootElement);
+const themeOptions = {
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#69B2A6',
+    },
+    secondary: {
+      main: '#F2A007',
+    },
+    background: {
+      default: '#111A2B',
+      paper: '#1E2940',
+    },
+  },
+};
 
-// Render your application within the root
-root.render(
-  <Router>
-    <App />
-  </Router>
+// Create a theme with both light and dark modes
+const theme = createTheme({
+  palette: {
+    mode: 'light', // Default light mode
+    primary: {
+      main: '#69B2A6',
+    },
+    secondary: {
+      main: '#F2A007',
+    },
+    background: {
+      default: '#eef2f6',
+      paper: '#ffffff',
+    },
+  },
+  colorSchemes: {
+    dark: {
+      palette: themeOptions.palette,
+    },
+  },
+});
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <CssBaseline />
+        <App />
+      </BrowserRouter>
+    </ThemeProvider>
+  </StrictMode>
 );

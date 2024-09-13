@@ -1,29 +1,26 @@
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
+import MUIComponentsTest from './pages/MUIComponentsTest';
+import MainLayout from './layout/MainLayout';
+import LoadCenter from './pages/LoadCenter/LoadCenter';
+import Dashboard from './pages/dashboard/Dashboard';
 
-//Pages Routes
-import Dashboard from './pages/Dashboard/Dashboard.jsx';
-import Downloads from './pages/Downloads/Downloads.jsx';
-import Home from './pages/Home/Home.jsx';
-import LoadCenter from './pages/LoadCenter/LoadCenter.jsx';
-import Locations from './pages/Locations/Locations.jsx';
-import NotFound from './pages/NotFound/NotFound.jsx';
-import TestPage from './pages/TestPage/TestPage.jsx';
-import Users from './pages/Users/Users.jsx';
-
-const App = () => {
+function App() {
   return (
     <Routes>
+      {/* Routes without Navbar and Sidebar */}
       <Route path="/" element={<Home />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/downloads" element={<Downloads />} />
-      <Route path="/load-center" element={<LoadCenter />} />
-      <Route path="/locations" element={<Locations />} />
       <Route path="*" element={<NotFound />} />
-      <Route path="/testpage" element={<TestPage />} />
-      <Route path="/users" element={<Users />} />
+
+      {/* Routes with Navbar (and Sidebar in the future) */}
+      <Route element={<MainLayout />}>
+        <Route path="/mui-components-test" element={<MUIComponentsTest />} />
+        <Route path="/LoadCenter" element={<LoadCenter />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Route>
     </Routes>
   );
-};
+}
 
 export default App;

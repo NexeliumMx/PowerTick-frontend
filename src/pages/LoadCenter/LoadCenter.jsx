@@ -1,16 +1,27 @@
-import React from 'react';
-import Sidebar from '../../components/Sidebar/Sidebar.jsx';
-import Navbar from '../../components/Navbar/Navbar.jsx';
+import { Box } from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import LoadCenterCard from './LoadCenterCard';
 
-export default function LoadCenter() {
+const LoadCenter = () => {
+
+
   return (
-    <div className="page-container">
-      <Sidebar />
-      <div className="page-content">
-        <Navbar title="Ubicaciones" />
+    <Box sx={{ flexGrow: 1}}>
+        <Grid container spacing={3}>
+        <Grid size={4}>
+          <LoadCenterCard/>
+        </Grid>
 
-      </div>
-    </div>
+        <Grid size={4}>
+          <LoadCenterCard/>
+        </Grid>
+
+        <Grid size={4}>
+          <LoadCenterCard/>
+        </Grid>
+        </Grid>
+    </Box>
   );
-}
+};
 
+export default LoadCenter;
