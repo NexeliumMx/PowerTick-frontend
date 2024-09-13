@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Card, CardContent, Typography, ToggleButton, ToggleButtonGroup, CardActionArea, Box } from '@mui/material';
 import { BarChart } from '@mui/x-charts'; // MUI X Charts BarChart
 
 const consumptionData = [
@@ -35,8 +35,8 @@ const ConsumptionHistory = () => {
   };
 
   return (
-    <Card sx={{ height: '100%', minHeight: '300px' }}>
-      <CardContent>
+    <Card sx={{ height: '100%', minHeight: '300px', display: 'flex', flexDirection: 'column' }}>
+      <CardContent sx={{ flexGrow: 1 }}>
         <Typography variant="h6" gutterBottom>
           Consumption History
         </Typography>
@@ -47,25 +47,27 @@ const ConsumptionHistory = () => {
           dataset={consumptionData}
           {...chartSettings}
         />
-        {/* Move the toggle button group below the graph */}
-        <ToggleButtonGroup
-          value={consumptionPeriod}
-          exclusive
-          onChange={handleConsumptionPeriodChange}
-          aria-label="Consumption History Period"
-          sx={{ mt: 2 }}
-        >
-          <ToggleButton value="yearly" aria-label="Yearly">
-            Yearly
-          </ToggleButton>
-          <ToggleButton value="monthly" aria-label="Monthly">
-            Monthly
-          </ToggleButton>
-          <ToggleButton value="daily" aria-label="Daily">
-            Daily
-          </ToggleButton>
-        </ToggleButtonGroup>
       </CardContent>
+      <CardActionArea>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
+          <ToggleButtonGroup
+            value={consumptionPeriod}
+            exclusive
+            onChange={handleConsumptionPeriodChange}
+            aria-label="Consumption History Period"
+          >
+            <ToggleButton value="yearly" aria-label="Yearly">
+              Yearly
+            </ToggleButton>
+            <ToggleButton value="monthly" aria-label="Monthly">
+              Monthly
+            </ToggleButton>
+            <ToggleButton value="daily" aria-label="Daily">
+              Daily
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+      </CardActionArea>
     </Card>
   );
 };

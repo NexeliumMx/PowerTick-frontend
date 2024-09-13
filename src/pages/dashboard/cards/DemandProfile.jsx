@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Card, CardContent, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Box, Card, CardContent, Typography, ToggleButton, ToggleButtonGroup, CardActionArea } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { useTheme } from '@mui/material/styles';
 
@@ -57,25 +57,28 @@ const DemandProfile = () => {
             ]}
           />
         </Box>
-        {/* Toggle buttons below the chart */}
-        <ToggleButtonGroup
-          value={demandPeriod}
-          exclusive
-          onChange={handleDemandPeriodChange}
-          aria-label="Demand Profile Period"
-          sx={{ mt: 2 }}
-        >
-          <ToggleButton value="yearly" aria-label="Yearly">
-            Yearly
-          </ToggleButton>
-          <ToggleButton value="monthly" aria-label="Monthly">
-            Monthly
-          </ToggleButton>
-          <ToggleButton value="daily" aria-label="Daily">
-            Daily
-          </ToggleButton>
-        </ToggleButtonGroup>
       </CardContent>
+      {/* Wrap ToggleButtonGroup with CardActionArea */}
+      <CardActionArea>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
+          <ToggleButtonGroup
+            value={demandPeriod}
+            exclusive
+            onChange={handleDemandPeriodChange}
+            aria-label="Demand Profile Period"
+          >
+            <ToggleButton value="yearly" aria-label="Yearly">
+              Yearly
+            </ToggleButton>
+            <ToggleButton value="monthly" aria-label="Monthly">
+              Monthly
+            </ToggleButton>
+            <ToggleButton value="daily" aria-label="Daily">
+              Daily
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+      </CardActionArea>
     </Card>
   );
 };
