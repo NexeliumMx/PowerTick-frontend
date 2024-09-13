@@ -1,66 +1,58 @@
 import React from 'react';
-import { Box, List, ListItem, ListItemIcon, ListItemText, Collapse, Divider, useTheme } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { IconDashboard, IconUsers, IconFileText, IconChartBar, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
+import { Box, List, ListItem, ListItemIcon, ListItemText, Divider, useTheme } from '@mui/material';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { IconDashboard, IconUsers, IconFileText, IconChartBar } from '@tabler/icons-react'; // Add any necessary icons
 
 const Sidebar = ({ isCollapsed }) => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const [openDashboard, setOpenDashboard] = React.useState(false);
+  const location = useLocation(); // To get the current route
 
-  const handleDashboardClick = () => {
-    setOpenDashboard(!openDashboard);
-  };
+  // Array of routes with name, path, and icon
+  const routes = [
+    { name: 'Home', path: '/', icon: <IconDashboard /> },
+    { name: 'MUI Components Test', path: '/mui-components-test', icon: <IconFileText /> },
+    { name: 'Load Center', path: '/LoadCenter', icon: <IconFileText /> },
+    { name: 'Dashboard', path: '/dashboard', icon: <IconChartBar /> },
+    { name: 'Users', path: '/users', icon: <IconUsers /> },
+  ];
 
   return (
     <Box sx={{ height: '100%', backgroundColor: theme.palette.background.paper, padding: 2 }}>
       <List>
-        {/* Dashboard */}
-        <ListItem button onClick={handleDashboardClick}>
-          <ListItemIcon>
-            <IconDashboard />
-          </ListItemIcon>
-          {/* Only show text when not collapsed */}
-          {!isCollapsed && <ListItemText primary="Dashboard" sx={{ color: theme.palette.text.primary }} />}
-          {openDashboard && !isCollapsed ? <IconChevronUp /> : <IconChevronDown />}
-        </ListItem>
+        {/* Iterate over the routes array */}
+        {routes.map((route, index) => {
+          const isSelected = location.pathname === route.path; // Check if the current path matches the route
 
-        <Collapse in={openDashboard && !isCollapsed} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem button sx={{ pl: 4 }} onClick={() => navigate('/dashboard/default')}>
-              <ListItemIcon>
-                <IconFileText />
-              </ListItemIcon>
-              {!isCollapsed && <ListItemText primary="Default" sx={{ color: theme.palette.text.primary }} />}
-            </ListItem>
-            <ListItem button sx={{ pl: 4 }} onClick={() => navigate('/dashboard/analytics')}>
-              <ListItemIcon>
-                <IconChartBar />
-              </ListItemIcon>
-              {!isCollapsed && <ListItemText primary="Analytics" sx={{ color: theme.palette.text.primary }} />}
-            </ListItem>
-          </List>
-        </Collapse>
+          return (
+            <React.Fragment key={index}>
+              <ListItem 
+                button 
+                onClick={() => navigate(route.path)}
+                sx={{
+                  backgroundColor: isSelected ? theme.palette.action.selected : 'transparent', // Highlight if selected
+                  '&:hover': {
+                    backgroundColor: theme.palette.action.hover, // Hover effect
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ color: isSelected ? theme.palette.primary.main : theme.palette.text.primary }}>
+                  {route.icon}
+                </ListItemIcon>
+                {/* Only show text when sidebar is not collapsed */}
+                {!isCollapsed && (
+                  <ListItemText
+                    primary={route.name}
+                    sx={{ color: isSelected ? theme.palette.primary.main : theme.palette.text.primary }}
+                  />
+                )}
+              </ListItem>
 
-        <Divider sx={{ my: 2, borderColor: theme.palette.divider }} />
-
-        {/* Widgets */}
-        <ListItem button onClick={() => navigate('/widgets')}>
-          <ListItemIcon>
-            <IconFileText />
-          </ListItemIcon>
-          {!isCollapsed && <ListItemText primary="Widgets" sx={{ color: theme.palette.text.primary }} />}
-        </ListItem>
-
-        <Divider sx={{ my: 2, borderColor: theme.palette.divider }} />
-
-        {/* Users */}
-        <ListItem button onClick={() => navigate('/users')}>
-          <ListItemIcon>
-            <IconUsers />
-          </ListItemIcon>
-          {!isCollapsed && <ListItemText primary="Users" sx={{ color: theme.palette.text.primary }} />}
-        </ListItem>
+              {/* Add Divider between items if necessary */}
+              {index < routes.length - 1 && <Divider sx={{ my: 2, borderColor: theme.palette.divider }} />}
+            </React.Fragment>
+          );
+        })}
       </List>
     </Box>
   );
