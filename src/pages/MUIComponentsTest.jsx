@@ -7,10 +7,8 @@ export default function MUIComponentsTest() {
 
   return (
     <>
-      <Container>
-        <Typography variant="h1">Container</Typography>
+      <Box>
         <Typography variant="body1">
-          Container
           <br />
           • Purpose: A Container is primarily used to create consistent
           horizontal padding on the sides of your content. It ensures that the
@@ -66,7 +64,7 @@ export default function MUIComponentsTest() {
             This box uses the background paper color!
           </Typography>
         </Box>
-      </Container>
+      </Box>
     </>
   );
 }

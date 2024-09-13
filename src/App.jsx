@@ -4,6 +4,7 @@ import NotFound from './pages/NotFound';
 import MUIComponentsTest from './pages/MUIComponentsTest';
 import MainLayout from './layout/MainLayout';
 import LoadCenter from './pages/LoadCenter/LoadCenter';
+import Dashboard from './pages/LoadCenter/Dashboard';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route element={<MainLayout />}>
         <Route path="/mui-components-test" element={<MUIComponentsTest />} />
         <Route path="/LoadCenter" element={<LoadCenter />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Route>
     </Routes>
   );
