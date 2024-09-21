@@ -64,7 +64,7 @@ const MainLayout = () => {
               alignItems: "center",
               justifyContent: "center",
               minHeight: "calc(100vh - 64px)", // Ensure the container fills the available space
-              backgroundColor: 'blue',
+              //backgroundColor: 'blue',
             }}
           >
             <Typography
