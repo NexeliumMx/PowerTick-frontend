@@ -4,9 +4,9 @@ import NotFound from './pages/NotFound';
 import MUIComponentsTest from './pages/MUIComponentsTest';
 import MainLayout from './layout/MainLayout';
 import LoadCenter from './pages/LoadCenter/LoadCenter';
-import Dashboard from './pages/Dashboard/Dashboard';
-import Configuration from './pages/Dashboard/Configuration';
-import Measurments from './pages/Dashboard/Measurments';
+import Dashboard from './pages/Dashboard';
+import Downloads from './pages/Downloads';
+import Users from './pages/Users';
 
 function App() {
   return (
@@ -17,11 +17,11 @@ function App() {
 
       {/* Routes with Navbar (and Sidebar in the future) */}
       <Route element={<MainLayout />}>
-        <Route path="/mui-components-test" element={<MUIComponentsTest />} />
-        <Route path="/LoadCenter" element={<LoadCenter />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/configuration" element={<Configuration />} />
-        <Route path="/measurments" element={<Measurments/>} />
+        <Route path="/downloads" element={<Downloads />} />
+        <Route path="/load-center" element={<LoadCenter />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/mui-components-test" element={<MUIComponentsTest />} />
       </Route>
     </Routes>
   );

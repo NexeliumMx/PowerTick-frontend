@@ -11,10 +11,12 @@ const Sidebar = ({ isCollapsed }) => {
   // Array of routes with name, path, and icon
   const routes = [
     { name: 'Home', path: '/', icon: <IconDashboard /> },
-    { name: 'MUI Components Test', path: '/mui-components-test', icon: <IconFileText /> },
-    { name: 'Load Center', path: '/LoadCenter', icon: <IconFileText /> },
     { name: 'Dashboard', path: '/dashboard', icon: <IconChartBar /> },
+    { name: 'Load Center', path: '/load-center', icon: <IconFileText /> },
+    { name: 'Download', path: '/downloads', icon: <IconUsers /> },
     { name: 'Users', path: '/users', icon: <IconUsers /> },
+    { name: 'MUI Components Test', path: '/mui-components-test', icon: <IconFileText /> },
+    { name: '404 Not Found', path: '*', icon: <IconFileText /> },
   ];
 
   return (

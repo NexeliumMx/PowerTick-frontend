@@ -64,30 +64,19 @@ const MainLayout = () => {
               alignItems: "center",
               justifyContent: "center",
               minHeight: "calc(100vh - 64px)", // Ensure the container fills the available space
-              //backgroundColor: 'blue',
+              backgroundColor: 'blue',
             }}
           >
             <Typography
-              variant="h1"
+              variant="p"
               align="center" // Center the title
               sx={{
                 fontSize: {
-                  xs: "1.5rem", // Extra-small screens
-                  sm: "2rem", // Small screens
-                  md: "2.5rem", // Medium screens
-                  lg: "3.5rem", // Large screens
-                  xl: "4.5rem", // Extra-large screens
-                },
-                marginBottom: {
-                  xs: "12px", // Extra-small screens
-                  sm: "16px", // Small screens
-                  md: "24px", // Medium screens
-                  lg: "32px", // Large screens
-                  xl: "40px", // Extra-large screens
+                  xl: "1.5rem", // Extra-large screens
                 },
               }}
             >
-              Container for content outlet & H1 title
+              This is the container (blue box) for the rendered content in the main layout. Everything is rendered below.
             </Typography>
             <Outlet />
             <BreakpointChecker/>
