@@ -20,9 +20,6 @@ export default function Home() {
       <Typography variant="h2" gutterBottom>
         Welcome to PowerTIC
       </Typography>
-      <Typography variant="h6" gutterBottom>
-        Explore Material UI components and navigation in this sample app.
-      </Typography>
       
       <Box sx={{ display: 'flex', gap: 2, marginTop: 3 }}>
         <Button
@@ -30,14 +27,7 @@ export default function Home() {
           color="primary"
           onClick={() => navigate('/mui-components-test')}
         >
-          Go to MUI Components Test
-        </Button>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={() => navigate('/not-found')}
-        >
-          Go to NotFound Page
+          Dashboard
         </Button>
       </Box>
     </Box>

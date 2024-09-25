@@ -22,10 +22,36 @@ const Dashboard = () => {
   };
 
   return (
-    <Box>
-      <h1>Dashboard</h1>
-      <NavButtons setActivePage={setActivePage} />
-      {renderPage()}
+    <Box
+      sx={{
+        position: 'relative',
+        minHeight: '100vh', // Ensures the height of the container is always 100% of the viewport
+        backgroundColor: 'blue',
+        padding: '20px',
+        boxSizing: 'border-box'
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          position: 'absolute',
+          top: '20px',
+          right: '20px',
+        }}
+      >
+        <NavButtons setActivePage={setActivePage} />
+      </Box>
+      <Box
+        sx={{
+          marginTop: '100px',
+          textAlign: 'center',
+          minHeight: '100%', // Ensures the content stretches
+        }}
+      >
+        <h1>Dashboard</h1>
+        {renderPage()}
+      </Box>
     </Box>
   );
 };

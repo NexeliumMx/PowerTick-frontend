@@ -39,7 +39,7 @@ const NavButtons = ({ setActivePage }) => {
         }}
         onClick={() => setActivePage('Configuration')}
       >
-        Settings
+        Configuration
       </Button>
     </ButtonGroup>
   );
