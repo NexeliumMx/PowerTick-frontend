@@ -8,7 +8,7 @@ import AccumulatedConsumption from "./cards/AccumulatedConsumption";
 import PowerFactor from "./cards/PowerFactor";
 import Timestamp from "./cards/Timestamp";
 
-const Dashboard = () => {
+const Consumption = () => {
   const theme = useTheme();
   const [maxDemandPeriod, setMaxDemandPeriod] = useState("daily");
   const [accumulatedPeriod, setAccumulatedPeriod] = useState("daily");
@@ -63,4 +63,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Consumption;

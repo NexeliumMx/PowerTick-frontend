@@ -4,7 +4,7 @@ import NotFound from './pages/NotFound';
 import MUIComponentsTest from './pages/MUIComponentsTest';
 import MainLayout from './layout/MainLayout';
 import LoadCenter from './pages/LoadCenter/LoadCenter';
-import Dashboard from './pages/Dashboard/Dashboard';
+import Dashboard from './pages/Dashboard';
 import Configuration from './pages/Dashboard/Configuration';
 
 function App() {
