@@ -7,6 +7,7 @@ import LoadCenter from './pages/LoadCenter/LoadCenter';
 import Dashboard from './pages/Dashboard';
 import Downloads from './pages/Downloads';
 import Users from './pages/Users';
+import Measurements from './pages/Dashboard/Measurements'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       {/* Routes with Navbar (and Sidebar in the future) */}
       <Route element={<MainLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/Measurements" element={<Measurements/>} />
         <Route path="/downloads" element={<Downloads />} />
         <Route path="/load-center" element={<LoadCenter />} />
         <Route path="/users" element={<Users />} />
