@@ -13,19 +13,19 @@ export default function Measurments() {
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={3}>
         {/* Primera fila */}
-        <Grid size={ 6 }>
+        <Grid size={{xs:12, sm:12, md:12, lg:6}}>
           <Current />
         </Grid>
-        <Grid size={ 6 }>
+        <Grid size={ {xs:12, sm:12, md:12, lg:6} }>
           <HistoricPF />
         </Grid>
-        <Grid size={ 6 }>
+        <Grid size={ {xs:12, sm:12, md:12, lg:6} }>
           <RealPower />
         </Grid>
-        <Grid size={ 6 }>
+        <Grid size={ {xs:12, sm:12, md:12, lg:6} }>
           <ReactivePower />
         </Grid>
-        <Grid size={ 12 }>
+        <Grid size={ {xs:12, sm:12, md:12, lg:12, xl:12} }>
           <HistoricConsumption />
         </Grid>
       </Grid>
