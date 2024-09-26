@@ -29,33 +29,33 @@ const Consumption = () => {
     <Box sx={{ flexGrow: 1}}>
         {/* First row of 4 cards */}
         <Grid container spacing={3}>
-        <Grid size={3}>
+        <Grid size={{xs:12, sm:12, md:6, lg:3}}>
             <MaxDemand
               period={maxDemandPeriod}
               handlePeriodChange={handleMaxDemandPeriodChange}
             />
           </Grid>
 
-          <Grid size={3}>
+          <Grid size={{xs:12, sm:12, md:6, lg:3}}>
             <AccumulatedConsumption
               period={accumulatedPeriod}
               handlePeriodChange={handleAccumulatedPeriodChange}
             />
           </Grid>
 
-          <Grid size={3}>
+          <Grid size={{xs:12, sm:12, md:6, lg:3}}>
             <PowerFactor />
           </Grid>
 
-          <Grid size={3}>
+          <Grid size={{xs:12, sm:12, md:6, lg:3}}>
             <Timestamp />
           </Grid>
 
-          <Grid size={5}>
+          <Grid size={{xs:12, sm:12, md:12, lg:12, xl:5}}>
             <DemandProfile />
           </Grid>
 
-          <Grid size={7}>
+          <Grid size={{xs:12, sm:12, md:12, lg:12, xl:7}}>
             <ConsumptionHistory />
           </Grid>
         </Grid>
