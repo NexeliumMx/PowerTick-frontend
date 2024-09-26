@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
-import { Card, CardHeader, CardContent, Typography, ToggleButton, ToggleButtonGroup, CardActionArea, Box } from '@mui/material';
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  Typography,
+  ToggleButton,
+  ToggleButtonGroup,
+  CardActionArea,
+  Box,
+} from '@mui/material';
 
 const AccumulatedConsumption = () => {
-  const [accumulatedPeriod, setAccumulatedPeriod] = useState('daily'); // Track the selected time period for Accumulated Consumption
+  const [accumulatedPeriod, setAccumulatedPeriod] = useState('daily');
 
   const handleAccumulatedPeriodChange = (event, newPeriod) => {
     if (newPeriod !== null) {
-      setAccumulatedPeriod(newPeriod); // Update Accumulated Consumption period
+      setAccumulatedPeriod(newPeriod);
     }
   };
 
   return (
-    <Card sx={{ flexGrow: 1, height: '100%', width: '100%' }}> {/* Ensure full size of its parent container */}
-      <CardHeader
-        title="Accumulated Consumption"
-      />
+    <Card sx={{ flexGrow: 1, height: '100%', width: '100%' }}>
+      <CardHeader title="Accumulated Consumption" />
 
       <CardContent>
         <Typography variant="h4" color="primary">
           70,000 kWh
         </Typography>
       </CardContent>
-      
-      {/* Wrap the ToggleButtonGroup in CardActionArea */}
-      <CardActionArea>
+
+      {/* Change CardActionArea to render as a 'div' to prevent button nesting */}
+      <CardActionArea component="div">
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
           <ToggleButtonGroup
             value={accumulatedPeriod}

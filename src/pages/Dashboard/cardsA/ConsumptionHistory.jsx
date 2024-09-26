@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Card, CardHeader, CardContent, Typography, ToggleButton, ToggleButtonGroup, CardActionArea, Box } from '@mui/material';
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  ToggleButton,
+  ToggleButtonGroup,
+  CardActionArea,
+  Box,
+} from '@mui/material';
 import { BarChart } from '@mui/x-charts'; // MUI X Charts BarChart
 
 const consumptionData = [
@@ -35,10 +43,10 @@ const ConsumptionHistory = () => {
   };
 
   return (
-    <Card sx={{ height: '100%', minHeight: '300px', display: 'flex', flexDirection: 'column' }}>
-      <CardHeader
-        title="Consumption History"
-      />
+    <Card
+      sx={{ height: '100%', minHeight: '300px', display: 'flex', flexDirection: 'column' }}
+    >
+      <CardHeader title="Consumption History" />
 
       <CardContent sx={{ flexGrow: 1 }}>
         <BarChart
@@ -49,7 +57,9 @@ const ConsumptionHistory = () => {
           {...chartSettings}
         />
       </CardContent>
-      <CardActionArea>
+
+      {/* Modify CardActionArea to render as a 'div' to prevent nesting buttons */}
+      <CardActionArea component="div">
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
           <ToggleButtonGroup
             value={consumptionPeriod}

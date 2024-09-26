@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { Box, Card, CardHeader, CardContent, Typography, ToggleButton, ToggleButtonGroup, CardActionArea } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardHeader,
+  CardContent,
+  Typography,
+  ToggleButton,
+  ToggleButtonGroup,
+  CardActionArea,
+} from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { useTheme } from '@mui/material/styles';
 
@@ -32,11 +41,16 @@ const DemandProfile = () => {
   const xLabels = demandProfileData.map((item) => item.x); // Extract x-axis labels
 
   return (
-    <Card sx={{ height: '100%', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
-      <CardHeader
-        title="Demand Profile"
-      />
-      
+    <Card
+      sx={{
+        height: '100%',
+        minHeight: '400px',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <CardHeader title="Demand Profile" />
+
       <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ flexGrow: 1, display: 'flex' }}>
           <LineChart
@@ -59,8 +73,8 @@ const DemandProfile = () => {
           />
         </Box>
       </CardContent>
-      {/* Wrap ToggleButtonGroup with CardActionArea */}
-      <CardActionArea>
+      {/* Wrap ToggleButtonGroup with CardActionArea and change it to render as 'div' */}
+      <CardActionArea component="div">
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
           <ToggleButtonGroup
             value={demandPeriod}

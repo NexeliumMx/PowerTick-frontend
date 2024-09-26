@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Box, useTheme } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import ConsumptionHistory from "./cards/ConsumptionHistory";
-import DemandProfile from "./cards/DemandProfile";
-import MaxDemand from "./cards/MaxDemand";
-import AccumulatedConsumption from "./cards/AccumulatedConsumption";
-import PowerFactor from "./cards/PowerFactor";
-import Timestamp from "./cards/Timestamp";
+import ConsumptionHistory from "./cardsA/ConsumptionHistory";
+import DemandProfile from "./cardsA/DemandProfile";
+import MaxDemand from "./cardsA/MaxDemand";
+import AccumulatedConsumption from "./cardsA/AccumulatedConsumption";
+import PowerFactor from "./cardsA/PowerFactor";
+import Timestamp from "./cardsA/Timestamp";
 
 const Consumption = () => {
   const theme = useTheme();
