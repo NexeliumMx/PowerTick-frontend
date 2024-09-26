@@ -45,7 +45,15 @@ const DemandProfile = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" stroke={theme.palette.text.primary} /> {/* Etiquetas del eje X */}
               <YAxis stroke={theme.palette.text.primary} /> {/* Eje Y */}
-              <Tooltip />
+              <Tooltip 
+                contentStyle={{
+                  backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#fff',
+                  color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+                  border: '1px solid',
+                  borderColor: theme.palette.divider
+                }}
+                labelStyle={{ color: theme.palette.text.primary }}
+              />
               <Line type="monotone" dataKey="kW" stroke={theme.palette.primary.main} strokeWidth={2} activeDot={{ r: 8 }} /> {/* Configuración de la línea */}
             </LineChart>
           </ResponsiveContainer>

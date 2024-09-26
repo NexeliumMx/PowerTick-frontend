@@ -43,7 +43,16 @@ const ConsumptionHistory = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" stroke={theme.palette.text.primary} /> {/* Eje X con los meses */}
               <YAxis stroke={theme.palette.text.primary} /> {/* Eje Y con los valores numéricos */}
-              <Tooltip formatter={(value) => `${value} kWh`} />
+              <Tooltip 
+                contentStyle={{
+                  backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#fff',
+                  color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+                  border: '1px solid',
+                  borderColor: theme.palette.divider
+                }}
+                labelStyle={{ color: theme.palette.text.primary }}
+                formatter={(value) => `${value} kWh`}
+              />
               <Bar dataKey="kWh" fill={theme.palette.primary.main} barSize={20} /> {/* Barras con datos de kWh */}
             </BarChart>
           </ResponsiveContainer>
