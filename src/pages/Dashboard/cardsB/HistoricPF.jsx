@@ -19,6 +19,28 @@ const data = [
   { name: '0 min', pf: 1.00 },
 ];
 
+const CustomTooltip = ({ active, payload, label, theme }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        style={{
+          backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#fff',
+          color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+          padding: '10px',
+          borderRadius: '5px',
+          border: '1px solid',
+          borderColor: theme.palette.divider,
+        }}
+      >
+        <p>{label}</p>
+        <p>{`Power Factor: ${payload[0].value}`}</p>
+      </div>
+    );
+  }
+
+  return null;
+};
+
 const HistoricPF = () => {
   // Access the MUI theme
   const theme = useTheme();
@@ -33,7 +55,7 @@ const HistoricPF = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis domain={[0.9, 1.0]} />
-              <Tooltip />
+              <Tooltip content={<CustomTooltip theme={theme} />} /> {/* Custom Tooltip with theme */}
               <Legend />
               <Line type="monotone" dataKey="pf" stroke={theme.palette.primary.main} dot={true} name="Power Factor" />
             </LineChart>

@@ -18,6 +18,32 @@ const data = [
   { name: '0 min', kWh: 7, kVARh: 3 },
 ];
 
+const CustomTooltip = ({ active, payload, label, theme }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        style={{
+          backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#fff',
+          color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+          padding: '10px',
+          borderRadius: '5px',
+          border: '1px solid',
+          borderColor: theme.palette.divider,
+        }}
+      >
+        <p>{label}</p>
+        {payload.map((entry, index) => (
+          <p key={`item-${index}`} style={{ color: entry.color }}>
+            {`${entry.name} : ${entry.value}`}
+          </p>
+        ))}
+      </div>
+    );
+  }
+
+  return null;
+};
+
 const HistoricConsumption = () => {
   // Access the MUI theme
   const theme = useTheme();
@@ -34,7 +60,7 @@ const HistoricConsumption = () => {
             <BarChart data={data} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
               <XAxis dataKey="name" />
               <YAxis />
-              <Tooltip />
+              <Tooltip content={<CustomTooltip theme={theme} />} /> {/* Custom Tooltip */}
               <Legend />
               {/* Use theme colors for bars */}
               <Bar dataKey="kWh" fill={theme.palette.primary.main} name="KWh" />

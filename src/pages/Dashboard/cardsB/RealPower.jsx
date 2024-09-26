@@ -19,6 +19,32 @@ const data = [
   { name: '0 min', average: 6.2, phaseA: 6, phaseB: 6.8, phaseC: 7.3 },
 ];
 
+const CustomTooltip = ({ active, payload, label, theme }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        style={{
+          backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#fff',
+          color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+          padding: '10px',
+          borderRadius: '5px',
+          border: '1px solid',
+          borderColor: theme.palette.divider,
+        }}
+      >
+        <p>{label}</p>
+        {payload.map((entry, index) => (
+          <p key={`item-${index}`} style={{ color: entry.color }}>
+            {`${entry.name} : ${entry.value}`}
+          </p>
+        ))}
+      </div>
+    );
+  }
+
+  return null;
+};
+
 const RealPower = () => {
   // Access the MUI theme
   const theme = useTheme();
@@ -33,7 +59,7 @@ const RealPower = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
-              <Tooltip />
+              <Tooltip content={<CustomTooltip theme={theme} />} /> {/* Custom Tooltip */}
               <Legend />
               <Line type="monotone" dataKey="average" stroke={theme.palette.primary.main} dot={true} name="Average" />
               <Line type="monotone" dataKey="phaseA" stroke={theme.palette.secondary.main} dot={true} name="Phase A" />

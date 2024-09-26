@@ -11,14 +11,17 @@ const data = [
   { name: 'Phase Shift', current: 0.5 }
 ];
 
-const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label, theme }) => {
   if (active && payload && payload.length) {
     return (
       <div
         style={{
+          backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#fff',
+          color: theme.palette.mode === 'dark' ? '#fff' : '#000',
           padding: '10px',
           borderRadius: '5px',
           border: '1px solid',
+          borderColor: theme.palette.divider,
         }}
       >
         <p>{label}</p>
@@ -47,7 +50,7 @@ const Current = () => {
               <CartesianGrid strokeDasharray="3 3" /> {/* Default grid */}
               <XAxis dataKey="name" /> {/* Default axis */}
               <YAxis /> {/* Default axis */}
-              <Tooltip content={<CustomTooltip />} /> {/* Custom tooltip */}
+              <Tooltip content={<CustomTooltip theme={theme} />} /> {/* Custom tooltip with theme */}
               <Legend />
               {/* Use theme's primary color for the bars */}
               <Bar dataKey="current" fill={theme.palette.primary.main} barSize={50} />
