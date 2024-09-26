@@ -1,47 +1,56 @@
-import { Button, ButtonGroup, useTheme } from '@mui/material';
-import { IconHeartbeat, IconGauge, IconSettings } from '@tabler/icons-react';
+import React, { useState } from 'react';
+import { Button, ButtonGroup, useTheme, Box } from '@mui/material';
+import { Activity, Gauge, Settings } from 'lucide-react'; // Importing icons from lucide-react
 
 const NavButtons = ({ setActivePage }) => {
   const theme = useTheme();
+  const [activeButton, setActiveButton] = useState('Consumption'); // Track active button state
+
+  const buttons = [
+    { id: 'Consumption', label: 'Consumption', icon: <Activity /> },
+    { id: 'Measurements', label: 'Measurements', icon: <Gauge /> },
+    { id: 'Configuration', label: 'Configuration', icon: <Settings /> },
+  ];
+
+  const handleButtonClick = (buttonId) => {
+    setActiveButton(buttonId);
+    setActivePage(buttonId); // Updates the active page in the parent component
+  };
 
   return (
-    <ButtonGroup variant="contained" sx={{ borderRadius: '20px', backgroundColor: theme.palette.background.paper }}>
-      <Button
-        startIcon={<IconHeartbeat />}
-        sx={{
-          backgroundColor: theme.palette.background.paper,
-          color: theme.palette.text.primary,
-          borderRadius: '20px 0 0 20px',
-          textTransform: 'none',
-        }}
-        onClick={() => setActivePage('Consumption')}
-      >
-        Consumption
-      </Button>
-      <Button
-        startIcon={<IconGauge />}
-        sx={{
-          backgroundColor: theme.palette.background.paper,
-          color: theme.palette.text.primary,
-          textTransform: 'none',
-        }}
-        onClick={() => setActivePage('Measurements')}
-      >
-        Measurements
-      </Button>
-      <Button
-        startIcon={<IconSettings />}
-        sx={{
-          backgroundColor: theme.palette.background.paper,
-          color: theme.palette.text.primary,
-          borderRadius: '0 20px 20px 0',
-          textTransform: 'none',
-        }}
-        onClick={() => setActivePage('Configuration')}
-      >
-        Configuration
-      </Button>
-    </ButtonGroup>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        backgroundColor: theme.palette.background.paper,
+        padding: '0.5rem',
+        borderRadius: '30px',
+      }}
+    >
+      {buttons.map((button) => (
+        <Button
+          key={button.id}
+          startIcon={button.icon}
+          onClick={() => handleButtonClick(button.id)}
+          sx={{
+            borderRadius: '30px',
+            padding: '0.3rem 1rem',
+            textTransform: 'none',
+            backgroundColor: activeButton === button.id ? theme.palette.primary.main : theme.palette.background.paper,
+            color: activeButton === button.id ? theme.palette.common.white : theme.palette.text.primary,
+            '&:hover': {
+              backgroundColor: activeButton === button.id ? theme.palette.primary.dark : theme.palette.action.hover,
+            },
+            marginRight: '0.5rem',
+            '&:last-child': {
+              marginRight: 0,
+            },
+          }}
+        >
+          {button.label}
+        </Button>
+      ))}
+    </Box>
   );
 };
 

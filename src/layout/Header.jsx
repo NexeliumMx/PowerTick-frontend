@@ -46,7 +46,7 @@ const Header = ({ handleDrawerToggle }) => {
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         {/* Logo */}
         <img 
-          src="src/assets/logoipsum-288.svg" 
+          src="/assets/logoipsum-288.svg" 
           alt="Logo" 
           style={{ width: '150px', height: '40px', cursor: 'pointer' }}
           onClick={() => navigate('/')} 

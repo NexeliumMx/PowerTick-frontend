@@ -25,7 +25,7 @@ export default function Home() {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => navigate('/mui-components-test')}
+          onClick={() => navigate('/dashboard')}
         >
           Dashboard
         </Button>
