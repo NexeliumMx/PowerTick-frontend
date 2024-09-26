@@ -51,11 +51,11 @@ const Consumption = () => {
             <Timestamp />
           </Grid>
 
-          <Grid size={{xs:12, sm:12, md:12, lg:12, xl:5}}>
+          <Grid size={{xs:12, sm:12, md:12, lg:12, xl:6}}>
             <DemandProfile />
           </Grid>
 
-          <Grid size={{xs:12, sm:12, md:12, lg:12, xl:7}}>
+          <Grid size={{xs:12, sm:12, md:12, lg:12, xl:6}}>
             <ConsumptionHistory />
           </Grid>
         </Grid>
