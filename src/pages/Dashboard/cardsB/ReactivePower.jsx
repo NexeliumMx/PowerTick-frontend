@@ -34,7 +34,7 @@ const CustomTooltip = ({ active, payload, label, theme }) => {
         <p>{label}</p>
         {payload.map((entry, index) => (
           <p key={`item-${index}`} style={{ color: entry.color }}>
-            {`${entry.name} : ${entry.value}`}
+            {`kVAR: ${entry.value}`}
           </p>
         ))}
       </div>
@@ -65,8 +65,8 @@ const ReactivePower = () => {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip content={<CustomTooltip theme={theme} />} />
-              <Legend formatter={() => 'Total Reactive Power [kVAR]'} />
-              <Line type="monotone" dataKey="kVAR" stroke={theme.palette.primary.main} dot={true} name="kVAR" />
+              <Legend />
+              <Line type="monotone" dataKey="kVAR" stroke={theme.palette.primary.main} dot={true} name="Total Reactive Power [kVAR]" />
             </LineChart>
           </ResponsiveContainer>
         </Box>

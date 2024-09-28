@@ -3,7 +3,6 @@ import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonG
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useTheme } from '@mui/material/styles';
 
-// Updated consumption data, removing kVARh and keeping only kWh
 const consumptionData = [
   { name: 'Jan', kWh: 50 },
   { name: 'Feb', kWh: 60 },
@@ -19,8 +18,29 @@ const consumptionData = [
   { name: 'Dec', kWh: 67 },
 ];
 
+const CustomTooltip = ({ active, payload, label, theme }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        style={{
+          backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#fff',
+          color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+          padding: '10px',
+          borderRadius: '5px',
+          border: '1px solid',
+          borderColor: theme.palette.divider,
+        }}
+      >
+        <p>{label}</p>
+        <p>{`kWh: ${payload[0].value}`}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const ConsumptionHistory = () => {
-  const theme = useTheme(); // Access the current theme (light or dark)
+  const theme = useTheme();
   const [consumptionPeriod, setConsumptionPeriod] = useState('yearly');
 
   const handleConsumptionPeriodChange = (event, newPeriod) => {
@@ -37,46 +57,21 @@ const ConsumptionHistory = () => {
         <Box sx={{ width: '100%', height: '500px' }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
-              data={consumptionData} // Data without kVARh, only kWh
+              data={consumptionData}
+              layout="vertical"  // Layout set to vertical for horizontal bars
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              layout="vertical" // Vertical layout for horizontal bars
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                type="number"
-                stroke={theme.palette.text.primary}
-                label={{
-                  value: 'kWh',
-                  position: 'insideBottomRight',
-                  offset: 10,
-                  fill: theme.palette.text.primary,
-                  dy: 15,
-                  dx: 15,
-                }}
-              />
-              <YAxis
-                dataKey="name"
-                type="category"
-                stroke={theme.palette.text.primary}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#fff',
-                  color: theme.palette.mode === 'dark' ? '#fff' : '#000',
-                  border: '1px solid',
-                  borderColor: theme.palette.divider,
-                }}
-                labelStyle={{ color: theme.palette.text.primary }}
-                formatter={(value) => `${value} kWh`}
-              />
-              <Legend /> {/* Ensure the legend is visible */}
-              <Bar dataKey="kWh" fill={theme.palette.primary.main} barSize={20} name="kWh" /> {/* Only kWh data */}
+              <XAxis type="number" stroke={theme.palette.text.primary} />
+              <YAxis type="category" dataKey="name" stroke={theme.palette.text.primary} />
+              <Tooltip content={<CustomTooltip theme={theme} />} />
+              <Legend />
+              <Bar dataKey="kWh" fill={theme.palette.primary.main} name="Total Real Energy Imported [kWh]" barSize={20} />
             </BarChart>
           </ResponsiveContainer>
         </Box>
       </CardContent>
 
-      {/* Replacing CardActionArea with CardActions and centering it */}
       <CardActions sx={{ justifyContent: 'center', mt: 2, mb: 2 }}>
         <ToggleButtonGroup
           value={consumptionPeriod}
@@ -87,12 +82,14 @@ const ConsumptionHistory = () => {
           <ToggleButton value="yearly" aria-label="Yearly">
             Yearly
           </ToggleButton>
+          {/*
           <ToggleButton value="monthly" aria-label="Monthly">
             Monthly
           </ToggleButton>
           <ToggleButton value="daily" aria-label="Daily">
             Daily
           </ToggleButton>
+          */}
         </ToggleButtonGroup>
       </CardActions>
     </Card>

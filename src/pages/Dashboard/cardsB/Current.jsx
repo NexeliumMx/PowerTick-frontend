@@ -25,7 +25,7 @@ const CustomTooltip = ({ active, payload, label, theme }) => {
         }}
       >
         <p>{label}</p>
-        <p>{`A: ${payload[0].value}`}</p> {/* Display 'A' instead of 'Current [A]' */}
+        <p>{`A: ${payload[0].value}`}</p>
       </div>
     );
   }
@@ -34,23 +34,19 @@ const CustomTooltip = ({ active, payload, label, theme }) => {
 };
 
 const Current = () => {
-  // Access MUI theme
   const theme = useTheme();
 
   return (
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <CardHeader title="Real Time Current"/>
+      <CardHeader title="Real Time Current" />
       <CardContent sx={{ flexGrow: 1 }}>
-        <Box sx={{ width: '100%', height: 300 }}> {/* Adjusts to 100% of the container */}
+        <Box sx={{ width: '100%', height: 300 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={data}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" /> {/* Default grid */}
-              <XAxis dataKey="name" /> {/* Default axis */}
-              <YAxis /> {/* Default axis */}
-              <Tooltip content={<CustomTooltip theme={theme} />} /> {/* Custom tooltip with theme */}
+            <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip content={<CustomTooltip theme={theme} />} />
               <Legend />
               <Bar dataKey="current" fill={theme.palette.primary.main} barSize={50} name="Current [A]" />
             </BarChart>

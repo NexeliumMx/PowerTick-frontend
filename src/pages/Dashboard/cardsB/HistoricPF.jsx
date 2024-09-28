@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, useTheme } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-// Sample data for Power Factor, replace this with actual data
 const data = [
   { name: '-60 min', pf: 0.91 },
   { name: '-55 min', pf: 0.92 },
@@ -33,18 +32,16 @@ const CustomTooltip = ({ active, payload, label, theme }) => {
         }}
       >
         <p>{label}</p>
-        <p>{`Power Factor: ${payload[0].value}`}</p>
+        <p>{`PF: ${payload[0].value}`}</p>
       </div>
     );
   }
-
   return null;
 };
 
 const HistoricPF = () => {
-  // Access the MUI theme
   const theme = useTheme();
-  const [timeRange, setTimeRange] = useState('lastHour'); // Default to "Last Hour"
+  const [timeRange, setTimeRange] = useState('lastHour');
 
   const handleTimeRangeChange = (event, newRange) => {
     if (newRange !== null) {
@@ -62,7 +59,7 @@ const HistoricPF = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis domain={[0.9, 1.0]} />
-              <Tooltip content={<CustomTooltip theme={theme} />} /> {/* Custom Tooltip with theme */}
+              <Tooltip content={<CustomTooltip theme={theme} />} />
               <Legend />
               <Line type="monotone" dataKey="pf" stroke={theme.palette.primary.main} dot={true} name="Total Power Factor" />
             </LineChart>
@@ -70,7 +67,6 @@ const HistoricPF = () => {
         </Box>
       </CardContent>
 
-      {/* Card Actions with Toggle Buttons for time range selection */}
       <CardActions sx={{ justifyContent: 'center' }}>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
           <ToggleButtonGroup
