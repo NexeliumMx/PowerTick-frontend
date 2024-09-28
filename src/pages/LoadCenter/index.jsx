@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import LoadCenterCard from './LoadCenterCard';
+import LoadCenterCard from './components/LoadCenterCard';
 
 const LoadCenter = () => {
 

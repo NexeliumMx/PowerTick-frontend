@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Box, Container, Typography, useTheme } from "@mui/material";
+import { Box, Container, useTheme } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
+import Header from "../components/ui/Header";
+import Sidebar from "../components/ui/Sidebar";
 import BreakpointChecker from '../components/BreakpointChecker';
 
 const MainLayout = () => {

@@ -3,7 +3,7 @@ import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import MUIComponentsTest from './pages/MUIComponentsTest';
 import MainLayout from './layout/MainLayout';
-import LoadCenter from './pages/LoadCenter/LoadCenter';
+import LoadCenter from './pages/LoadCenter';
 import Dashboard from './pages/Dashboard';
 import Downloads from './pages/Downloads';
 import Users from './pages/Users';

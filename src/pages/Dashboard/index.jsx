@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Box } from "@mui/material";
-import NavButtons from "./components/NavButtons";
-import Configuration from "./Configuration";
-import Overview from "./Overview"; 
-import Measurements from "./Measurements";
+import NavButtons from "./components/ui/NavButtons";
+import Configuration from "./subpages/Configuration";
+import Overview from "./subpages/Overview"; 
+import Measurements from "./subpages/Measurements";
 
 const Dashboard = () => {
   const [activePage, setActivePage] = useState('Overview');
