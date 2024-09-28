@@ -64,7 +64,7 @@ const HistoricPF = () => {
               <YAxis domain={[0.9, 1.0]} />
               <Tooltip content={<CustomTooltip theme={theme} />} /> {/* Custom Tooltip with theme */}
               <Legend />
-              <Line type="monotone" dataKey="pf" stroke={theme.palette.primary.main} dot={true} name="Power Factor" />
+              <Line type="monotone" dataKey="pf" stroke={theme.palette.primary.main} dot={true} name="Total Power Factor" />
             </LineChart>
           </ResponsiveContainer>
         </Box>
@@ -82,12 +82,14 @@ const HistoricPF = () => {
             <ToggleButton value="lastHour" aria-label="Last Hour">
               Last Hour
             </ToggleButton>
+            {/* 
             <ToggleButton value="last24Hours" aria-label="Last 24 Hours">
               Last 24 Hours
             </ToggleButton>
             <ToggleButton value="last30Days" aria-label="Last 30 Days">
               Last 30 Days
             </ToggleButton>
+            */}
           </ToggleButtonGroup>
         </Box>
       </CardActions>

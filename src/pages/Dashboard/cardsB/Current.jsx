@@ -4,7 +4,7 @@ import { Card, CardHeader, CardContent, Box, useTheme } from '@mui/material';
 
 // Example data based on the chart you showed
 const data = [
-  { name: 'Average', current: 18.0 },
+  { name: 'Total', current: 18.0 },
   { name: 'Phase A', current: 17.7 },
   { name: 'Phase B', current: 18.2 },
   { name: 'Phase C', current: 18.0 },
@@ -25,7 +25,7 @@ const CustomTooltip = ({ active, payload, label, theme }) => {
         }}
       >
         <p>{label}</p>
-        <p>{`Current: ${payload[0].value}`}</p>
+        <p>{`A: ${payload[0].value}`}</p> {/* Display 'A' instead of 'Current [A]' */}
       </div>
     );
   }
@@ -39,7 +39,7 @@ const Current = () => {
 
   return (
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <CardHeader title="Current" subheader="Recorded currents" />
+      <CardHeader title="Real Time Current"/>
       <CardContent sx={{ flexGrow: 1 }}>
         <Box sx={{ width: '100%', height: 300 }}> {/* Adjusts to 100% of the container */}
           <ResponsiveContainer width="100%" height="100%">
@@ -52,8 +52,7 @@ const Current = () => {
               <YAxis /> {/* Default axis */}
               <Tooltip content={<CustomTooltip theme={theme} />} /> {/* Custom tooltip with theme */}
               <Legend />
-              {/* Use theme's primary color for the bars */}
-              <Bar dataKey="current" fill={theme.palette.primary.main} barSize={50} />
+              <Bar dataKey="current" fill={theme.palette.primary.main} barSize={50} name="Current [A]" />
             </BarChart>
           </ResponsiveContainer>
         </Box>

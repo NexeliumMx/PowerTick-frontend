@@ -1,22 +1,21 @@
-import React from 'react';
-import { Card, CardHeader, CardContent, Box, useTheme } from '@mui/material';
+import React, { useState } from 'react';
+import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, useTheme } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-// Sample data for Real Power, you can replace this with actual data
 const data = [
-  { name: '-60 min', average: 5, phaseA: 4, phaseB: 5.5, phaseC: 6 },
-  { name: '-55 min', average: 5.5, phaseA: 4.5, phaseB: 5.8, phaseC: 5.9 },
-  { name: '-50 min', average: 5.7, phaseA: 5, phaseB: 6, phaseC: 6.2 },
-  { name: '-45 min', average: 5.3, phaseA: 4.8, phaseB: 5.9, phaseC: 6.5 },
-  { name: '-40 min', average: 4.9, phaseA: 4.5, phaseB: 5.3, phaseC: 6.1 },
-  { name: '-35 min', average: 5.1, phaseA: 4.9, phaseB: 5.4, phaseC: 6.2 },
-  { name: '-30 min', average: 5.6, phaseA: 5.3, phaseB: 6, phaseC: 6.8 },
-  { name: '-25 min', average: 5.9, phaseA: 5.6, phaseB: 6.2, phaseC: 7 },
-  { name: '-20 min', average: 6, phaseA: 5.8, phaseB: 6.5, phaseC: 7.1 },
-  { name: '-15 min', average: 5.7, phaseA: 5.5, phaseB: 6.3, phaseC: 6.9 },
-  { name: '-10 min', average: 5.4, phaseA: 5.2, phaseB: 6, phaseC: 6.6 },
-  { name: '-5 min', average: 5.9, phaseA: 5.6, phaseB: 6.5, phaseC: 7 },
-  { name: '0 min', average: 6.2, phaseA: 6, phaseB: 6.8, phaseC: 7.3 },
+  { name: '-60 min', kW: 5 },
+  { name: '-55 min', kW: 5.5 },
+  { name: '-50 min', kW: 5.7 },
+  { name: '-45 min', kW: 5.3 },
+  { name: '-40 min', kW: 4.9 },
+  { name: '-35 min', kW: 5.1 },
+  { name: '-30 min', kW: 5.6 },
+  { name: '-25 min', kW: 5.9 },
+  { name: '-20 min', kW: 6 },
+  { name: '-15 min', kW: 5.7 },
+  { name: '-10 min', kW: 5.4 },
+  { name: '-5 min', kW: 5.9 },
+  { name: '0 min', kW: 6.2 },
 ];
 
 const CustomTooltip = ({ active, payload, label, theme }) => {
@@ -35,7 +34,7 @@ const CustomTooltip = ({ active, payload, label, theme }) => {
         <p>{label}</p>
         {payload.map((entry, index) => (
           <p key={`item-${index}`} style={{ color: entry.color }}>
-            {`${entry.name} : ${entry.value}`}
+            {`kW: ${entry.value}`}
           </p>
         ))}
       </div>
@@ -46,12 +45,18 @@ const CustomTooltip = ({ active, payload, label, theme }) => {
 };
 
 const RealPower = () => {
-  // Access the MUI theme
   const theme = useTheme();
+  const [timeRange, setTimeRange] = useState('lastHour');
+
+  const handleTimeRangeChange = (event, newTimeRange) => {
+    if (newTimeRange !== null) {
+      setTimeRange(newTimeRange);
+    }
+  };
 
   return (
     <Card sx={{ height: '100%', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
-      <CardHeader title="Real Power" />
+      <CardHeader title="Real Power Demand History" />
       <CardContent sx={{ flexGrow: 1 }}>
         <Box sx={{ width: '100%', height: 400 }}>
           <ResponsiveContainer width="100%" height="100%">
@@ -59,16 +64,35 @@ const RealPower = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
-              <Tooltip content={<CustomTooltip theme={theme} />} /> {/* Custom Tooltip */}
-              <Legend />
-              <Line type="monotone" dataKey="average" stroke={theme.palette.primary.main} dot={true} name="Average" />
-              <Line type="monotone" dataKey="phaseA" stroke={theme.palette.secondary.main} dot={true} name="Phase A" />
-              <Line type="monotone" dataKey="phaseB" stroke={theme.palette.warning.main} dot={true} name="Phase B" />
-              <Line type="monotone" dataKey="phaseC" stroke={theme.palette.error.main} dot={true} name="Phase C" />
+              <Tooltip content={<CustomTooltip theme={theme} />} />
+              <Legend/>
+              <Line name="Total Real Power [kW]" type="monotone" dataKey="kW" stroke={theme.palette.primary.main} dot={true} />
             </LineChart>
           </ResponsiveContainer>
         </Box>
       </CardContent>
+
+      <CardActions sx={{ justifyContent: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
+          <ToggleButtonGroup
+            value={timeRange}
+            exclusive
+            onChange={handleTimeRangeChange}
+            aria-label="Power Time Range"
+          >
+            <ToggleButton value="lastHour" aria-label="Last Hour">
+              Last Hour
+            </ToggleButton>
+            {/*
+            <ToggleButton value="last24Hours" aria-label="Last 24 Hours">
+              Last 24 Hours
+            </ToggleButton>
+            <ToggleButton value="last30Days" aria-label="Last 30 Days">
+              Last 30 Days
+            */}
+          </ToggleButtonGroup>
+        </Box>
+      </CardActions>
     </Card>
   );
 };
