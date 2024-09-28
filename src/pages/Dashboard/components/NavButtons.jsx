@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { Button, ButtonGroup, useTheme, Box } from '@mui/material';
-import { Activity, Gauge, Settings } from 'lucide-react'; // Importing icons from lucide-react
+import { Button, useTheme, Box } from '@mui/material';
+import { Activity, Gauge, Settings } from 'lucide-react'; 
 
 const NavButtons = ({ setActivePage }) => {
   const theme = useTheme();
-  const [activeButton, setActiveButton] = useState('Consumption'); // Track active button state
+  const [activeButton, setActiveButton] = useState('Overview'); // Updated to 'Overview'
 
   const buttons = [
-    { id: 'Consumption', label: 'Consumption', icon: <Activity /> },
+    { id: 'Overview', label: 'Overview', icon: <Activity /> }, // Updated 'Consumption' to 'Overview'
     { id: 'Measurements', label: 'Measurements', icon: <Gauge /> },
     { id: 'Configuration', label: 'Configuration', icon: <Settings /> },
   ];
 
   const handleButtonClick = (buttonId) => {
     setActiveButton(buttonId);
-    setActivePage(buttonId); // Updates the active page in the parent component
+    setActivePage(buttonId);
   };
 
   return (

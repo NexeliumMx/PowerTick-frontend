@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, useTheme } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 
@@ -10,7 +9,7 @@ import MaxDemand from "./cardsA/MaxDemand";
 import PowerFactor from "./cardsA/PowerFactor";
 import Timestamp from "./cardsA/Timestamp";
 
-const Consumption = () => {
+const Overview = () => {
   const theme = useTheme();
 
   return (
@@ -45,4 +44,4 @@ const Consumption = () => {
   );
 };
 
-export default Consumption;
+export default Overview;

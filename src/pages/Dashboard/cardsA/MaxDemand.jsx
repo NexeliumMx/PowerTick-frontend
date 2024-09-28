@@ -61,7 +61,6 @@ const MaxDemand = () => {
         </Box>
       </CardContent>
 
-      {/* Replace CardActionArea with CardActions to avoid nesting button inside a button */}
       <CardActions sx={{ justifyContent: 'center' }}>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
           <ToggleButtonGroup

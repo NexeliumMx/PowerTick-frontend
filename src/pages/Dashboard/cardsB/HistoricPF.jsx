@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card, CardHeader, CardContent, Box, useTheme } from '@mui/material';
+import React, { useState } from 'react';
+import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, useTheme } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 // Sample data for Power Factor, replace this with actual data
@@ -44,6 +44,13 @@ const CustomTooltip = ({ active, payload, label, theme }) => {
 const HistoricPF = () => {
   // Access the MUI theme
   const theme = useTheme();
+  const [timeRange, setTimeRange] = useState('lastHour'); // Default to "Last Hour"
+
+  const handleTimeRangeChange = (event, newRange) => {
+    if (newRange !== null) {
+      setTimeRange(newRange);
+    }
+  };
 
   return (
     <Card sx={{ height: '100%', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
@@ -62,6 +69,28 @@ const HistoricPF = () => {
           </ResponsiveContainer>
         </Box>
       </CardContent>
+
+      {/* Card Actions with Toggle Buttons for time range selection */}
+      <CardActions sx={{ justifyContent: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
+          <ToggleButtonGroup
+            value={timeRange}
+            exclusive
+            onChange={handleTimeRangeChange}
+            aria-label="Power Factor Time Range"
+          >
+            <ToggleButton value="lastHour" aria-label="Last Hour">
+              Last Hour
+            </ToggleButton>
+            <ToggleButton value="last24Hours" aria-label="Last 24 Hours">
+              Last 24 Hours
+            </ToggleButton>
+            <ToggleButton value="last30Days" aria-label="Last 30 Days">
+              Last 30 Days
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+      </CardActions>
     </Card>
   );
 };
