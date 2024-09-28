@@ -72,12 +72,14 @@ const MaxDemand = () => {
             <ToggleButton value="daily" aria-label="Daily">
               Daily
             </ToggleButton>
+            {/*
             <ToggleButton value="monthly" aria-label="Monthly">
               Monthly
             </ToggleButton>
             <ToggleButton value="yearly" aria-label="Yearly">
               Yearly
             </ToggleButton>
+            */}
           </ToggleButtonGroup>
         </Box>
       </CardActions>
