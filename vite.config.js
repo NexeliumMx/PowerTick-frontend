@@ -1,11 +1,14 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { version } from './package.json';  // Import the version from package.json
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: './', // This sets Vite to use relative paths
+  define: {
+    __APP_VERSION__: JSON.stringify(version),  // Define a global variable for version
+  },
+  base: './', // For relative paths
   build: {
-    outDir: 'build' // Set output directory to 'build'
-  }
-})
+    outDir: 'build', // Output directory
+  },
+});

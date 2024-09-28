@@ -20,7 +20,10 @@ export default function Home() {
       <Typography variant="h2" gutterBottom>
         Welcome to PowerTIC
       </Typography>
-      
+      <Typography variant="body1" sx={{ marginTop: 1 }}>
+        Version: {__APP_VERSION__} {/* Display the app version here */}
+      </Typography>
+
       <Box sx={{ display: 'flex', gap: 2, marginTop: 3 }}>
         <Button
           variant="contained"
