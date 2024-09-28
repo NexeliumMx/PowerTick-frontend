@@ -1,10 +1,9 @@
-import React from 'react';
 import { Box, IconButton, useTheme } from '@mui/material';
 import { IconSearch, IconBell, IconSettings, IconMenu2, IconSun, IconMoon, IconDeviceDesktop } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { useColorScheme } from '@mui/material/styles';
 
-const Header = ({ handleDrawerToggle }) => {
+const Topbar = ({ handleDrawerToggle }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { mode, setMode } = useColorScheme(); // Get the current mode and function to change mode
@@ -101,4 +100,4 @@ const Header = ({ handleDrawerToggle }) => {
   );
 };
 
-export default Header;
+export default Topbar;

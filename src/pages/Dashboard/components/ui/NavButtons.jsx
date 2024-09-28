@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, useTheme, Box } from '@mui/material';
 import { Activity, Gauge, Settings } from 'lucide-react'; 
 

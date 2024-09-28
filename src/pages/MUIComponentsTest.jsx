@@ -1,4 +1,4 @@
-import { Box, Button, Container, Typography, Link } from "@mui/material";
+import { Box, Button, Typography, Link } from "@mui/material";
 import BluuCard from "../components/BluuCard";
 import { useTheme } from "@mui/material/styles";
 

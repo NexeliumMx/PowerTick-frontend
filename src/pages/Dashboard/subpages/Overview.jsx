@@ -2,12 +2,12 @@ import { Box, useTheme } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 
 // Cards
-import AccumulatedConsumption from "../components/charts/AccumulatedConsumption";
-import ConsumptionHistory from "../components/charts/ConsumptionHistory";
-import DemandProfile from "../components/charts/DemandProfile";
-import MaxDemand from "../components/charts/MaxDemand";
-import PowerFactor from "../components/charts/PowerFactor";
-import Timestamp from "../components/charts/Timestamp";
+import AccumulatedConsumption from "../features/charts/AccumulatedConsumption";
+import ConsumptionHistory from "../features/charts/ConsumptionHistory";
+import DemandProfile from "../features/charts/DemandProfile";
+import MaxDemand from "../features/charts/MaxDemand";
+import PowerFactor from "../features/charts/PowerFactor";
+import Timestamp from "../features/charts/Timestamp";
 
 const Overview = () => {
   const theme = useTheme();

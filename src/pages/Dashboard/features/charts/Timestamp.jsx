@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardHeader, CardContent, Typography, Box, useTheme } from '@mui/material';
 
 const Timestamp = () => {

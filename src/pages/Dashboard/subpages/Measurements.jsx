@@ -1,12 +1,11 @@
-
 import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 
-import Current from "../components/charts/Current";
-import HistoricConsumption from "../components/charts/HistoricConsumption";
-import HistoricPF from "../components/charts/HistoricPF";
-import ReactivePower from "../components/charts/ReactivePower";
-import RealPower from "../components/charts/RealPower";
+import Current from "../features/charts/Current";
+import HistoricConsumption from "../features/charts/HistoricConsumption";
+import HistoricPF from "../features/charts/HistoricPF";
+import ReactivePower from "../features/charts/ReactivePower";
+import RealPower from "../features/charts/RealPower";
 
 export default function Measurments() {
   return (

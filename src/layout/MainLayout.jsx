@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, Container, useTheme } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import Header from "../components/ui/Header";
+import Topbar from "../components/ui/Topbar";
 import Sidebar from "../components/ui/Sidebar";
 import BreakpointChecker from '../components/BreakpointChecker';
 
@@ -23,9 +23,9 @@ const MainLayout = () => {
         backgroundColor: theme.palette.background.paper,
       }}
     >
-      {/* Header */}
+      {/* Topbar */}
       <Box sx={{ width: "100%", position: "fixed", top: 0, zIndex: 1200 }}>
-        <Header handleDrawerToggle={handleDrawerToggle} />
+        <Topbar handleDrawerToggle={handleDrawerToggle} />
       </Box>
 
       <Box sx={{ display: "flex", flexGrow: 1, marginTop: "64px" }}>

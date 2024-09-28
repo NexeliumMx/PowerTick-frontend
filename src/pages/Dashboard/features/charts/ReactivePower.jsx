@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, useTheme } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const data = [
-  { name: '-60 min', pf: 0.91 },
-  { name: '-55 min', pf: 0.92 },
-  { name: '-50 min', pf: 0.94 },
-  { name: '-45 min', pf: 0.96 },
-  { name: '-40 min', pf: 0.93 },
-  { name: '-35 min', pf: 0.92 },
-  { name: '-30 min', pf: 0.91 },
-  { name: '-25 min', pf: 0.93 },
-  { name: '-20 min', pf: 0.95 },
-  { name: '-15 min', pf: 0.97 },
-  { name: '-10 min', pf: 0.99 },
-  { name: '-5 min', pf: 0.98 },
-  { name: '0 min', pf: 1.00 },
+  { name: '-60 min', kVAR: 4 },
+  { name: '-55 min', kVAR: 4.5 },
+  { name: '-50 min', kVAR: 5 },
+  { name: '-45 min', kVAR: 4.2 },
+  { name: '-40 min', kVAR: 3.5 },
+  { name: '-35 min', kVAR: 4 },
+  { name: '-30 min', kVAR: 4.8 },
+  { name: '-25 min', kVAR: 5.5 },
+  { name: '-20 min', kVAR: 5.7 },
+  { name: '-15 min', kVAR: 5.3 },
+  { name: '-10 min', kVAR: 4.9 },
+  { name: '-5 min', kVAR: 5.5 },
+  { name: '0 min', kVAR: 6 },
 ];
 
 const CustomTooltip = ({ active, payload, label, theme }) => {
@@ -32,36 +32,41 @@ const CustomTooltip = ({ active, payload, label, theme }) => {
         }}
       >
         <p>{label}</p>
-        <p>{`PF: ${payload[0].value}`}</p>
+        {payload.map((entry, index) => (
+          <p key={`item-${index}`} style={{ color: entry.color }}>
+            {`kVAR: ${entry.value}`}
+          </p>
+        ))}
       </div>
     );
   }
+
   return null;
 };
 
-const HistoricPF = () => {
+const ReactivePower = () => {
   const theme = useTheme();
   const [timeRange, setTimeRange] = useState('lastHour');
 
-  const handleTimeRangeChange = (event, newRange) => {
-    if (newRange !== null) {
-      setTimeRange(newRange);
+  const handleTimeRangeChange = (event, newTimeRange) => {
+    if (newTimeRange) {
+      setTimeRange(newTimeRange);
     }
   };
 
   return (
     <Card sx={{ height: '100%', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
-      <CardHeader title="Power Factor History" />
+      <CardHeader title="Reactive Power Demand History" />
       <CardContent sx={{ flexGrow: 1 }}>
         <Box sx={{ width: '100%', height: 400 }}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
-              <YAxis domain={[0.9, 1.0]} />
+              <YAxis />
               <Tooltip content={<CustomTooltip theme={theme} />} />
               <Legend />
-              <Line type="monotone" dataKey="pf" stroke={theme.palette.primary.main} dot={true} name="Total Power Factor" />
+              <Line type="monotone" dataKey="kVAR" stroke={theme.palette.primary.main} dot={true} name="Total Reactive Power [kVAR]" />
             </LineChart>
           </ResponsiveContainer>
         </Box>
@@ -73,7 +78,7 @@ const HistoricPF = () => {
             value={timeRange}
             exclusive
             onChange={handleTimeRangeChange}
-            aria-label="Power Factor Time Range"
+            aria-label="Time Range"
           >
             <ToggleButton value="lastHour" aria-label="Last Hour">
               Last Hour
@@ -84,7 +89,6 @@ const HistoricPF = () => {
             </ToggleButton>
             <ToggleButton value="last30Days" aria-label="Last 30 Days">
               Last 30 Days
-            </ToggleButton>
             */}
           </ToggleButtonGroup>
         </Box>
@@ -93,4 +97,4 @@ const HistoricPF = () => {
   );
 };
 
-export default HistoricPF;
+export default ReactivePower;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'; 
 import { useTheme } from '@mui/material/styles';

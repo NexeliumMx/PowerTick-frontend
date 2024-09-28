@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardContent, CardHeader, Typography, Box } from '@mui/material';
 import { Gauge } from '@mui/x-charts/Gauge'; // Ensure correct import
 
