@@ -1,0 +1,14 @@
+{
+  "routes": [
+    {
+      "route": "/assets/*",
+      "serve": "/assets/og-image.png",
+      "statusCode": 200
+    },
+    {
+      "route": "/*",
+      "serve": "/index.html",
+      "statusCode": 200
+    }
+  ]
+}
