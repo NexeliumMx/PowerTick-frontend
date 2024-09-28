@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
-import { Box, Card, CardHeader, CardContent, CardActionArea, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'; // Importamos de Recharts
+import { Box, Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'; 
 import { useTheme } from '@mui/material/styles';
 
-// Datos de ejemplo para la gráfica
+// Example data formatted as per Recharts API expectations
 const demandProfileData = [
-  { month: 'Jan', kW: 240 },
-  { month: 'Feb', kW: 720 },
-  { month: 'Mar', kW: 480 },
-  { month: 'Apr', kW: 360 },
-  { month: 'May', kW: 300 },
-  { month: 'Jun', kW: 450 },
-  { month: 'Jul', kW: 260 },
-  { month: 'Aug', kW: 750 },
-  { month: 'Sept', kW: 320 },
-  { month: 'Oct', kW: 600 },
-  { month: 'Nov', kW: 400 },
-  { month: 'Dec', kW: 550 },
+  { name: 'Jan', kW: 240 },
+  { name: 'Feb', kW: 720 },
+  { name: 'Mar', kW: 480 },
+  { name: 'Apr', kW: 360 },
+  { name: 'May', kW: 300 },
+  { name: 'Jun', kW: 450 },
+  { name: 'Jul', kW: 260 },
+  { name: 'Aug', kW: 750 },
+  { name: 'Sept', kW: 320 },
+  { name: 'Oct', kW: 600 },
+  { name: 'Nov', kW: 400 },
+  { name: 'Dec', kW: 550 },
 ];
 
 const DemandProfile = () => {
@@ -31,20 +31,18 @@ const DemandProfile = () => {
 
   return (
     <Card sx={{ height: '100%', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
-      <CardHeader
-        title="Demand Profile"
-      />
+      <CardHeader title="Demand Profile" />
 
       <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ flexGrow: 1, display: 'flex' }}>
-          <ResponsiveContainer width="100%" height="100%"> {/* Hace que la gráfica sea responsiva */}
+          <ResponsiveContainer width="100%" height="100%"> 
             <LineChart
-              data={demandProfileData} // Pasamos los datos
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              data={demandProfileData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 40 }} // Increase bottom margin for legend space
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" stroke={theme.palette.text.primary} /> {/* Etiquetas del eje X */}
-              <YAxis stroke={theme.palette.text.primary} /> {/* Eje Y */}
+              <XAxis dataKey="name" stroke={theme.palette.text.primary} />
+              <YAxis stroke={theme.palette.text.primary} />
               <Tooltip 
                 contentStyle={{
                   backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#fff',
@@ -54,32 +52,39 @@ const DemandProfile = () => {
                 }}
                 labelStyle={{ color: theme.palette.text.primary }}
               />
-              <Line type="monotone" dataKey="kW" stroke={theme.palette.primary.main} strokeWidth={2} activeDot={{ r: 8 }} /> {/* Configuración de la línea */}
+              <Legend verticalAlign="bottom" align="center" /> {/* Legend moved to the bottom */}
+              <Line 
+                type="monotone" 
+                dataKey="kW" 
+                stroke={theme.palette.primary.main} 
+                strokeWidth={2} 
+                activeDot={{ r: 8 }} 
+                name="kW"
+              />
             </LineChart>
           </ResponsiveContainer>
         </Box>
       </CardContent>
 
-      <CardActionArea>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
-          <ToggleButtonGroup
-            value={demandPeriod}
-            exclusive
-            onChange={handleDemandPeriodChange}
-            aria-label="Demand Profile Period"
-          >
-            <ToggleButton value="yearly" aria-label="Yearly">
-              Yearly
-            </ToggleButton>
-            <ToggleButton value="monthly" aria-label="Monthly">
-              Monthly
-            </ToggleButton>
-            <ToggleButton value="daily" aria-label="Daily">
-              Daily
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Box>
-      </CardActionArea>
+      {/* Replacing CardActionArea with CardActions to avoid nested button issue */}
+      <CardActions sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
+        <ToggleButtonGroup
+          value={demandPeriod}
+          exclusive
+          onChange={handleDemandPeriodChange}
+          aria-label="Demand Profile Period"
+        >
+          <ToggleButton value="yearly" aria-label="Yearly">
+            Yearly
+          </ToggleButton>
+          <ToggleButton value="monthly" aria-label="Monthly">
+            Monthly
+          </ToggleButton>
+          <ToggleButton value="daily" aria-label="Daily">
+            Daily
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </CardActions>
     </Card>
   );
 };

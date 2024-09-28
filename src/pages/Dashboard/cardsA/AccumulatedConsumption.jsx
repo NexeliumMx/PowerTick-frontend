@@ -6,12 +6,17 @@ import {
   Typography,
   ToggleButton,
   ToggleButtonGroup,
-  CardActionArea,
+  CardActions,
   Box,
+  useTheme,
 } from '@mui/material';
 
 const AccumulatedConsumption = () => {
-  const [accumulatedPeriod, setAccumulatedPeriod] = useState('daily');
+  // Set the default state to 'monthly'
+  const [accumulatedPeriod, setAccumulatedPeriod] = useState('monthly');
+
+  // Access the MUI theme
+  const theme = useTheme();
 
   const handleAccumulatedPeriodChange = (event, newPeriod) => {
     if (newPeriod !== null) {
@@ -24,32 +29,58 @@ const AccumulatedConsumption = () => {
       <CardHeader title="Accumulated Consumption" />
 
       <CardContent>
-        <Typography variant="h4" color="primary">
-          70,000 kWh
-        </Typography>
+        {/* First Box for kWh */}
+        <Box 
+          sx={{ 
+            textAlign: 'center', 
+            mt: 2, 
+            mb: 2, 
+            backgroundColor: theme.palette.primary.main, // Primary background color
+            padding: 2, 
+            borderRadius: 10,
+          }}
+        >
+          <Typography variant="h4">
+            70,000 kWh
+          </Typography>
+        </Box>
+
+        {/* Second Box for kVArh */}
+        <Box 
+          sx={{ 
+            textAlign: 'center', 
+            mt: 2, 
+            mb: 2, 
+            backgroundColor: theme.palette.primary.main, // Primary background color
+            padding: 2, 
+            borderRadius: 10,
+          }}
+        >
+          <Typography variant="h4">
+            70,000 kVArh
+          </Typography>
+        </Box>
       </CardContent>
 
-      {/* Change CardActionArea to render as a 'div' to prevent button nesting */}
-      <CardActionArea component="div">
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
-          <ToggleButtonGroup
-            value={accumulatedPeriod}
-            exclusive
-            onChange={handleAccumulatedPeriodChange}
-            aria-label="Accumulated Consumption Time Period"
-          >
-            <ToggleButton value="daily" aria-label="Daily">
-              Daily
-            </ToggleButton>
-            <ToggleButton value="monthly" aria-label="Monthly">
-              Monthly
-            </ToggleButton>
-            <ToggleButton value="yearly" aria-label="Yearly">
-              Yearly
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Box>
-      </CardActionArea>
+      {/* Centering the buttons inside CardActions */}
+      <CardActions sx={{ justifyContent: 'center', mt: 2, mb: 2 }}>
+        <ToggleButtonGroup
+          value={accumulatedPeriod} // The default value will be 'monthly'
+          exclusive
+          onChange={handleAccumulatedPeriodChange}
+          aria-label="Accumulated Consumption Time Period"
+        >
+          <ToggleButton value="daily" aria-label="Daily">
+            Daily
+          </ToggleButton>
+          <ToggleButton value="monthly" aria-label="Monthly">
+            Monthly
+          </ToggleButton>
+          <ToggleButton value="yearly" aria-label="Yearly">
+            Yearly
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </CardActions>
     </Card>
   );
 };

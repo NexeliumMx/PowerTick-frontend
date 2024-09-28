@@ -6,12 +6,16 @@ import {
   Typography,
   ToggleButton,
   ToggleButtonGroup,
-  CardActionArea,
+  CardActions,
   Box,
+  useTheme,
 } from '@mui/material';
 
 const MaxDemand = () => {
   const [maxDemandPeriod, setMaxDemandPeriod] = useState('daily');
+  
+  // Access the MUI theme
+  const theme = useTheme();
 
   const handleMaxDemandPeriodChange = (event, newPeriod) => {
     if (newPeriod !== null) {
@@ -24,13 +28,41 @@ const MaxDemand = () => {
       <CardHeader title="Max Demand" />
 
       <CardContent>
-        <Typography variant="h4" color="primary">
-          10,000 kW
-        </Typography>
+        {/* First Box for kW */}
+        <Box 
+          sx={{ 
+            textAlign: 'center', 
+            mt: 2, 
+            mb: 2, 
+            backgroundColor: theme.palette.primary.main, // Primary background color
+            padding: 2, 
+            borderRadius: 10,
+          }}
+        >
+          <Typography variant="h4">
+            10,000 kW
+          </Typography>
+        </Box>
+
+        {/* Second Box for kVAR */}
+        <Box 
+          sx={{ 
+            textAlign: 'center', 
+            mt: 2, 
+            mb: 2, 
+            backgroundColor: theme.palette.primary.main, // Primary background color
+            padding: 2, 
+            borderRadius: 10,
+          }}
+        >
+          <Typography variant="h4">
+            10,000 kVAR
+          </Typography>
+        </Box>
       </CardContent>
 
-      {/* Modify CardActionArea to render as a 'div' to prevent nesting buttons */}
-      <CardActionArea component="div">
+      {/* Replace CardActionArea with CardActions to avoid nesting button inside a button */}
+      <CardActions sx={{ justifyContent: 'center' }}>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
           <ToggleButtonGroup
             value={maxDemandPeriod}
@@ -49,7 +81,7 @@ const MaxDemand = () => {
             </ToggleButton>
           </ToggleButtonGroup>
         </Box>
-      </CardActionArea>
+      </CardActions>
     </Card>
   );
 };
