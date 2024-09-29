@@ -1,99 +1,80 @@
-import { Box, IconButton, useTheme } from '@mui/material';
-import { IconSearch, IconBell, IconSettings, IconMenu2, IconSun, IconMoon, IconDeviceDesktop } from '@tabler/icons-react';
-import { useNavigate } from 'react-router-dom';
-import { useColorScheme } from '@mui/material/styles';
+import { Box, IconButton, useTheme } from "@mui/material";
+import { useContext } from "react";
+import { ColorModeContext, tokens } from "../../theme"; // Assuming tokens is part of your theme setup
+import InputBase from "@mui/material/InputBase";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import MenuIcon from "@mui/icons-material/Menu";
+import SearchIcon from "@mui/icons-material/Search";
 
 const Topbar = ({ handleDrawerToggle }) => {
   const theme = useTheme();
-  const navigate = useNavigate();
-  const { mode, setMode } = useColorScheme(); // Get the current mode and function to change mode
-
-  // Cycle between "light", "dark", and "system" modes
-  const toggleColorMode = () => {
-    if (mode === 'light') {
-      setMode('dark');
-    } else if (mode === 'dark') {
-      setMode('system');
-    } else {
-      setMode('light');
-    }
-  };
-
-  // Choose the appropriate icon based on the current mode
-  const getContrastIcon = () => {
-    if (mode === 'light') {
-      return <IconSun />;
-    } else if (mode === 'dark') {
-      return <IconMoon />;
-    } else {
-      return <IconDeviceDesktop />;
-    }
-  };
+  const colors = tokens(theme.palette.mode); // Get the custom color tokens based on the current theme mode
+  const colorMode = useContext(ColorModeContext); // Access color mode toggle function
 
   return (
-    <Box 
-      sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        padding: '16px 24px',
-        backgroundColor: theme.palette.background.paper, 
-        width: '100%' 
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "16px 24px",
+        backgroundColor: theme.palette.background.paper,
+        width: "100%",
       }}
     >
       {/* Left Section: Logo and Menu Toggle */}
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Box sx={{ display: "flex", alignItems: "center" }}>
         {/* Logo */}
-        <img 
-          src="/assets/logoipsum-288.svg" 
-          alt="Logo" 
-          style={{ width: '150px', height: '40px', cursor: 'pointer' }}
-          onClick={() => navigate('/')} 
+        <img
+          src="/assets/logoipsum-288.svg"
+          alt="Logo"
+          style={{ width: "150px", height: "40px", cursor: "pointer" }}
         />
-        
         {/* Menu Toggle Button */}
         <IconButton onClick={handleDrawerToggle}>
-          <IconMenu2 />
+          <MenuIcon />
         </IconButton>
       </Box>
 
       {/* Center: Search Bar */}
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          backgroundColor: theme.palette.background.default, 
-          borderRadius: '8px', 
-          padding: '0.5rem', 
-          width: '300px' 
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          backgroundColor: colors.primary[400], // Using custom color tokens
+          borderRadius: "8px",
+          padding: "0.5rem",
+          width: "300px",
         }}
       >
-        <IconSearch style={{ marginRight: '8px' }} />
-        <input
+        <SearchIcon style={{ marginRight: "8px" }} />
+        <InputBase
+          sx={{ flex: 1, color: colors.grey[100] }} // Use custom token for text color
           placeholder="Search..."
-          style={{ 
-            border: 'none', 
-            background: 'transparent', 
-            color: theme.palette.text.primary, 
-            width: '100%', 
-            outline: 'none' 
-          }}
+          inputProps={{ "aria-label": "search" }}
         />
       </Box>
 
-      {/* Right Section: Contrast Toggle, Notifications and Settings */}
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        {/* Contrast Toggle Icon */}
-        <IconButton onClick={toggleColorMode}>
-          {getContrastIcon()}
+      {/* Right Section: Contrast Toggle, Notifications, and Settings */}
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        {/* Dark/Light Mode Toggle */}
+        <IconButton onClick={colorMode.toggleColorMode}>
+          {theme.palette.mode === "dark" ? (
+            <DarkModeOutlinedIcon />
+          ) : (
+            <LightModeOutlinedIcon />
+          )}
         </IconButton>
 
         {/* Notifications and Settings */}
         <IconButton>
-          <IconBell />
+          <NotificationsOutlinedIcon />
         </IconButton>
         <IconButton>
-          <IconSettings />
+          <SettingsOutlinedIcon />
         </IconButton>
       </Box>
     </Box>

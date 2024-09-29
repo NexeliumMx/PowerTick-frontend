@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Box, Container, useTheme } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import Topbar from "../components/ui/Topbar";
-import Sidebar from "../components/ui/Sidebar";
-import BreakpointChecker from '../components/BreakpointChecker';
+import SidebarMenu from "../components/ui/SidebarMenu";
+import BreakpointChecker from "../components/BreakpointChecker";
 
 const MainLayout = () => {
   const theme = useTheme();
@@ -14,63 +14,23 @@ const MainLayout = () => {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        width: "100vw",
-        height: "100vh",
-        flexDirection: "column",
-        backgroundColor: theme.palette.background.paper,
-      }}
-    >
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       {/* Topbar */}
-      <Box sx={{ width: "100%", position: "fixed", top: 0, zIndex: 1200 }}>
+      <Box sx={{ width: "100%", position: "fixed", top: 0, zIndex: 1000 }}>
         <Topbar handleDrawerToggle={handleDrawerToggle} />
       </Box>
 
-      <Box sx={{ display: "flex", flexGrow: 1, marginTop: "64px" }}>
+      {/* Sidebar and Content */}
+      <Box sx={{ display: "flex", flexGrow: 1, marginTop: "64px" }}> {/* Adjust margin to account for Topbar height */}
         {/* Sidebar */}
-        <Box
-          sx={{
-            width: isCollapsed ? 80 : 240, // Adjust width of the sidebar based on collapse state
-            transition: "width 0.3s", // Smooth transition for collapse/expand
-            height: "100%",
-          }}
-        >
-          <Sidebar isCollapsed={isCollapsed} />
+        <Box sx={{ width: isCollapsed ? "80px" : "250px", transition: "width 0.3s ease-in-out" }}>
+          <SidebarMenu isCollapsed={isCollapsed} />
         </Box>
 
-        {/* Main content area (scrollable) */}
-        <Box
-          sx={{
-            flexGrow: 1, // This will make the content area take the remaining space
-            transition: "flex-grow 0.3s", // Optional smooth transition
-            backgroundColor: theme.palette.background.default,
-            borderTopLeftRadius: "1.5%", // Border radius for top left corner
-            borderTopRightRadius: "1.5%", // Border radius for top right corner
-            margin: "0", // Set all margins to 0
-            marginTop: "0rem",
-            marginRight: "1rem", // Set right margin to 1rem
-            height: "calc(100vh - 64px)", // Full height minus header
-            overflowY: "auto", // Enable vertical scrolling if content overflows
-            zIndex: 1100, // Make sure content box is below the header
-          }}
-        >
-          <Container
-            maxWidth="xl"
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: "calc(100vh - 64px)", // Ensure the container fills the available space
-              // backgroundColor: 'blue',
-            }}
-          >
-            {/* Page Contents gets rendered here: */}
-            <Outlet />
-            <BreakpointChecker/>
-          </Container>
+        {/* Main content area */}
+        <Box sx={{ flexGrow: 1, padding: "20px" }}>
+          <Outlet />
+          <BreakpointChecker />
         </Box>
       </Box>
     </Box>
