@@ -16,6 +16,7 @@ import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import ElectricMeterOutlinedIcon from '@mui/icons-material/ElectricMeterOutlined';
 import WindPowerOutlinedIcon from '@mui/icons-material/WindPowerOutlined';
 import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
+import AddHomeWorkOutlinedIcon from '@mui/icons-material/AddHomeWorkOutlined';
 import { tokens } from "../../theme";
 
 const SidebarMenu = ({ collapsed }) => {
@@ -41,6 +42,9 @@ const SidebarMenu = ({ collapsed }) => {
         break;
       case "/dashboard":
         setSelected("Dashboard");
+        break;
+      case "/add-meter":
+        setSelected("Add Meter");
         break;
       case "/downloads":
         setSelected("Downloads");
@@ -138,6 +142,16 @@ const SidebarMenu = ({ collapsed }) => {
           >
             Dashboard
           </MenuItem>
+
+          {/* Add Meter */}
+          <MenuItem
+            icon={<AddHomeWorkOutlinedIcon />}
+            active={selected === "Add Meter"}
+            component={<Link to="/add-meter" />}
+            rootStyles={getMenuItemStyles(selected === "Add Meter")}
+          >
+            Add Meter
+          </MenuItem>          
 
           {/* Calendar */}
           <MenuItem
