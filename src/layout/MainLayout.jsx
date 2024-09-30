@@ -13,36 +13,47 @@ const MainLayout = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column" height="100vh" overflow="auto">
+    <Box display="flex" flexDirection="column" minHeight="100vh">
+      {/* Topbar */}
       <Box sx={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 2 }}>
         <Topbar handleDrawerToggle={handleDrawerToggle} />
       </Box>
 
-      <Box display="flex" flexGrow={1} height="100%" marginTop="64px">
-        <Box sx={{ position: "fixed", top: "64px", left: 0, height: "calc(100vh - 64px)", zIndex: 1 }}>
+      {/* Sidebar and Content */}
+      <Box display="flex" flexGrow={1} marginTop="64px">
+        {/* Sidebar */}
+        <Box
+          sx={{
+            position: "fixed",
+            top: "64px",
+            left: 0,
+            bottom: 0,
+            width: collapsed ? "80px" : "250px",
+            transition: "width 0.2s ease", // Faster transition
+            zIndex: 1,
+          }}
+        >
           <SidebarMenu collapsed={collapsed} />
         </Box>
 
+        {/* Content */}
         <Box
           sx={{
             flexGrow: 1,
-            // backgroundColor: "blue",
-            height: "calc(100vh - 64px)",
-            padding: "10px",
-            zIndex: 0,
-            borderRadius: "10px",
-            overflow: "hidden",
+            marginLeft: collapsed ? "80px" : "250px",
+            transition: "margin-left 0.2s ease", // Faster transition
+            padding: "20px",
+            overflowY: "auto", // Enable vertical scrolling
           }}
         >
           <Box
             sx={{
-              paddingLeft: "50px",
-              paddingRight: "50px",
               maxWidth: "1400px",
               margin: "0 auto",
             }}
           >
-            <Outlet/>
+            <Outlet />
+            <BreakpointChecker />
           </Box>
         </Box>
       </Box>
