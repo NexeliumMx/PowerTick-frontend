@@ -1,8 +1,6 @@
-import { useState } from "react";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { useState } from "react";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
-import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
@@ -16,182 +14,114 @@ import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 
-const Item = ({ title, to, icon, selected, setSelected }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  return (
-    <MenuItem
-      active={selected === title}
-      style={{
-        color: colors.grey[100],
-      }}
-      onClick={() => setSelected(title)}
-      icon={icon}
-    >
-      <Typography>{title}</Typography>
-      <Link to={to} />
-    </MenuItem>
-  );
-};
-
 const SidebarMenu = () => {
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false); // State to manage collapse
   const [selected, setSelected] = useState("Dashboard");
 
+  const handleCollapseToggle = () => {
+    setCollapsed((prevCollapsed) => !prevCollapsed);
+  };
+
   return (
-    <Box
-      sx={{
-        "& .ps-sidebar-root, .ps-sidebar-container": {
-          background: `${colors.primary[400]} !important`,
-        },
-        "& .ps-icon-wrapper": {
-          backgroundColor: "transparent !important",
-        },
-        "& .ps-inner-item": {
-          padding: "5px 35px 5px 20px !important",
-        },
-        "& .ps-inner-item:hover": {
-          color: "#868dfb !important",
-        },
-        "& .ps-menu-item.active": {
-          color: "#6870fa !important",
-        },
-      }}
-    >
-      <Sidebar collapsed={isCollapsed}>
-        <Menu iconShape="square">
-          {/* LOGO AND MENU ICON */}
+    <Box sx={{ display: "flex", height: "100vh" }}>
+      {/* Sidebar with collapse toggle */}
+      <Sidebar collapsed={collapsed}>
+        <Menu>
+          {/* Toggle button for collapse/expand */}
           <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-            style={{
-              margin: "10px 0 20px 0",
-              color: colors.grey[100],
-            }}
+            onClick={handleCollapseToggle}
+            icon={collapsed ? <MenuOutlinedIcon /> : undefined}
+            style={{ margin: "10px 0 20px 0" }}
           >
-            {!isCollapsed && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                ml="15px"
-              >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  ADMINIS
-                </Typography>
-                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+            {!collapsed && (
+              <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
+                <Typography variant="h3">ADMINIS</Typography>
+                <IconButton onClick={handleCollapseToggle}>
                   <MenuOutlinedIcon />
                 </IconButton>
               </Box>
             )}
           </MenuItem>
 
-
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            <Item
-              title="Dashboard"
-              to="/"
-              icon={<HomeOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Data
-            </Typography>
-            <Item
-              title="Manage Team"
-              to="/team"
-              icon={<PeopleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Contacts Information"
-              to="/contacts"
-              icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Invoices Balances"
-              to="/invoices"
-              icon={<ReceiptOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Pages
-            </Typography>
-            <Item
-              title="Profile Form"
-              to="/form"
-              icon={<PersonOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Calendar"
-              to="/calendar"
-              icon={<CalendarTodayOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="FAQ Page"
-              to="/faq"
-              icon={<HelpOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Charts
-            </Typography>
-            <Item
-              title="Bar Chart"
-              to="/bar"
-              icon={<BarChartOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Pie Chart"
-              to="/pie"
-              icon={<PieChartOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Line Chart"
-              to="/line"
-              icon={<TimelineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Geography Chart"
-              to="/geography"
-              icon={<MapOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-          </Box>
+          {/* Menu Items */}
+          <MenuItem
+            icon={<HomeOutlinedIcon />}
+            active={selected === "Dashboard"}
+            onClick={() => setSelected("Dashboard")}
+          >
+            Dashboard
+          </MenuItem>
+          <MenuItem
+            icon={<PeopleOutlinedIcon />}
+            active={selected === "Manage Team"}
+            onClick={() => setSelected("Manage Team")}
+          >
+            Manage Team
+          </MenuItem>
+          <MenuItem
+            icon={<ContactsOutlinedIcon />}
+            active={selected === "Contacts"}
+            onClick={() => setSelected("Contacts")}
+          >
+            Contacts Information
+          </MenuItem>
+          <MenuItem
+            icon={<ReceiptOutlinedIcon />}
+            active={selected === "Invoices"}
+            onClick={() => setSelected("Invoices")}
+          >
+            Invoices Balances
+          </MenuItem>
+          <MenuItem
+            icon={<PersonOutlinedIcon />}
+            active={selected === "Profile"}
+            onClick={() => setSelected("Profile")}
+          >
+            Profile Form
+          </MenuItem>
+          <MenuItem
+            icon={<CalendarTodayOutlinedIcon />}
+            active={selected === "Calendar"}
+            onClick={() => setSelected("Calendar")}
+          >
+            Calendar
+          </MenuItem>
+          <MenuItem
+            icon={<HelpOutlineOutlinedIcon />}
+            active={selected === "FAQ"}
+            onClick={() => setSelected("FAQ")}
+          >
+            FAQ Page
+          </MenuItem>
+          <MenuItem
+            icon={<BarChartOutlinedIcon />}
+            active={selected === "BarChart"}
+            onClick={() => setSelected("BarChart")}
+          >
+            Bar Chart
+          </MenuItem>
+          <MenuItem
+            icon={<PieChartOutlineOutlinedIcon />}
+            active={selected === "PieChart"}
+            onClick={() => setSelected("PieChart")}
+          >
+            Pie Chart
+          </MenuItem>
+          <MenuItem
+            icon={<TimelineOutlinedIcon />}
+            active={selected === "LineChart"}
+            onClick={() => setSelected("LineChart")}
+          >
+            Line Chart
+          </MenuItem>
+          <MenuItem
+            icon={<MapOutlinedIcon />}
+            active={selected === "GeographyChart"}
+            onClick={() => setSelected("GeographyChart")}
+          >
+            Geography Chart
+          </MenuItem>
         </Menu>
       </Sidebar>
     </Box>
