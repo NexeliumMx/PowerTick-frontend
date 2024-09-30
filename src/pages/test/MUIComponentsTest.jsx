@@ -1,13 +1,15 @@
 import { Box, Button, Typography, Link } from "@mui/material";
 import BluuCard from "../../components/BluuCard";
 import { useTheme } from "@mui/material/styles";
+import Header from "../../components/ui/Header";
 
 export default function MUIComponentsTest() {
   const theme = useTheme();
 
   return (
     <>
-      <Box>
+      <Box m="20px">
+      <Header title="TEST PAGE" subtitle="Bla bla bla" />
         <Typography variant="body1">
           <br />
           • Purpose: A Container is primarily used to create consistent

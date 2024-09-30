@@ -1,56 +1,147 @@
-import { DataGrid } from '@mui/x-data-grid';
-import Paper from '@mui/material/Paper';
-import DownloadIcon from '@mui/icons-material/Download'; // Example icon from MUI
+import { Box, useTheme } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import { tokens } from "../../../theme";
+import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 
-const columns = [
-  { field: 'client', headerName: 'Client', width: 150 },
-  { field: 'location', headerName: 'Location', width: 150 },
-  { field: 'loadcenter', headerName: 'Load Center', width: 150 },
-  { field: 'powermeter', headerName: 'Power Meter', width: 150 },
-  { field: 'year', headerName: 'Year', width: 100 },
-  { field: 'month', headerName: 'Month', width: 120 },
+const mockDataDownloads = [
   {
-    field: 'icon',
-    headerName: 'File',
-    width: 100,
-    renderCell: () => (
-      <DownloadIcon
-        style={{ cursor: 'pointer', color: 'blue' }}
-        onClick={() => alert('Download initiated!')}
-      />
-    ),
+    id: 1,
+    client: "Client A",
+    location: "Mexico City",
+    substation: "Substation 1",
+    loadCenter: "Center 1",
+    month: "January",
+    year: 2023,
+  },
+  {
+    id: 2,
+    client: "Client B",
+    location: "Guadalajara",
+    substation: "Substation 2",
+    loadCenter: "Center 2",
+    month: "February",
+    year: 2023,
+  },
+  {
+    id: 3,
+    client: "Client C",
+    location: "Monterrey",
+    substation: "Substation 3",
+    loadCenter: "Center 3",
+    month: "March",
+    year: 2023,
+  },
+  {
+    id: 4,
+    client: "Client D",
+    location: "Puebla",
+    substation: "Substation 4",
+    loadCenter: "Center 4",
+    month: "April",
+    year: 2023,
+  },
+  {
+    id: 5,
+    client: "Client E",
+    location: "Tijuana",
+    substation: "Substation 5",
+    loadCenter: "Center 5",
+    month: "May",
+    year: 2023,
   },
 ];
 
-// Example data for the last 12 months (assumes you're generating this dynamically)
-const rows = [
-  { id: 1, client: 'Client A', location: 'Location 1', loadcenter: 'LC 1', powermeter: 'PM 1', year: 2024, month: 'January' },
-  { id: 2, client: 'Client B', location: 'Location 2', loadcenter: 'LC 2', powermeter: 'PM 2', year: 2024, month: 'February' },
-  { id: 3, client: 'Client A', location: 'Location 1', loadcenter: 'LC 1', powermeter: 'PM 1', year: 2024, month: 'March' },
-  { id: 4, client: 'Client B', location: 'Location 2', loadcenter: 'LC 2', powermeter: 'PM 2', year: 2024, month: 'April' },
-  { id: 5, client: 'Client A', location: 'Location 1', loadcenter: 'LC 1', powermeter: 'PM 1', year: 2024, month: 'May' },
-  { id: 6, client: 'Client B', location: 'Location 2', loadcenter: 'LC 2', powermeter: 'PM 2', year: 2024, month: 'June' },
-  { id: 7, client: 'Client A', location: 'Location 1', loadcenter: 'LC 1', powermeter: 'PM 1', year: 2024, month: 'July' },
-  { id: 8, client: 'Client B', location: 'Location 2', loadcenter: 'LC 2', powermeter: 'PM 2', year: 2024, month: 'August' },
-  { id: 9, client: 'Client A', location: 'Location 1', loadcenter: 'LC 1', powermeter: 'PM 1', year: 2024, month: 'September' },
-  { id: 10, client: 'Client B', location: 'Location 2', loadcenter: 'LC 2', powermeter: 'PM 2', year: 2024, month: 'October' },
-  { id: 11, client: 'Client A', location: 'Location 1', loadcenter: 'LC 1', powermeter: 'PM 1', year: 2024, month: 'November' },
-  { id: 12, client: 'Client B', location: 'Location 2', loadcenter: 'LC 2', powermeter: 'PM 2', year: 2024, month: 'December' },
-];
+const DownloadsTable = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const columns = [
+    { field: "id", headerName: "ID" },
+    {
+      field: "client",
+      headerName: "Client",
+      flex: 1,
+      cellClassName: "name-column--cell",
+    },
+    {
+      field: "location",
+      headerName: "Location",
+      flex: 1,
+    },
+    {
+      field: "substation",
+      headerName: "Substation",
+      flex: 1,
+    },
+    {
+      field: "loadCenter",
+      headerName: "Load Center",
+      flex: 1,
+    },
+    {
+      field: "month",
+      headerName: "Month",
+      flex: 1,
+    },
+    {
+      field: "year",
+      headerName: "Year",
+      flex: 1,
+      type: "number",
+    },
+    {
+      field: "file",
+      headerName: "File",
+      flex: 1,
+      renderCell: () => {
+        return (
+          <Box
+            width="60%"
+            m="0 auto"
+            p="5px"
+            display="flex"
+            justifyContent="center"
+            borderRadius="4px"
+          >
+            <DownloadOutlinedIcon />
+          </Box>
+        );
+      },
+    },
+  ];
 
-const paginationModel = { page: 0, pageSize: 5 };
-
-export default function DownloadsTable() {
   return (
-    <Paper sx={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[5, 10]}
-        checkboxSelection
-        sx={{ border: 0 }}
-      />
-    </Paper>
+    <Box
+      m="40px 0 0 0"
+      height="75vh"
+      sx={{
+        "& .MuiDataGrid-root": {
+          border: "none",
+        },
+        "& .MuiDataGrid-cell": {
+          borderBottom: "none",
+        },
+        "& .name-column--cell": {
+          color: colors.greenAccent[300],
+        },
+        "& .MuiDataGrid-columnHeaders": {
+          backgroundColor: colors.blueAccent[700],
+          borderBottom: "none",
+        },
+        "& .MuiDataGrid-virtualScroller": {
+          backgroundColor: colors.primary[400],
+        },
+        "& .MuiDataGrid-footerContainer": {
+          borderTop: "none",
+          backgroundColor: colors.blueAccent[700],
+        },
+        "& .MuiCheckbox-root": {
+          color: `${colors.greenAccent[200]} !important`,
+        },
+      }}
+    >
+      <DataGrid checkboxSelection rows={mockDataDownloads} columns={columns} />
+    </Box>
   );
-}
+};
+
+export default DownloadsTable;
