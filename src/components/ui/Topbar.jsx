@@ -1,6 +1,9 @@
-import { Box, IconButton, useTheme } from "@mui/material";
+// Theme imports
 import { useContext } from "react";
-import { ColorModeContext, tokens } from "../../theme"; // Assuming tokens is part of your theme setup
+import { ColorModeContext, tokens } from "../../theme";
+
+//Component Imports
+import { Box, IconButton, useTheme } from "@mui/material";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
@@ -11,8 +14,8 @@ import SearchIcon from "@mui/icons-material/Search";
 
 const Topbar = ({ handleDrawerToggle }) => {
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode); // Get the custom color tokens based on the current theme mode
-  const colorMode = useContext(ColorModeContext); // Access color mode toggle function
+  const colors = tokens(theme.palette.mode);
+  const colorMode = useContext(ColorModeContext);
 
   return (
     <Box
@@ -44,7 +47,7 @@ const Topbar = ({ handleDrawerToggle }) => {
         sx={{
           display: "flex",
           alignItems: "center",
-          backgroundColor: colors.primary[400], // Using custom color tokens
+          backgroundColor: theme.palette.background.default,
           borderRadius: "8px",
           padding: "0.5rem",
           width: "300px",
@@ -52,7 +55,7 @@ const Topbar = ({ handleDrawerToggle }) => {
       >
         <SearchIcon style={{ marginRight: "8px" }} />
         <InputBase
-          sx={{ flex: 1, color: colors.grey[100] }} // Use custom token for text color
+          sx={{ flex: 1, color: colors.grey[100] }}
           placeholder="Search..."
           inputProps={{ "aria-label": "search" }}
         />
@@ -60,7 +63,6 @@ const Topbar = ({ handleDrawerToggle }) => {
 
       {/* Right Section: Contrast Toggle, Notifications, and Settings */}
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        {/* Dark/Light Mode Toggle */}
         <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (
             <DarkModeOutlinedIcon />
@@ -69,7 +71,6 @@ const Topbar = ({ handleDrawerToggle }) => {
           )}
         </IconButton>
 
-        {/* Notifications and Settings */}
         <IconButton>
           <NotificationsOutlinedIcon />
         </IconButton>

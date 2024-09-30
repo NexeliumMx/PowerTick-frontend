@@ -160,7 +160,7 @@ export const themeSettings = (mode) => {
               light: colors.grey[100],
             },
             background: {
-              default: "#fcfcfc",
+              default: "#eef2f6",
               paper: '#ffffff',
             },
           }),

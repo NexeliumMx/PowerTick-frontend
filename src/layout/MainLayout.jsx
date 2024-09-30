@@ -1,36 +1,50 @@
 import { useState } from "react";
-import { Box, Container, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import Topbar from "../components/ui/Topbar";
 import SidebarMenu from "../components/ui/SidebarMenu";
 import BreakpointChecker from "../components/BreakpointChecker";
 
 const MainLayout = () => {
-  const theme = useTheme();
-  const [isCollapsed, setIsCollapsed] = useState(false); // Track whether the sidebar is collapsed
+  const [collapsed, setCollapsed] = useState(false);
 
   const handleDrawerToggle = () => {
-    setIsCollapsed(!isCollapsed); // Toggle the collapsed state
+    setCollapsed((prevCollapsed) => !prevCollapsed);
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      {/* Topbar */}
-      <Box sx={{ width: "100%", position: "fixed", top: 0, zIndex: 1000 }}>
+    <Box display="flex" flexDirection="column" height="100vh" overflow="auto">
+      <Box sx={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 2 }}>
         <Topbar handleDrawerToggle={handleDrawerToggle} />
       </Box>
 
-      {/* Sidebar and Content */}
-      <Box sx={{ display: "flex", flexGrow: 1, marginTop: "64px" }}> {/* Adjust margin to account for Topbar height */}
-        {/* Sidebar */}
-        <Box sx={{ width: isCollapsed ? "80px" : "250px", transition: "width 0.3s ease-in-out" }}>
-          <SidebarMenu isCollapsed={isCollapsed} />
+      <Box display="flex" flexGrow={1} height="100%" marginTop="64px">
+        <Box sx={{ position: "fixed", top: "64px", left: 0, height: "calc(100vh - 64px)", zIndex: 1 }}>
+          <SidebarMenu collapsed={collapsed} />
         </Box>
 
-        {/* Main content area */}
-        <Box sx={{ flexGrow: 1, padding: "20px" }}>
-          <Outlet />
-          <BreakpointChecker />
+        <Box
+          sx={{
+            flexGrow: 1,
+            backgroundColor: "blue",
+            height: "calc(100vh - 64px)",
+            marginLeft: collapsed ? "80px" : "250px",
+            padding: "10px",
+            zIndex: 0,
+            borderRadius: "10px",
+            overflow: "hidden",
+          }}
+        >
+          <Box
+            sx={{
+              paddingLeft: "50px",
+              paddingRight: "50px",
+              maxWidth: "1400px",
+              margin: "0 auto",
+            }}
+          >
+            <Outlet/>
+          </Box>
         </Box>
       </Box>
     </Box>

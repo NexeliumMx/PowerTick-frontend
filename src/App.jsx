@@ -17,7 +17,7 @@ function App() {
       {/* Routes without Navbar and Sidebar */}
       <Route path="/" element={<Home />} />
       <Route path="*" element={<NotFound />} />
-      <Route path="/sidebar-menu-test" element={<SidebarMenuTest />} />
+      
 
       {/* Routes with Navbar (and Sidebar in the future) */}
       <Route element={<MainLayout />}>
@@ -27,6 +27,9 @@ function App() {
         <Route path="/users" element={<Users />} />
         <Route path="/mui-components-test" element={<MUIComponentsTest />} />
       </Route>
+
+      {/* Test Routes */}
+      <Route path="/sidebar-menu-test" element={<SidebarMenuTest />} />
     </Routes>
   );
 }
