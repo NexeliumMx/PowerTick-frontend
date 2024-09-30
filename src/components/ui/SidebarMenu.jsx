@@ -12,6 +12,10 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import ScienceOutlinedIcon from "@mui/icons-material/ScienceOutlined"; // Flask icon
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined"; // Not found icon
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import ElectricMeterOutlinedIcon from '@mui/icons-material/ElectricMeterOutlined';
+import WindPowerOutlinedIcon from '@mui/icons-material/WindPowerOutlined';
+import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
 import { tokens } from "../../theme";
 
 const SidebarMenu = ({ collapsed }) => {
@@ -26,6 +30,12 @@ const SidebarMenu = ({ collapsed }) => {
       case "/":
         setSelected("Home");
         break;
+      case "/locations":
+        setSelected("Locations");
+        break;
+        case "/substations":
+          setSelected("Substations");
+          break;
       case "/load-center":
         setSelected("Load Center");
         break;
@@ -47,6 +57,9 @@ const SidebarMenu = ({ collapsed }) => {
       case "/faq":
         setSelected("FAQ");
         break;
+        case "/user-manual":
+          setSelected("User Manual");
+          break;
       case "/mui-components-test":
         setSelected("Test Page");
         break;
@@ -86,9 +99,29 @@ const SidebarMenu = ({ collapsed }) => {
             Home
           </MenuItem>
 
+          {/* Locations */}
+          <MenuItem
+            icon={<LocationOnOutlinedIcon />}
+            active={selected === "Locations"}
+            component={<Link to="/locations" />}
+            rootStyles={getMenuItemStyles(selected === "Locations")}
+          >
+            Locations
+          </MenuItem>
+
+          {/* Substation */}
+          <MenuItem
+            icon={<WindPowerOutlinedIcon />}
+            active={selected === "Substations"}
+            component={<Link to="/substations" />}
+            rootStyles={getMenuItemStyles(selected === "Substations")}
+          >
+            Substations
+          </MenuItem>
+
           {/* Load Center */}
           <MenuItem
-            icon={<ApartmentOutlinedIcon />}
+            icon={<ElectricMeterOutlinedIcon />}
             active={selected === "Load Center"}
             component={<Link to="/load-center" />}
             rootStyles={getMenuItemStyles(selected === "Load Center")}
@@ -104,6 +137,16 @@ const SidebarMenu = ({ collapsed }) => {
             rootStyles={getMenuItemStyles(selected === "Dashboard")}
           >
             Dashboard
+          </MenuItem>
+
+          {/* Calendar */}
+          <MenuItem
+            icon={<CalendarTodayOutlinedIcon />}
+            active={selected === "Calendar"}
+            component={<Link to="/calendar" />}
+            rootStyles={getMenuItemStyles(selected === "Calendar")}
+          >
+            Calendar
           </MenuItem>
 
           {/* Downloads */}
@@ -136,16 +179,6 @@ const SidebarMenu = ({ collapsed }) => {
             New User
           </MenuItem>
 
-          {/* Calendar */}
-          <MenuItem
-            icon={<CalendarTodayOutlinedIcon />}
-            active={selected === "Calendar"}
-            component={<Link to="/calendar" />}
-            rootStyles={getMenuItemStyles(selected === "Calendar")}
-          >
-            Calendar
-          </MenuItem>
-
           {/* FAQ */}
           <MenuItem
             icon={<HelpOutlineOutlinedIcon />}
@@ -156,6 +189,16 @@ const SidebarMenu = ({ collapsed }) => {
             FAQ
           </MenuItem>
 
+          {/* User Manual */}
+          <MenuItem
+            icon={<LocalLibraryOutlinedIcon />}
+            active={selected === "User Manual"}
+            component={<Link to="/user-manual" />}
+            rootStyles={getMenuItemStyles(selected === "User Manual")}
+          >
+            User Manual
+          </MenuItem>
+          
           {/* Test Page */}
           <MenuItem
             icon={<ScienceOutlinedIcon />}
