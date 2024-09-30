@@ -26,9 +26,8 @@ const MainLayout = () => {
         <Box
           sx={{
             flexGrow: 1,
-            backgroundColor: "blue",
+            // backgroundColor: "blue",
             height: "calc(100vh - 64px)",
-            marginLeft: collapsed ? "80px" : "250px",
             padding: "10px",
             zIndex: 0,
             borderRadius: "10px",

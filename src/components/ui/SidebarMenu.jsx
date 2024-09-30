@@ -75,7 +75,6 @@ const SidebarMenu = ({ collapsed }) => {
   const getMenuItemStyles = (isSelected) => ({
     backgroundColor: isSelected ? theme.palette.background.default : "inherit",
     color: isSelected ? theme.palette.primary : theme.palette.text.secondary,
-    borderRadius: "5px",
     "&:hover": {
       backgroundColor: theme.palette.primary.dark,
       color: theme.palette.primary.contrastText,
