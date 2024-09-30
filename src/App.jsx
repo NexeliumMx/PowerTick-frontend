@@ -6,6 +6,7 @@ import LoadCenter from './pages/loadCenter';
 import Dashboard from './pages/dashboard';
 import Downloads from './pages/downloads';
 import Users from './pages/users';
+import NewUser from './pages/users/NewUser';
 
 //Test
 import SidebarMenuTest from './pages/test/SidebarMenuTest';
@@ -25,6 +26,7 @@ function App() {
         <Route path="/downloads" element={<Downloads />} />
         <Route path="/load-center" element={<LoadCenter />} />
         <Route path="/users" element={<Users />} />
+        <Route path="/users-new" element={<NewUser />} />
         <Route path="/mui-components-test" element={<MUIComponentsTest />} />
       </Route>
 
