@@ -24,7 +24,7 @@ import MUIComponentsTest from './pages/test/MUIComponentsTest';
 function App() {
   return (
     <Routes>
-      {/* Routes without Navbar and Sidebar */}
+      {/* Routes without Navbar */}
       <Route path="/" element={<Home />} />
       <Route path="*" element={<NotFound />} />
       
