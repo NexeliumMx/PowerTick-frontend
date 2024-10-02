@@ -56,12 +56,12 @@ const HistoricPF = () => {
         <Box sx={{ width: '100%', height: 400 }}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis domain={[0.9, 1.0]} />
+              <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.neutral.light}/>
+              <XAxis dataKey="name"  stroke={theme.palette.neutral.light}/>
+              <YAxis domain={[0.9, 1.0]}  stroke={theme.palette.neutral.light}/>
               <Tooltip content={<CustomTooltip theme={theme} />} />
               <Legend />
-              <Line type="monotone" dataKey="pf" stroke={theme.palette.primary.main} dot={true} name="Total Power Factor" />
+              <Line type="monotone" dataKey="pf" stroke={theme.palette.secondary.main} strokeWidth={2} dot={true} name="Total Power Factor" />
             </LineChart>
           </ResponsiveContainer>
         </Box>

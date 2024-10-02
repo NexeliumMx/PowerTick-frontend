@@ -134,12 +134,14 @@ export const themeSettings = (mode) => {
               main: colors.primary[500],
             },
             secondary: {
-              main: colors.greenAccent[500],
+              main: colors.greenAccent[600],
+              main2: colors.greenAccent[700],
+              main3: colors.blueAccent[600]
             },
             neutral: {
               dark: colors.grey[700],
               main: colors.grey[500],
-              light: colors.grey[100],
+              light: colors.grey[200],
             },
             background: {
               default: colors.primary[500],
@@ -149,15 +151,17 @@ export const themeSettings = (mode) => {
         : {
             // palette values for light mode
             primary: {
-              main: colors.primary[100],
+              main: colors.primary[800],
             },
             secondary: {
-              main: colors.greenAccent[500],
+              main: colors.greenAccent[300],
+              main2: colors.greenAccent[400],
+              main3: colors.blueAccent[500]
             },
             neutral: {
               dark: colors.grey[700],
               main: colors.grey[500],
-              light: colors.grey[100],
+              light: colors.grey[200],
             },
             background: {
               default: "#eef2f6",

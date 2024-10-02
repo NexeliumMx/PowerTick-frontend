@@ -56,12 +56,12 @@ const DemandProfile = () => {
         <Box sx={{ flexGrow: 1, display: 'flex' }}>
           <ResponsiveContainer width="100%" height="100%"> 
             <LineChart data={demandProfileData} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" stroke={theme.palette.text.primary} />
-              <YAxis stroke={theme.palette.text.primary} />
-              <Tooltip content={<CustomTooltip theme={theme} />} labelStyle={{ color: theme.palette.text.primary }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.neutral.light}/>
+              <XAxis dataKey="name" stroke={theme.palette.neutral.light} />
+              <YAxis stroke={theme.palette.neutral.light} />
+              <Tooltip content={<CustomTooltip theme={theme} />} labelStyle={{ color: theme.palette.neutral.dark }} />
               <Legend />
-              <Line type="monotone" dataKey="kW" stroke={theme.palette.primary.main} strokeWidth={2} activeDot={{ r: 8 }} name="Total Power [kW]" />
+              <Line type="monotone" dataKey="kW" stroke={theme.palette.secondary.main} strokeWidth={2} activeDot={{ r: 8 }} name="Total Power [kW]" />
             </LineChart>
           </ResponsiveContainer>
         </Box>

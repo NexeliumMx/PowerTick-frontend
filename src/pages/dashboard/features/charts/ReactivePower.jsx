@@ -61,12 +61,12 @@ const ReactivePower = () => {
         <Box sx={{ width: '100%', height: 400 }}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
+              <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.neutral.light}/>
+              <XAxis dataKey="name"  stroke={theme.palette.neutral.light}/>
+              <YAxis  stroke={theme.palette.neutral.light}/>
               <Tooltip content={<CustomTooltip theme={theme} />} />
               <Legend />
-              <Line type="monotone" dataKey="kVAR" stroke={theme.palette.primary.main} dot={true} name="Total Reactive Power [kVAR]" />
+              <Line type="monotone" dataKey="kVAR" stroke={theme.palette.secondary.main} strokeWidth={2} dot={true} name="Total Reactive Power [kVAR]" />
             </LineChart>
           </ResponsiveContainer>
         </Box>
