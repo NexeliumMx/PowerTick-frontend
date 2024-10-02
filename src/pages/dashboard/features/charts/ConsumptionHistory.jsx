@@ -61,12 +61,12 @@ const ConsumptionHistory = () => {
               layout="vertical"  // Layout set to vertical for horizontal bars
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" stroke={theme.palette.text.primary} />
-              <YAxis type="category" dataKey="name" stroke={theme.palette.text.primary} />
+              <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.neutral.light}/>
+              <XAxis type="number" stroke={theme.palette.neutral.light} />
+              <YAxis type="category" dataKey="name" stroke={theme.palette.neutral.light} />
               <Tooltip content={<CustomTooltip theme={theme} />} />
               <Legend />
-              <Bar dataKey="kWh" fill={theme.palette.primary.main} name="Total Real Energy Imported [kWh]" barSize={20} />
+              <Bar dataKey="kWh" fill={theme.palette.secondary.main2} name="Total Real Energy Imported [kWh]" barSize={20} />
             </BarChart>
           </ResponsiveContainer>
         </Box>
