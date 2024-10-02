@@ -13,6 +13,7 @@ import Substations from './pages/substations';
 import FAQ from './pages/faq';
 import UserManual from './pages/user-manual';
 import AddMeter from './pages/add-meter';
+import Footer from './components/ui/Footer';
 
 //Test
 import SidebarMenuTest from './pages/test/SidebarMenuTest';
@@ -48,6 +49,7 @@ function App() {
 
       {/* Test Routes */}
       <Route path="/sidebar-menu-test" element={<SidebarMenuTest />} />
+      <Route path="/footer" element={<Footer />} />
     </Routes>
   );
 }
