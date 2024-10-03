@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Box, Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'; 
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'; 
 import { useTheme } from '@mui/material/styles';
 
 const demandProfileData = [
@@ -54,15 +54,28 @@ const DemandProfile = () => {
       <CardHeader title="Demand Profile" />
       <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ flexGrow: 1, display: 'flex' }}>
-          <ResponsiveContainer width="100%" height="100%"> 
-            <LineChart data={demandProfileData} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.neutral.light}/>
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={demandProfileData} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
+              <defs>
+                <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={theme.palette.secondary.main} stopOpacity={0.8} />
+                  <stop offset="95%" stopColor={theme.palette.secondary.light} stopOpacity={0.2} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.neutral.light} />
               <XAxis dataKey="name" stroke={theme.palette.neutral.light} />
               <YAxis stroke={theme.palette.neutral.light} />
               <Tooltip content={<CustomTooltip theme={theme} />} labelStyle={{ color: theme.palette.neutral.dark }} />
               <Legend />
-              <Line type="monotone" dataKey="kW" stroke={theme.palette.secondary.main} strokeWidth={2} activeDot={{ r: 8 }} name="Total Power [kW]" />
-            </LineChart>
+              <Area 
+                type="monotone" 
+                dataKey="kW" 
+                stroke={theme.palette.secondary.main} 
+                fill="url(#colorGradient)" // Se utiliza el gradiente definido
+                strokeWidth={2} 
+                name="Total Power [kW]" 
+              />
+            </AreaChart>
           </ResponsiveContainer>
         </Box>
       </CardContent>
@@ -76,14 +89,14 @@ const DemandProfile = () => {
           <ToggleButton value="yearly" aria-label="Yearly">
             Yearly
           </ToggleButton>
-          {/*
+          {/* 
           <ToggleButton value="monthly" aria-label="Monthly">
             Monthly
           </ToggleButton>
           <ToggleButton value="daily" aria-label="Daily">
             Daily
-          </ToggleButton>
-           */}
+          </ToggleButton> 
+          */}
         </ToggleButtonGroup>
       </CardActions>
     </Card>

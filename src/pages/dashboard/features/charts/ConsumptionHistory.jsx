@@ -66,7 +66,7 @@ const ConsumptionHistory = () => {
               <YAxis type="category" dataKey="name" stroke={theme.palette.neutral.light} />
               <Tooltip content={<CustomTooltip theme={theme} />} />
               <Legend />
-              <Bar dataKey="kWh" fill={theme.palette.secondary.main2} name="Total Real Energy Imported [kWh]" barSize={20} />
+              <Bar dataKey="kWh" fill={theme.palette.secondary.main} name="Total Real Energy Imported [kWh]" barSize={20} />
             </BarChart>
           </ResponsiveContainer>
         </Box>
