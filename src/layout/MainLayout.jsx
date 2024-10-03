@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import Topbar from "../components/ui/Topbar";
 import SidebarMenu from "../components/ui/SidebarMenu";
 import BreakpointChecker from "../components/BreakpointChecker";
+import Footer from "../components/ui/Footer";
 
 const MainLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -42,7 +43,7 @@ const MainLayout = () => {
             flexGrow: 1,
             marginLeft: collapsed ? "80px" : "250px",
             transition: "margin-left 0.2s ease", // Faster transition
-            padding: "20px",
+            padding: "0",
             overflowY: "auto", // Enable vertical scrolling
           }}
         >
@@ -55,6 +56,19 @@ const MainLayout = () => {
             <Outlet />
             <BreakpointChecker />
           </Box>
+
+          <Box
+            sx={{
+              width: "100%", // Full width
+              padding: 0, // No padding
+              margin: 0, // No margin
+              bottom: 0,
+              zIndex: 2, // Higher z-index to overlap the sidebar
+            }}
+          >
+            <Footer />
+          </Box>
+
         </Box>
       </Box>
     </Box>
