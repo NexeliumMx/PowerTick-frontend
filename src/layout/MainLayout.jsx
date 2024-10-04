@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import Topbar from "../components/ui/Topbar";
 import SidebarMenu from "../components/ui/SidebarMenu";
 import BreakpointChecker from "../components/BreakpointChecker";
 import Footer from "../components/ui/Footer";
+import { ModeContext } from "../context/AppModeContext"; // Import ModeContext
+import ContextChecker from "../components/ContextChecker"; // Import the ContextChecker
 
 const MainLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const { state } = useContext(ModeContext); // Get the active mode
 
   const handleDrawerToggle = () => {
     setCollapsed((prevCollapsed) => !prevCollapsed);
@@ -55,6 +58,7 @@ const MainLayout = () => {
           >
             <Outlet />
             <BreakpointChecker />
+            <ContextChecker /> {/* Add ContextChecker to display the active mode */}
           </Box>
 
           <Box
@@ -68,7 +72,6 @@ const MainLayout = () => {
           >
             <Footer />
           </Box>
-
         </Box>
       </Box>
     </Box>
