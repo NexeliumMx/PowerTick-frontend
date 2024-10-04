@@ -5,6 +5,6 @@ export async function fetchFromMockData() {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(timestampData);
-    }, 1000); // 1 second delay
+    }, 800); // delay
   });
 }

@@ -4,9 +4,9 @@ import Error from '../../../../components/Error';
 import { useFetch } from '../../../../hooks/useFetch';
 import { useContext } from 'react';
 import { ModeContext } from '../../../../context/AppModeContext'; 
-import { fetchFromMockData } from '../../../../services/api/fetchMockData'; 
-import { fetchFromDevApi } from '../../../../services/api/devApi'; 
-import { fetchFromCloudApi } from '../../../../services/api/cloudApi'; 
+import { fetchFromMockData } from '../../../../services/api/fetchFromMockData'; 
+import { fetchFromDevApi } from '../../../../services/api/fetchFromDevApi'; 
+import { fetchFromCloudApi } from '../../../../services/api/fetchFromCloudApi'; 
 
 const Timestamp = () => {
   // Get mode from context
