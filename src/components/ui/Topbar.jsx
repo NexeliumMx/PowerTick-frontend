@@ -1,9 +1,10 @@
 // Theme imports
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
+import { ModeContext } from "../../context/AppModeContext"; // Import the context
 
-//Component Imports
-import { Box, IconButton, useTheme } from "@mui/material";
+// Component Imports
+import { Box, IconButton, useTheme, MenuItem, Select } from "@mui/material";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
@@ -16,6 +17,21 @@ const Topbar = ({ handleDrawerToggle }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  
+  // Get mode and dispatch from ModeContext
+  const { state, dispatch } = useContext(ModeContext);
+
+  const handleModeChange = (event) => {
+    const selectedMode = event.target.value;
+
+    if (selectedMode === "DEMO_MODE") {
+      dispatch({ type: "SET_DEMO_MODE" });
+    } else if (selectedMode === "DEV_MODE") {
+      dispatch({ type: "SET_DEV_MODE" });
+    } else if (selectedMode === "LIVE_MODE") {
+      dispatch({ type: "SET_LIVE_MODE" });
+    }
+  };
 
   return (
     <Box
@@ -61,8 +77,20 @@ const Topbar = ({ handleDrawerToggle }) => {
         />
       </Box>
 
-      {/* Right Section: Contrast Toggle, Notifications, and Settings */}
+      {/* Right Section: Context Switch, Contrast Toggle, Notifications, and Settings */}
       <Box sx={{ display: "flex", alignItems: "center" }}>
+        {/* Mode Switcher */}
+        <Select
+          value={state.mode}
+          onChange={handleModeChange}
+          sx={{ color: colors.grey[100], marginRight: "16px" }}
+        >
+          <MenuItem value="DEMO_MODE">Demo Mode</MenuItem>
+          <MenuItem value="DEV_MODE">Dev Mode</MenuItem>
+          <MenuItem value="LIVE_MODE">Live Mode</MenuItem>
+        </Select>
+
+        {/* Light/Dark Mode Toggle */}
         <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (
             <DarkModeOutlinedIcon />
