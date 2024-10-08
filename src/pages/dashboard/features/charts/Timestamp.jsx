@@ -7,6 +7,7 @@ import { ModeContext } from '../../../../context/AppModeContext';
 import { fetchFromMockData } from '../../../../services/api/fetchFromMockData'; 
 import { fetchFromDevApi } from '../../../../services/api/fetchFromDevApi'; 
 import { fetchFromCloudApi } from '../../../../services/api/fetchFromCloudApi'; 
+import { formatTimestamp } from '../../../../utils/formatTimestamp'; // Import the formatting utility
 
 const Timestamp = () => {
   // Get mode from context
@@ -45,7 +46,7 @@ const Timestamp = () => {
         {/* Display fetched data */}
         {!isFetching && !error && fetchedData && (
           <Typography variant="h4" textAlign="center">
-            {fetchedData}
+            {formatTimestamp(fetchedData)} {/* Format the fetched ISO timestamp */}
           </Typography>
         )}
 
