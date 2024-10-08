@@ -31,7 +31,7 @@ const MainLayout = () => {
         display="flex"
         flexGrow={1}
         marginTop="64px"
-        sx={{ backgroundColor: theme.palette.background.paper }}
+        sx={{ backgroundColor: theme.palette.background.paper }} // Using theme color for background
       >
         {/* Sidebar */}
         <Box
@@ -57,15 +57,12 @@ const MainLayout = () => {
             marginLeft: collapsed ? "80px" : "250px",
             transition: "margin-left 0.3s ease",
             padding: "20px",
+            overflowY: "auto",
             backgroundColor: theme.palette.background.paper, // Using theme color for content background
-            display: "flex",
-            flexDirection: "column",
-            minHeight: "calc(100vh - 64px - 50px)", // Ensuring content takes the remaining space
           }}
         >
           <Box
             sx={{
-              flexGrow: 1, // Ensures content takes up available space
               maxWidth: "1400px",
               margin: "0 auto",
               paddingBottom: "20px", // To avoid overlap with the footer
@@ -81,10 +78,11 @@ const MainLayout = () => {
       {/* Footer - Dynamically adjusted width based on sidebar state */}
       <Box
         sx={{
-          position: "relative", // Adjust position to relative for better control
+          position: "relative", // Fixes the footer at the bottom of the screen
           bottom: 0,
           left: collapsed ? "80px" : "250px", // Adjust left position based on sidebar
           width: `calc(100% - ${collapsed ? "80px" : "250px"})`, // Adjust width dynamically based on sidebar
+          transition: "left 0.3s ease, width 0.3s ease", // Smooth transitions for both left and width
           height: "50px", // Set the reduced height for the footer
           zIndex: 2, // Higher z-index to overlap the sidebar
           backgroundColor: colors.primary[700], // Using tokens for footer background color
