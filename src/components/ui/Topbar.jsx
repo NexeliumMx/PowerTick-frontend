@@ -1,10 +1,7 @@
-// Theme imports
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
-import { ModeContext } from "../../context/AppModeContext"; // Import the context
-
-// Component Imports
-import { Box, IconButton, useTheme, MenuItem, Select } from "@mui/material";
+import { ModeContext } from "../../context/AppModeContext"; 
+import { Box, IconButton, useTheme, MenuItem, Select, useMediaQuery } from "@mui/material";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
@@ -17,20 +14,14 @@ const Topbar = ({ handleDrawerToggle }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
-  
-  // Get mode and dispatch from ModeContext
   const { state, dispatch } = useContext(ModeContext);
+  
+  // Detect small screens (sm and xs)
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleModeChange = (event) => {
     const selectedMode = event.target.value;
-
-    if (selectedMode === "DEMO_MODE") {
-      dispatch({ type: "SET_DEMO_MODE" });
-    } else if (selectedMode === "DEV_MODE") {
-      dispatch({ type: "SET_DEV_MODE" });
-    } else if (selectedMode === "LIVE_MODE") {
-      dispatch({ type: "SET_LIVE_MODE" });
-    }
+    dispatch({ type: `SET_${selectedMode}` });
   };
 
   return (
@@ -46,19 +37,30 @@ const Topbar = ({ handleDrawerToggle }) => {
     >
       {/* Left Section: Logo and Menu Toggle */}
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        {/* Logo */}
-        <img
-          src="/assets/logoipsum-288.svg"
-          alt="Logo"
-          style={{ width: "150px", height: "40px", cursor: "pointer" }}
-        />
+        {/* Conditionally render the logo based on screen size */}
+        <Box
+          sx={{
+            width: isSmallScreen ? "0px" : "150px", // Transition for width
+            height: "40px",
+            overflow: "hidden", // To hide content when width is 0
+            transition: "width 0.3s ease, opacity 0.3s ease", // Smooth transition
+            opacity: isSmallScreen ? 0 : 1, // Transition opacity
+            visibility: isSmallScreen ? "hidden" : "visible", // Ensure it's hidden when width is 0
+          }}
+        >
+          <img
+            src="/assets/logoipsum-288.svg"
+            alt="Logo"
+            style={{ width: "100%", height: "100%", cursor: "pointer" }}
+          />
+        </Box>
         {/* Menu Toggle Button */}
         <IconButton onClick={handleDrawerToggle}>
           <MenuIcon />
         </IconButton>
       </Box>
 
-      {/* Center: Search Bar */}
+      {/* Center: Search Bar - hidden on small screens */}
       <Box
         sx={{
           display: "flex",
@@ -66,7 +68,11 @@ const Topbar = ({ handleDrawerToggle }) => {
           backgroundColor: theme.palette.background.default,
           borderRadius: "8px",
           padding: "0.5rem",
-          width: "300px",
+          width: isSmallScreen ? "0px" : "300px", // Transition for width
+          opacity: isSmallScreen ? 0 : 1, // Transition opacity
+          visibility: isSmallScreen ? "hidden" : "visible", // Ensure it's hidden when width is 0
+          transition: "width 0.3s ease, opacity 0.3s ease", // Smooth transition
+          overflow: "hidden", // To hide content when width is 0
         }}
       >
         <SearchIcon style={{ marginRight: "8px" }} />
@@ -77,18 +83,20 @@ const Topbar = ({ handleDrawerToggle }) => {
         />
       </Box>
 
-      {/* Right Section: Context Switch, Contrast Toggle, Notifications, and Settings */}
+      {/* Right Section: Mode Switcher, Theme Toggle, Notifications, and Settings */}
       <Box sx={{ display: "flex", alignItems: "center" }}>
         {/* Mode Switcher */}
-        <Select
-          value={state.mode}
-          onChange={handleModeChange}
-          sx={{ color: colors.grey[100], marginRight: "16px" }}
-        >
-          <MenuItem value="DEMO_MODE">Demo Mode</MenuItem>
-          <MenuItem value="DEV_MODE">Dev Mode</MenuItem>
-          <MenuItem value="LIVE_MODE">Live Mode</MenuItem>
-        </Select>
+        {!isSmallScreen && (
+          <Select
+            value={state.mode}
+            onChange={handleModeChange}
+            sx={{ color: colors.grey[100], marginRight: "16px" }}
+          >
+            <MenuItem value="DEMO_MODE">Demo Mode</MenuItem>
+            <MenuItem value="DEV_MODE">Dev Mode</MenuItem>
+            <MenuItem value="LIVE_MODE">Live Mode</MenuItem>
+          </Select>
+        )}
 
         {/* Light/Dark Mode Toggle */}
         <IconButton onClick={colorMode.toggleColorMode}>
