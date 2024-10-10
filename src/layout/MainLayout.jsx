@@ -81,7 +81,6 @@ const MainLayout = () => {
             <Outlet />
             <BreakpointChecker />
           </Box>
-
           <Box sx={{ width: "100%", bottom: 0, zIndex: 2 }}>
             <Footer />
           </Box>
