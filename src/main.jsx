@@ -9,6 +9,9 @@ import { BrowserRouter } from "react-router-dom";
 import { ColorModeContext, useMode } from "./theme.js";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 
+// Context imports
+import { ModeProvider } from "./context/AppModeContext.jsx"; // Adjust path based on where you store the context
+
 function MainApp() {
   const [theme, colorMode] = useMode();
 
@@ -17,7 +20,9 @@ function MainApp() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <BrowserRouter>
-          <App />
+          <ModeProvider>
+            <App />
+          </ModeProvider>
         </BrowserRouter>
       </ThemeProvider>
     </ColorModeContext.Provider>

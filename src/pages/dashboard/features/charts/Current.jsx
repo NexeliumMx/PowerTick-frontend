@@ -39,15 +39,15 @@ const Current = () => {
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <CardHeader title="Real Time Current" />
       <CardContent sx={{ flexGrow: 1 }}>
-        <Box sx={{ width: '100%', height: 300 }}>
+        <Box sx={{ width: '100%', height: '100%' }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
+              <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.neutral.light}/>
+              <XAxis dataKey="name" stroke={theme.palette.neutral.light} />
+              <YAxis stroke={theme.palette.neutral.light}/>
               <Tooltip content={<CustomTooltip theme={theme} />} />
               <Legend />
-              <Bar dataKey="current" fill={theme.palette.primary.main} barSize={50} name="Current [A]" />
+              <Bar dataKey="current" fill={theme.palette.secondary.main} barSize={50} name="Current [A]" />
             </BarChart>
           </ResponsiveContainer>
         </Box>

@@ -1,7 +1,7 @@
 {
   "name": "powertic",
   "private": true,
-  "version": "0.5.0-alpha",
+  "version": "0.5.2-alpha",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -27,7 +27,7 @@
     "@nivo/geo": "^0.87.0",
     "@tabler/icons-react": "^3.16.0",
     "formik": "^2.4.6",
-    "lucide-react": "^0.446.0",
+    "lucide-react": "^0.447.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-pro-sidebar": "^1.1.0",

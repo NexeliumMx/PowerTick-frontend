@@ -5,7 +5,6 @@ import { Link, useLocation } from "react-router-dom";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ApartmentOutlinedIcon from "@mui/icons-material/ApartmentOutlined";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
@@ -23,6 +22,7 @@ const SidebarMenu = ({ collapsed }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const location = useLocation(); 
+  
   
   const [selected, setSelected] = useState("Dashboard");
 

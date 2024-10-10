@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, useTheme } from '@mui/material';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 const data = [
   { name: '-60 min', kWh: 6, kVARh: 1 },
@@ -61,12 +61,13 @@ const HistoricConsumption = () => {
         <Box sx={{ width: '100%', height: 400 }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
-              <XAxis dataKey="name" />
-              <YAxis />
+            <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.neutral.light}/>
+              <XAxis dataKey="name"  stroke={theme.palette.neutral.light}/>
+              <YAxis  stroke={theme.palette.neutral.light}/>
               <Tooltip content={<CustomTooltip theme={theme} />} />
               <Legend />
-              <Bar dataKey="kWh" fill={theme.palette.primary.main} name="Total Real Energy Imported [kWh]" />
-              <Bar dataKey="kVARh" fill={theme.palette.secondary.main} name="Total Reactive Energy Imported (Q1) [kVARh]" />
+              <Bar dataKey="kWh" fill={theme.palette.secondary.main} name="Total Real Energy Imported [kWh]" />
+              <Bar dataKey="kVARh" fill={theme.palette.secondary.main3} name="Total Reactive Energy Imported (Q1) [kVARh]" />
             </BarChart>
           </ResponsiveContainer>
         </Box>

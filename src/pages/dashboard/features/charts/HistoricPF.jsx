@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, useTheme } from '@mui/material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const data = [
   { name: '-60 min', pf: 0.91 },
@@ -55,14 +55,27 @@ const HistoricPF = () => {
       <CardContent sx={{ flexGrow: 1 }}>
         <Box sx={{ width: '100%', height: 400 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis domain={[0.9, 1.0]} />
+            <AreaChart data={data} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
+              <defs>
+                <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={theme.palette.secondary.main} stopOpacity={0.8} />
+                  <stop offset="95%" stopColor={theme.palette.secondary.light} stopOpacity={0.2} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.neutral.light} />
+              <XAxis dataKey="name" stroke={theme.palette.neutral.light} />
+              <YAxis domain={[0.9, 1.0]} stroke={theme.palette.neutral.light} />
               <Tooltip content={<CustomTooltip theme={theme} />} />
               <Legend />
-              <Line type="monotone" dataKey="pf" stroke={theme.palette.primary.main} dot={true} name="Total Power Factor" />
-            </LineChart>
+              <Area
+                type="monotone"
+                dataKey="pf"
+                stroke={theme.palette.secondary.main}
+                fill="url(#colorGradient)" // Utilizamos el gradiente para el relleno
+                strokeWidth={2}
+                name="Total Power Factor"
+              />
+            </AreaChart>
           </ResponsiveContainer>
         </Box>
       </CardContent>
