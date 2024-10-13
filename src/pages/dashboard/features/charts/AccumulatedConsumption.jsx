@@ -35,7 +35,7 @@ const AccumulatedConsumption = () => {
             textAlign: 'center', 
             mt: 2, 
             mb: 2, 
-            backgroundColor: theme.palette.primary.main, // Primary background color
+            backgroundColor: theme.palette.secondary.main, // Primary background color
             padding: 2, 
             borderRadius: 10,
           }}
@@ -51,7 +51,7 @@ const AccumulatedConsumption = () => {
             textAlign: 'center', 
             mt: 2, 
             mb: 2, 
-            backgroundColor: theme.palette.primary.main, // Primary background color
+            backgroundColor: theme.palette.secondary.main, // Primary background color
             padding: 2, 
             borderRadius: 10,
           }}
