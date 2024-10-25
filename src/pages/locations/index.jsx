@@ -1,5 +1,5 @@
 import { Box, useTheme } from "@mui/material";
-import GeographyChart from "./GeographyChart";
+import LocationsMap from "./LocationsMap";
 import Header from "../../components/ui/Header";
 import { tokens } from "../../theme";
 
@@ -15,7 +15,7 @@ const Locations = () => {
         border={`1px solid ${colors.grey[100]}`}
         borderRadius="4px"
       >
-        <GeographyChart />
+        <LocationsMap />
       </Box>
     </Box>
   );
