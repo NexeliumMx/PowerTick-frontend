@@ -10,7 +10,8 @@ import { ColorModeContext, useMode } from "./theme.js";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 
 // Context imports
-import { ModeProvider } from "./context/AppModeContext.jsx"; // Adjust path based on where you store the context
+import { ModeProvider } from "./context/AppModeContext.jsx"; // Mode context
+import { DataProvider } from "./context/DataProvider.jsx"; // Data context
 
 function MainApp() {
   const [theme, colorMode] = useMode();
@@ -21,7 +22,9 @@ function MainApp() {
         <CssBaseline />
         <BrowserRouter>
           <ModeProvider>
-            <App />
+            <DataProvider>
+              <App />
+            </DataProvider>
           </ModeProvider>
         </BrowserRouter>
       </ThemeProvider>

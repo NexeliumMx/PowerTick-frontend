@@ -1,36 +1,15 @@
+// src/pages/dashboard/features/charts/Timestamp.jsx
+
+import React from 'react';
 import { Card, CardHeader, CardContent, Typography } from '@mui/material';
 import Loading from '../../../../components/Loading';
 import Error from '../../../../components/Error';
-import { useFetch } from '../../../../hooks/useFetch';
-import { useContext } from 'react';
-import { ModeContext } from '../../../../context/AppModeContext'; 
-import { fetchFromMockData } from '../../../../services/api/fetchFromMockData'; 
-import { fetchFromDevApi } from '../../../../services/api/fetchFromDevApi'; 
-import { fetchFromCloudApi } from '../../../../services/api/fetchFromCloudApi'; 
-import { formatTimestamp } from '../../../../utils/formatTimestamp'; // Import the formatting utility
+import { useData } from '../../../../context/DataProvider';
 
 const Timestamp = () => {
-  // Get mode from context
-  const { state } = useContext(ModeContext);
+  const { realTimeData, isFetching, error } = useData();
 
-  // Determine the fetch function based on the selected mode
-  let fetchFunction;
-  switch (state.mode) {
-    case 'DEMO_MODE':
-      fetchFunction = fetchFromMockData;
-      break;
-    case 'DEV_MODE':
-      fetchFunction = fetchFromDevApi;
-      break;
-    case 'LIVE_MODE':
-      fetchFunction = fetchFromCloudApi;
-      break;
-    default:
-      fetchFunction = fetchFromMockData; // Default to demo mode
-  }
-
-  // Use the useFetch hook with the appropriate fetch function
-  const { isFetching, fetchedData, error } = useFetch(fetchFunction, null);
+  console.log('Real-time Data in Timestamp Component:', realTimeData); // Debugging log to inspect realTimeData
 
   return (
     <Card sx={{ flexGrow: 1, height: '100%', width: '100%' }}>
@@ -43,18 +22,17 @@ const Timestamp = () => {
         {/* Error state */}
         {error && <Error />}
 
-        {/* Display fetched data */}
-        {!isFetching && !error && fetchedData && (
+        {/* Display the timestamp if available */}
+        {!isFetching && !error && realTimeData && realTimeData.timestamp ? (
           <Typography variant="h4" textAlign="center">
-            {formatTimestamp(fetchedData)} {/* Format the fetched ISO timestamp */}
+            {realTimeData.timestamp} {/* Display the timestamp */}
           </Typography>
-        )}
-
-        {/* Fallback for empty data */}
-        {!isFetching && !error && !fetchedData && (
-          <Typography variant="h6" textAlign="center">
-            No data available
-          </Typography>
+        ) : (
+          !isFetching && !error && !realTimeData && (
+            <Typography variant="h6" textAlign="center">
+              No data available
+            </Typography>
+          )
         )}
       </CardContent>
     </Card>
