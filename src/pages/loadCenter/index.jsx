@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import Header from "../../components/ui/Header";
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom"; // For navigation
 import { ModeContext } from "../../context/AppModeContext";
+import { useData } from "../../context/DataProvider"; // Import useData for global state
 import { fetchAllPowerMeters } from "../../services/api/fetchDemoAPI";
 
 const LoadCenter = () => {
   const { state } = useContext(ModeContext);
+  const { setSelectedPowerMeter } = useData(); // Get setSelectedPowerMeter from DataProvider
   const [powerMeters, setPowerMeters] = useState([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +33,8 @@ const LoadCenter = () => {
   }, [state.mode]);
 
   const handleNavigateToDashboard = (serialNumber) => {
-    navigate(`/dashboard?serialNumber=${serialNumber}`); // Pass serial number as query parameter
+    setSelectedPowerMeter(serialNumber); // Update selected power meter in context
+    navigate(`/dashboard`); // Navigate to the dashboard
   };
 
   return (
@@ -65,7 +67,7 @@ const LoadCenter = () => {
               variant="contained"
               color="primary"
               sx={{ minWidth: "150px" }}
-              onClick={() => handleNavigateToDashboard(powerMeter.serial_number)} // Navigate to Dashboard
+              onClick={() => handleNavigateToDashboard(powerMeter.serial_number)} // Update and navigate
             >
               {powerMeter.serial_number}
             </Button>
