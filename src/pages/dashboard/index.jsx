@@ -1,6 +1,5 @@
-import { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Box, Typography, Select, MenuItem, CircularProgress } from "@mui/material";
-import { useSearchParams } from "react-router-dom"; // To read query parameters
 import NavButtons from "./components/ui/NavButtons";
 import Configuration from "./subpages/Configuration";
 import Overview from "./subpages/Overview";
@@ -10,20 +9,16 @@ import { useData } from "../../context/DataProvider";
 import { ModeContext } from "../../context/AppModeContext";
 
 const Dashboard = () => {
-  const [activePage, setActivePage] = useState("Overview");
-  const { powerMeters, isFetching, error } = useData();
+  const { powerMeters, isFetching, error, selectedPowerMeter, setSelectedPowerMeter } = useData(); // Use DataProvider context
   const { state } = useContext(ModeContext);
-  const [selectedPowerMeter, setSelectedPowerMeter] = useState("");
-  const [searchParams] = useSearchParams(); // React Router's hook to access query parameters
+  const [activePage, setActivePage] = useState("Overview");
 
+  // Automatically select the first power meter by default
   useEffect(() => {
-    const serialNumberFromQuery = searchParams.get("serialNumber"); // Get serialNumber from query
-    if (serialNumberFromQuery) {
-      setSelectedPowerMeter(serialNumberFromQuery); // Set the query parameter as the selected power meter
-    } else if (!isFetching && powerMeters && powerMeters.length > 0) {
-      setSelectedPowerMeter(powerMeters[0].serial_number); // Default to the first power meter
+    if (!isFetching && powerMeters && powerMeters.length > 0 && !selectedPowerMeter) {
+      setSelectedPowerMeter(powerMeters[0].serial_number); // Set the first power meter if none is selected
     }
-  }, [isFetching, powerMeters, searchParams]);
+  }, [isFetching, powerMeters, selectedPowerMeter, setSelectedPowerMeter]);
 
   const renderPage = () => {
     switch (activePage) {
@@ -60,6 +55,7 @@ const Dashboard = () => {
 
   return (
     <Box sx={{ position: "relative", minHeight: "100vh", padding: "20px", boxSizing: "border-box" }}>
+      {/* Header and Navigation */}
       <Box
         sx={{
           display: "flex",
@@ -75,6 +71,7 @@ const Dashboard = () => {
         <NavButtons setActivePage={setActivePage} />
       </Box>
 
+      {/* Power Meter Dropdown */}
       <Box
         sx={{
           marginTop: "100px",
@@ -89,11 +86,14 @@ const Dashboard = () => {
           <CircularProgress color="primary" />
         ) : (
           <Select
-            value={selectedPowerMeter}
-            onChange={(e) => setSelectedPowerMeter(e.target.value)}
+            value={selectedPowerMeter || ""} // Ensure a fallback empty string
+            onChange={(e) => setSelectedPowerMeter(e.target.value)} // Update context state
             displayEmpty
             sx={{ minWidth: 200 }}
           >
+            <MenuItem value="" disabled>
+              Select Power Meter
+            </MenuItem>
             {powerMeters.map((meter, index) => (
               <MenuItem key={index} value={meter.serial_number}>
                 {meter.serial_number}
@@ -103,6 +103,7 @@ const Dashboard = () => {
         )}
       </Box>
 
+      {/* Render Active Page */}
       <Box sx={{ marginTop: "20px", textAlign: "center", minHeight: "100%" }}>{renderPage()}</Box>
     </Box>
   );

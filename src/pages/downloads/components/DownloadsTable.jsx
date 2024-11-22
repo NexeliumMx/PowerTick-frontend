@@ -1,8 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Box, Button, Select, MenuItem, Typography, CircularProgress } from "@mui/material";
-import { useData } from "../../../context/DataProvider"; // Use the DataProvider context
-import { generateMeasurementsCSV } from "../../../services/api/fetchDemoAPI"; // Use the generateMeasurementsCSV function
+import { Box, Button, Select, MenuItem, Typography } from "@mui/material";
+import { useData } from "../../../context/DataProvider";
+import { generateMeasurementsCSV } from "../../../services/api/fetchDemoAPI";
 import { ModeContext } from "../../../context/AppModeContext";
+import LoadingOverlay from "../../../components/LoadingOverlay";
 
 const DownloadsTable = () => {
   const { state } = useContext(ModeContext); // Get app mode from context
@@ -56,24 +57,7 @@ const DownloadsTable = () => {
   return (
     <Box sx={{ position: "relative", padding: "16px" }}>
       {/* Loading Overlay */}
-      {loading && (
-        <Box
-          sx={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.5)", // Dim background
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1300, // Above other elements
-          }}
-        >
-          <CircularProgress color="primary" />
-        </Box>
-      )}
+      <LoadingOverlay loading={loading} />
 
       <Typography variant="h5" gutterBottom>
         Download Measurements
