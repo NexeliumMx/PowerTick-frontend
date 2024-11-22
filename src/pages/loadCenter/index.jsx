@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import Header from "../../components/ui/Header";
-import { useNavigate } from "react-router-dom"; // For navigation
+import { useNavigate } from "react-router-dom";
 import { ModeContext } from "../../context/AppModeContext";
-import { useData } from "../../context/DataProvider"; // Import useData for global state
+import { useData } from "../../context/DataProvider";
 import { fetchAllPowerMeters } from "../../services/api/fetchDemoAPI";
+import LoadingOverlay from "../../components/LoadingOverlay";
 
 const LoadCenter = () => {
   const { state } = useContext(ModeContext);
@@ -12,7 +13,7 @@ const LoadCenter = () => {
   const [powerMeters, setPowerMeters] = useState([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate(); // React Router's navigate hook
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (state.mode === "DEMO_MODE") {
@@ -39,17 +40,13 @@ const LoadCenter = () => {
 
   return (
     <Box m="20px">
+      <LoadingOverlay loading={isLoading} /> {/* Add LoadingOverlay */}
+
       <Header title="LOAD CENTERS" subtitle="Overview and Management of Energy Distribution and Consumption" />
 
       {state.mode === "LIVE_MODE" && (
         <Typography variant="body1" color="error" sx={{ textAlign: "center", marginTop: 4 }}>
           Load centers are not available in LIVE mode.
-        </Typography>
-      )}
-
-      {state.mode === "DEMO_MODE" && isLoading && (
-        <Typography variant="h6" sx={{ textAlign: "center", marginTop: 4 }}>
-          Loading power meters...
         </Typography>
       )}
 

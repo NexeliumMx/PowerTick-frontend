@@ -27,7 +27,7 @@ export default function Home() {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/load-center')}
         >
           Dashboard
         </Button>

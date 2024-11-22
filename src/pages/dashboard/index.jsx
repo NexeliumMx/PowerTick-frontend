@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Box, Typography, Select, MenuItem, CircularProgress } from "@mui/material";
+import { Box, Typography, Select, MenuItem } from "@mui/material";
 import NavButtons from "./components/ui/NavButtons";
 import Configuration from "./subpages/Configuration";
 import Overview from "./subpages/Overview";
@@ -7,6 +7,7 @@ import Measurements from "./subpages/Measurements";
 import Header from "../../components/ui/Header";
 import { useData } from "../../context/DataProvider";
 import { ModeContext } from "../../context/AppModeContext";
+import LoadingOverlay from "../../components/LoadingOverlay";
 
 const Dashboard = () => {
   const { powerMeters, isFetching, error, selectedPowerMeter, setSelectedPowerMeter } = useData(); // Use DataProvider context
@@ -43,18 +44,11 @@ const Dashboard = () => {
     );
   }
 
-  if (!isFetching && (!powerMeters || powerMeters.length === 0)) {
-    return (
-      <Box sx={{ padding: "20px", textAlign: "center" }}>
-        <Typography variant="h5" color="error">
-          No power meters available. Please check your data.
-        </Typography>
-      </Box>
-    );
-  }
-
   return (
     <Box sx={{ position: "relative", minHeight: "100vh", padding: "20px", boxSizing: "border-box" }}>
+      {/* Loading Overlay */}
+      <LoadingOverlay loading={isFetching} />
+
       {/* Header and Navigation */}
       <Box
         sx={{
@@ -82,25 +76,22 @@ const Dashboard = () => {
           textAlign: "center",
         }}
       >
-        {isFetching ? (
-          <CircularProgress color="primary" />
-        ) : (
-          <Select
-            value={selectedPowerMeter || ""} // Ensure a fallback empty string
-            onChange={(e) => setSelectedPowerMeter(e.target.value)} // Update context state
-            displayEmpty
-            sx={{ minWidth: 200 }}
-          >
-            <MenuItem value="" disabled>
-              Select Power Meter
+        <Select
+          value={selectedPowerMeter || ""} // Ensure a fallback empty string
+          onChange={(e) => setSelectedPowerMeter(e.target.value)} // Update context state
+          displayEmpty
+          sx={{ minWidth: 200 }}
+          disabled={isFetching} // Disable dropdown while loading
+        >
+          <MenuItem value="" disabled>
+            Select Power Meter
+          </MenuItem>
+          {powerMeters.map((meter, index) => (
+            <MenuItem key={index} value={meter.serial_number}>
+              {meter.serial_number}
             </MenuItem>
-            {powerMeters.map((meter, index) => (
-              <MenuItem key={index} value={meter.serial_number}>
-                {meter.serial_number}
-              </MenuItem>
-            ))}
-          </Select>
-        )}
+          ))}
+        </Select>
       </Box>
 
       {/* Render Active Page */}
