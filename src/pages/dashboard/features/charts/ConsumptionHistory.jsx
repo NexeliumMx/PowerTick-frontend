@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { useData } from "../../../../context/DataProvider";
+import { formatConsumptionData } from "../../utils/formatConsumptionData";
 
 const ConsumptionHistory = () => {
   const {
@@ -10,6 +11,12 @@ const ConsumptionHistory = () => {
     selectedTimePeriod,
     setSelectedTimePeriod,
   } = useData();
+
+  // Format data only if the selected time period is 'year'
+  const formattedData =
+    selectedTimePeriod === "year"
+      ? formatConsumptionData(consumptionData)
+      : consumptionData;
 
   const handleConsumptionPeriodChange = (event, newPeriod) => {
     if (newPeriod !== null) {
@@ -28,10 +35,12 @@ const ConsumptionHistory = () => {
               {`Error: ${error}`}
             </Typography>
           )}
-          {consumptionData && (
+          {formattedData && formattedData.length > 0 ? (
             <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
-              {JSON.stringify(consumptionData, null, 2)}
+              {JSON.stringify(formattedData, null, 2)}
             </pre>
+          ) : (
+            !isFetching && <Typography>No data available</Typography>
           )}
         </Box>
       </CardContent>
