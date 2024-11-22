@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Box, Button, Select, MenuItem, Typography, CircularProgress } from "@mui/material";
-import { useContext } from "react";
+import { useData } from "../../../context/DataProvider"; // Use the DataProvider context
+import { generateMeasurementsCSV } from "../../../services/api/fetchDemoAPI"; // Use the generateMeasurementsCSV function
 import { ModeContext } from "../../../context/AppModeContext";
 
 const DownloadsTable = () => {
-  const { state } = useContext(ModeContext);
-  const [serialNumbers, setSerialNumbers] = useState([]);
+  const { state } = useContext(ModeContext); // Get app mode from context
+  const { powerMeters, isFetching, error } = useData(); // Use DataProvider to get power meters
   const [selectedSerialNumber, setSelectedSerialNumber] = useState("");
   const [selectedYear, setSelectedYear] = useState("2024");
   const [selectedMonth, setSelectedMonth] = useState("11");
-  const [error, setError] = useState(""); // State to display errors
-  const [isLoading, setIsLoading] = useState(false); // State to show loading animation
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const months = [
     { name: "January", value: "1" },
@@ -27,52 +28,35 @@ const DownloadsTable = () => {
     { name: "December", value: "12" },
   ];
 
-  // Fetch serial numbers if mode is DEMO_MODE
+  // Track whether powerMeters is still being fetched
   useEffect(() => {
-    if (state.mode === "DEMO_MODE") {
-      fetch("https://powertick-api-js.azurewebsites.net/api/demoGetPowerMetersInfo")
-        .then((response) => response.json())
-        .then((data) => {
-          const serialNumbers = data.map((item) => item.serial_number);
-          setSerialNumbers(serialNumbers);
-          if (serialNumbers.length > 0) setSelectedSerialNumber(serialNumbers[0]);
-        })
-        .catch((error) => {
-          console.error("Error fetching serial numbers:", error);
-        });
+    if (!isFetching && powerMeters && powerMeters.length > 0 && !selectedSerialNumber) {
+      setSelectedSerialNumber(powerMeters[0].serial_number); // Default to the first serial number
     }
-  }, [state.mode]);
+  }, [isFetching, powerMeters]);
 
-  const handleDownloadCSV = () => {
-    if (state.mode === "DEMO_MODE" && selectedSerialNumber && selectedYear && selectedMonth) {
-      setIsLoading(true); // Start loading animation
-      setError(""); // Clear previous errors
+  const handleDownloadCSV = async () => {
+    setLoading(true);
+    setErrorMessage("");
 
-      const url = `https://powertick-api-py.azurewebsites.net/api/demoGenerateMeasurementsCSV?sn=${selectedSerialNumber}&year=${selectedYear}&month=${selectedMonth}`;
-      fetch(url)
-        .then((response) => {
-          if (!response.ok) throw new Error("Failed to generate CSV");
-          return response.blob();
-        })
-        .then((blob) => {
-          const link = document.createElement("a");
-          link.href = window.URL.createObjectURL(blob);
-          link.download = `Measurements_${selectedSerialNumber}_${selectedYear}_${selectedMonth}.csv`;
-          link.click();
-        })
-        .catch((error) => {
-          setError("Failed to generate CSV. Please check your inputs."); // Set error message
-        })
-        .finally(() => {
-          setIsLoading(false); // Stop loading animation
-        });
+    try {
+      const blob = await generateMeasurementsCSV(selectedSerialNumber, selectedYear, selectedMonth);
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `Measurements_${selectedSerialNumber}_${selectedYear}_${selectedMonth}.csv`;
+      link.click();
+    } catch (error) {
+      setErrorMessage("Failed to generate CSV. Please check your inputs.");
+      console.error("Error downloading CSV:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Box sx={{ position: "relative", padding: "16px" }}>
       {/* Loading Overlay */}
-      {isLoading && (
+      {loading && (
         <Box
           sx={{
             position: "fixed",
@@ -108,15 +92,17 @@ const DownloadsTable = () => {
               onChange={(e) => setSelectedSerialNumber(e.target.value)}
               displayEmpty
               sx={{ minWidth: 200 }}
+              disabled={isFetching || !powerMeters || powerMeters.length === 0}
             >
               <MenuItem value="" disabled>
-                Select Serial Number
+                {isFetching ? "Loading..." : "Select Serial Number"}
               </MenuItem>
-              {serialNumbers.map((serial, index) => (
-                <MenuItem key={index} value={serial}>
-                  {serial}
-                </MenuItem>
-              ))}
+              {powerMeters &&
+                powerMeters.map((meter, index) => (
+                  <MenuItem key={index} value={meter.serial_number}>
+                    {meter.serial_number}
+                  </MenuItem>
+                ))}
             </Select>
 
             {/* Year Dropdown */}
@@ -144,9 +130,9 @@ const DownloadsTable = () => {
           </Box>
 
           {/* Error Message */}
-          {error && (
+          {errorMessage && (
             <Typography variant="body2" color="error" sx={{ marginBottom: 2 }}>
-              {error}
+              {errorMessage}
             </Typography>
           )}
 
@@ -155,7 +141,7 @@ const DownloadsTable = () => {
             variant="contained"
             color="primary"
             onClick={handleDownloadCSV}
-            disabled={!selectedSerialNumber || !selectedYear || !selectedMonth || isLoading}
+            disabled={!selectedSerialNumber || !selectedYear || !selectedMonth || loading}
           >
             Download CSV
           </Button>

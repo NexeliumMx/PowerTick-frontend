@@ -103,7 +103,7 @@ const SidebarMenu = ({ collapsed }) => {
             Home
           </MenuItem>
 
-          {/* Locations */}
+          {/* Locations 
           <MenuItem
             icon={<LocationOnOutlinedIcon />}
             active={selected === "Locations"}
@@ -111,9 +111,9 @@ const SidebarMenu = ({ collapsed }) => {
             rootStyles={getMenuItemStyles(selected === "Locations")}
           >
             Locations
-          </MenuItem>
+          </MenuItem> */}
 
-          {/* Substation */}
+          {/* Substation 
           <MenuItem
             icon={<WindPowerOutlinedIcon />}
             active={selected === "Substations"}
@@ -121,7 +121,7 @@ const SidebarMenu = ({ collapsed }) => {
             rootStyles={getMenuItemStyles(selected === "Substations")}
           >
             Substations
-          </MenuItem>
+          </MenuItem> */}
 
           {/* Load Center */}
           <MenuItem
@@ -153,7 +153,7 @@ const SidebarMenu = ({ collapsed }) => {
             Add Meter
           </MenuItem>          
 
-          {/* Calendar */}
+          {/* Calendar 
           <MenuItem
             icon={<CalendarTodayOutlinedIcon />}
             active={selected === "Calendar"}
@@ -161,7 +161,7 @@ const SidebarMenu = ({ collapsed }) => {
             rootStyles={getMenuItemStyles(selected === "Calendar")}
           >
             Calendar
-          </MenuItem>
+          </MenuItem> */}
 
           {/* Downloads */}
           <MenuItem
@@ -193,7 +193,7 @@ const SidebarMenu = ({ collapsed }) => {
             New User
           </MenuItem>
 
-          {/* FAQ */}
+          {/* FAQ 
           <MenuItem
             icon={<HelpOutlineOutlinedIcon />}
             active={selected === "FAQ"}
@@ -201,9 +201,9 @@ const SidebarMenu = ({ collapsed }) => {
             rootStyles={getMenuItemStyles(selected === "FAQ")}
           >
             FAQ
-          </MenuItem>
+          </MenuItem> */}
 
-          {/* User Manual */}
+          {/* User Manual 
           <MenuItem
             icon={<LocalLibraryOutlinedIcon />}
             active={selected === "User Manual"}
@@ -211,9 +211,9 @@ const SidebarMenu = ({ collapsed }) => {
             rootStyles={getMenuItemStyles(selected === "User Manual")}
           >
             User Manual
-          </MenuItem>
+          </MenuItem> */}
           
-          {/* Test Page */}
+          {/* Test Page 
           <MenuItem
             icon={<ScienceOutlinedIcon />}
             active={selected === "Test Page"}
@@ -221,9 +221,9 @@ const SidebarMenu = ({ collapsed }) => {
             rootStyles={getMenuItemStyles(selected === "Test Page")}
           >
             Test Page
-          </MenuItem>
+          </MenuItem> */}
 
-          {/* Not Found Page */}
+          {/* Not Found Page 
           <MenuItem
             icon={<ErrorOutlineOutlinedIcon />}
             active={selected === "Not Found"}
@@ -231,7 +231,7 @@ const SidebarMenu = ({ collapsed }) => {
             rootStyles={getMenuItemStyles(selected === "Not Found")}
           >
             Not Found
-          </MenuItem>
+          </MenuItem> */}
         </Menu>
       </Sidebar>
     </Box>
