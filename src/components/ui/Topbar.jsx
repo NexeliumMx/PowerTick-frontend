@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
-import { ModeContext } from "../../context/AppModeContext"; 
+import { ModeContext } from "../../context/AppModeContext";
 import { Box, IconButton, useTheme, MenuItem, Select, useMediaQuery } from "@mui/material";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
@@ -15,7 +15,7 @@ const Topbar = ({ handleDrawerToggle }) => {
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const { state, dispatch } = useContext(ModeContext);
-  
+
   // Detect small screens (sm and xs)
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -37,15 +37,14 @@ const Topbar = ({ handleDrawerToggle }) => {
     >
       {/* Left Section: Logo and Menu Toggle */}
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        {/* Conditionally render the logo based on screen size */}
         <Box
           sx={{
-            width: isSmallScreen ? "0px" : "150px", // Transition for width
+            width: isSmallScreen ? "0px" : "150px",
             height: "40px",
-            overflow: "hidden", // To hide content when width is 0
-            transition: "width 0.3s ease, opacity 0.3s ease", // Smooth transition
-            opacity: isSmallScreen ? 0 : 1, // Transition opacity
-            visibility: isSmallScreen ? "hidden" : "visible", // Ensure it's hidden when width is 0
+            overflow: "hidden",
+            transition: "width 0.3s ease, opacity 0.3s ease",
+            opacity: isSmallScreen ? 0 : 1,
+            visibility: isSmallScreen ? "hidden" : "visible",
           }}
         >
           <img
@@ -54,13 +53,12 @@ const Topbar = ({ handleDrawerToggle }) => {
             style={{ width: "100%", height: "100%", cursor: "pointer" }}
           />
         </Box>
-        {/* Menu Toggle Button */}
         <IconButton onClick={handleDrawerToggle}>
           <MenuIcon />
         </IconButton>
       </Box>
 
-      {/* Center: Search Bar - hidden on small screens */}
+      {/* Center: Search Bar */}
       <Box
         sx={{
           display: "flex",
@@ -68,11 +66,11 @@ const Topbar = ({ handleDrawerToggle }) => {
           backgroundColor: theme.palette.background.default,
           borderRadius: "8px",
           padding: "0.5rem",
-          width: isSmallScreen ? "0px" : "300px", // Transition for width
-          opacity: isSmallScreen ? 0 : 1, // Transition opacity
-          visibility: isSmallScreen ? "hidden" : "visible", // Ensure it's hidden when width is 0
-          transition: "width 0.3s ease, opacity 0.3s ease", // Smooth transition
-          overflow: "hidden", // To hide content when width is 0
+          width: isSmallScreen ? "0px" : "300px",
+          opacity: isSmallScreen ? 0 : 1,
+          visibility: isSmallScreen ? "hidden" : "visible",
+          transition: "width 0.3s ease, opacity 0.3s ease",
+          overflow: "hidden",
         }}
       >
         <SearchIcon style={{ marginRight: "8px" }} />
@@ -83,7 +81,7 @@ const Topbar = ({ handleDrawerToggle }) => {
         />
       </Box>
 
-      {/* Right Section: Mode Switcher, Theme Toggle, Notifications, and Settings */}
+      {/* Right Section */}
       <Box sx={{ display: "flex", alignItems: "center" }}>
         {/* Mode Switcher */}
         {!isSmallScreen && (
@@ -93,12 +91,10 @@ const Topbar = ({ handleDrawerToggle }) => {
             sx={{ color: colors.grey[100], marginRight: "16px" }}
           >
             <MenuItem value="DEMO_MODE">Demo Mode</MenuItem>
-            <MenuItem value="DEV_MODE">Dev Mode</MenuItem>
             <MenuItem value="LIVE_MODE">Live Mode</MenuItem>
           </Select>
         )}
 
-        {/* Light/Dark Mode Toggle */}
         <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (
             <DarkModeOutlinedIcon />
