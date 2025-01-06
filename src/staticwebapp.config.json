@@ -1,5 +1,6 @@
 {
   "navigationFallback": {
-    "rewrite": "/index.css"
+    "rewrite": "src/pages/home/index.jsx"
+    "exlude":"/*.{css,scss,js,png,gif,ico,jpg,svg}"
   }
 }
