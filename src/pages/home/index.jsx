@@ -17,7 +17,7 @@ export default function Home() {
       }}
     >
       <Typography variant="h2" gutterBottom>
-        Welcome to PowerTIC
+        Welcome to PowerTick
       </Typography>
       <Typography variant="body1" sx={{ marginTop: 1 }}>
         Version: {__APP_VERSION__} {/* Display the app version here */}

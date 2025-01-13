@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 
-const Error = () => {
+const DataChartError = ({ errorCode, errorMessage }) => {
   return (
     <Box
       display="flex"
@@ -15,8 +15,15 @@ const Error = () => {
       <Typography variant="h4" sx={{ marginTop: "16px" }}>
         Error
       </Typography>
+      <Typography
+        variant="h6"
+        color="error"
+        sx={{ marginTop: "8px", textAlign: "center" }}
+      >
+        {`${errorCode || "Unknown"}: ${errorMessage || "An unknown error occurred"}`}
+      </Typography>
     </Box>
   );
 };
 
-export default Error;
+export default DataChartError;

@@ -1,67 +1,91 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
-import { fetchRealtime as fetchDemoRealtime, fetchHistoricConsumption as fetchDemoHistory } from "../services/api/fetchDemoAPI";
-import { fetchRealtime as fetchLiveRealtime, fetchHistoricConsumption as fetchLiveHistory } from "../services/api/fetchLiveAPI";
-import { fetchAllPowerMeters } from "../services/api/fetchDemoAPI"; // For fetching power meters
+import React, { createContext, useContext, useMemo, useState, useEffect } from "react";
+import { fetchConsumptionHistory, fetchAllPowerMeters, fetchRealtimeData } from "../services/api/fetchDemoAPI";
 import { ModeContext } from "./AppModeContext";
-import { useFetch } from "../hooks/useFetch";
 
 const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
   const { state } = useContext(ModeContext);
 
-  const [selectedPowerMeter, setSelectedPowerMeter] = useState(null); // Selected power meter state
-  const [powerMeters, setPowerMeters] = useState([]);
-  const [powerMeterError, setPowerMeterError] = useState(null);
-  const [isPowerMeterLoading, setIsPowerMeterLoading] = useState(false);
+  const [powerMeters, setPowerMeters] = useState([]); // List of power meters
+  const [selectedPowerMeter, setSelectedPowerMeter] = useState("DEMO0000001"); // Default powermeter
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("year"); // Default time period
+  const [realTimeData, setRealTimeData] = useState(null); // Realtime data for powermeter
+  const [consumptionData, setConsumptionData] = useState(null); // Consumption history
+  const [error, setError] = useState(null);
+  const [isFetching, setIsFetching] = useState(false);
 
-  // Fetch power meters when in DEMO_MODE
-  useMemo(() => {
-    if (state.mode === "DEMO_MODE") {
-      setIsPowerMeterLoading(true);
-      fetchAllPowerMeters()
-        .then((data) => {
-          setPowerMeters(data);
-          setSelectedPowerMeter((prev) => prev || (data.length > 0 ? data[0].serial_number : null));
-          setPowerMeterError(null);
-        })
-        .catch((err) => {
-          console.error("Error fetching power meters:", err);
-          setPowerMeterError("Failed to fetch power meters.");
-        })
-        .finally(() => {
-          setIsPowerMeterLoading(false);
-        });
-    } else {
-      setPowerMeters([]);
-      setSelectedPowerMeter(null);
-    }
-  }, [state.mode]);
+  // Fetch all power meters on mount
+  useEffect(() => {
+    const fetchPowerMeters = async () => {
+      setIsFetching(true);
+      try {
+        const data = await fetchAllPowerMeters();
+        setPowerMeters(data);
+        setSelectedPowerMeter((prev) => prev || (data.length > 0 ? data[0].serial_number : null));
+      } catch (err) {
+        setError(err.message || "Failed to fetch power meters.");
+      } finally {
+        setIsFetching(false);
+      }
+    };
 
-  const fetchRealtimeFn = useMemo(() => {
-    return state.mode === "DEMO_MODE" ? fetchDemoRealtime : fetchLiveRealtime;
-  }, [state.mode]);
+    fetchPowerMeters();
+  }, []);
 
-  const fetchHistoryFn = useMemo(() => {
-    return state.mode === "DEMO_MODE" ? fetchDemoHistory : fetchLiveHistory;
-  }, [state.mode]);
+  // Fetch real-time data whenever selectedPowerMeter changes
+  useEffect(() => {
+    const fetchRealTimeData = async () => {
+      if (!selectedPowerMeter) return;
+      setIsFetching(true);
+      try {
+        const data = await fetchRealtimeData(selectedPowerMeter);
+        setRealTimeData(data);
+      } catch (err) {
+        setError(err.message || "Failed to fetch real-time data.");
+      } finally {
+        setIsFetching(false);
+      }
+    };
 
-  const { isFetching: isFetchingRealtime, fetchedData: realTimeData, error: realtimeError } = useFetch(fetchRealtimeFn, null);
-  const { isFetching: isFetchingHistory, fetchedData: historicalData, error: historyError } = useFetch(fetchHistoryFn, null);
+    fetchRealTimeData();
+  }, [selectedPowerMeter]);
 
-  const isFetching = isFetchingRealtime || isFetchingHistory || isPowerMeterLoading;
-  const error = realtimeError || historyError || powerMeterError;
+  // Fetch consumption data when selectedPowerMeter or selectedTimePeriod changes
+  useEffect(() => {
+    const fetchConsumptionData = async () => {
+      if (!selectedPowerMeter || !selectedTimePeriod) return;
+      setIsFetching(true);
+      try {
+        const data = await fetchConsumptionHistory(selectedPowerMeter, selectedTimePeriod);
+        setConsumptionData(data);
+      } catch (err) {
+        setError(err.message || "Failed to fetch consumption data.");
+      } finally {
+        setIsFetching(false);
+      }
+    };
+
+    fetchConsumptionData();
+  }, [selectedPowerMeter, selectedTimePeriod]);
+
+  console.log("Power Meters:", powerMeters);
+  console.log("Selected Power Meter:", selectedPowerMeter);
+  console.log("Real-Time Data:", realTimeData);
+  console.log("Consumption Data:", consumptionData);
 
   return (
     <DataContext.Provider
       value={{
-        realTimeData,
-        historicalData,
-        isFetching,
-        error,
         powerMeters,
         selectedPowerMeter,
         setSelectedPowerMeter,
+        selectedTimePeriod,
+        setSelectedTimePeriod,
+        realTimeData,
+        consumptionData,
+        isFetching,
+        error,
       }}
     >
       {children}

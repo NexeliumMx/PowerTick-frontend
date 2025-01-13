@@ -1,95 +1,68 @@
-import { useState } from 'react';
-import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box } from '@mui/material';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useTheme } from '@mui/material/styles';
-
-const consumptionData = [
-  { name: 'Jan', kWh: 50 },
-  { name: 'Feb', kWh: 60 },
-  { name: 'Mar', kWh: 55 },
-  { name: 'Apr', kWh: 40 },
-  { name: 'May', kWh: 45 },
-  { name: 'Jun', kWh: 47 },
-  { name: 'Jul', kWh: 43 },
-  { name: 'Aug', kWh: 52 },
-  { name: 'Sept', kWh: 61 },
-  { name: 'Oct', kWh: 64 },
-  { name: 'Nov', kWh: 58 },
-  { name: 'Dec', kWh: 67 },
-];
-
-const CustomTooltip = ({ active, payload, label, theme }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div
-        style={{
-          backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#fff',
-          color: theme.palette.mode === 'dark' ? '#fff' : '#000',
-          padding: '10px',
-          borderRadius: '5px',
-          border: '1px solid',
-          borderColor: theme.palette.divider,
-        }}
-      >
-        <p>{label}</p>
-        <p>{`kWh: ${payload[0].value}`}</p>
-      </div>
-    );
-  }
-  return null;
-};
+import React from "react";
+import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
+import { useData } from "../../../../context/DataProvider";
+import { formatConsumptionData } from "../../utils/formatConsumptionData";
 
 const ConsumptionHistory = () => {
-  const theme = useTheme();
-  const [consumptionPeriod, setConsumptionPeriod] = useState('yearly');
+  const {
+    consumptionData,
+    isFetching,
+    error,
+    selectedTimePeriod,
+    setSelectedTimePeriod,
+  } = useData();
+
+  // Format data only if the selected time period is 'year'
+  const formattedData =
+    selectedTimePeriod === "year"
+      ? formatConsumptionData(consumptionData)
+      : consumptionData;
 
   const handleConsumptionPeriodChange = (event, newPeriod) => {
     if (newPeriod !== null) {
-      setConsumptionPeriod(newPeriod);
+      setSelectedTimePeriod(newPeriod);
     }
   };
 
   return (
-    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <CardHeader title="Consumption History" />
-
       <CardContent sx={{ flexGrow: 1 }}>
-        <Box sx={{ width: '100%', height: '500px' }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={consumptionData}
-              layout="vertical"  // Layout set to vertical for horizontal bars
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.neutral.light}/>
-              <XAxis type="number" stroke={theme.palette.neutral.light} />
-              <YAxis type="category" dataKey="name" stroke={theme.palette.neutral.light} />
-              <Tooltip content={<CustomTooltip theme={theme} />} />
-              <Legend />
-              <Bar dataKey="kWh" fill={theme.palette.secondary.main} name="Total Real Energy Imported [kWh]" barSize={20} />
-            </BarChart>
-          </ResponsiveContainer>
+        <Box sx={{ width: "100%", height: "500px", overflow: "auto", p: 2 }}>
+          {isFetching && <Typography>Loading...</Typography>}
+          {error && (
+            <Typography variant="h6" color="error">
+              {`Error: ${error}`}
+            </Typography>
+          )}
+          {formattedData && formattedData.length > 0 ? (
+            <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
+              {JSON.stringify(formattedData, null, 2)}
+            </pre>
+          ) : (
+            !isFetching && <Typography>No data available</Typography>
+          )}
         </Box>
       </CardContent>
-
-      <CardActions sx={{ justifyContent: 'center', mt: 2, mb: 2 }}>
+      <CardActions sx={{ justifyContent: "center", mt: 2, mb: 2 }}>
         <ToggleButtonGroup
-          value={consumptionPeriod}
+          value={selectedTimePeriod}
           exclusive
           onChange={handleConsumptionPeriodChange}
           aria-label="Consumption History Period"
         >
-          <ToggleButton value="yearly" aria-label="Yearly">
+          <ToggleButton value="year" aria-label="Yearly">
             Yearly
           </ToggleButton>
-          {/*
-          <ToggleButton value="monthly" aria-label="Monthly">
+          <ToggleButton value="month" aria-label="Monthly">
             Monthly
           </ToggleButton>
-          <ToggleButton value="daily" aria-label="Daily">
+          <ToggleButton value="day" aria-label="Daily">
             Daily
           </ToggleButton>
-          */}
+          <ToggleButton value="hour" aria-label="Hourly">
+            Hourly
+          </ToggleButton>
         </ToggleButtonGroup>
       </CardActions>
     </Card>

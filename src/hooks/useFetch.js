@@ -1,33 +1,33 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-export function useFetch(fetchFn, initialValue) {
+export const useFetch = (fetchFn, parameter) => {
   const [isFetching, setIsFetching] = useState(false);
-  const [error, setError] = useState(null); // Initialize error to null
-  const [fetchedData, setFetchedData] = useState(initialValue);
+  const [fetchedData, setFetchedData] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchData() {
-      setIsFetching(true);
-      setError(null); // Clear error when fetch function changes
-      setFetchedData(null); // Clear fetched data when fetch function changes
-
-      try {
-        const data = await fetchFn();
-        setFetchedData(data);
-      } catch (error) {
-        setError({ message: error.message || 'Failed to fetch data.' });
+    const fetchData = async () => {
+      if (!parameter) {
+        console.warn("useFetch: No parameter provided");
+        setError(new Error("Parameter is required"));
+        return;
       }
 
-      setIsFetching(false);
-    }
+      setIsFetching(true);
+      setError(null);
+
+      try {
+        const data = await fetchFn(parameter);
+        setFetchedData(data);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setIsFetching(false);
+      }
+    };
 
     fetchData();
-  }, [fetchFn]); // Fetch data again when fetchFn changes
+  }, [fetchFn, parameter]);
 
-  return {
-    isFetching,
-    fetchedData,
-    setFetchedData,
-    error,
-  };
-}
+  return { isFetching, fetchedData, error };
+};
