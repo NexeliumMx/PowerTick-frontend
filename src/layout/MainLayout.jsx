@@ -46,10 +46,8 @@ const MainLayout = () => {
   const navigate = useNavigate(); // Use React Router for redirection
 
   const handleLogout = () => {
-    instance.logoutPopup().then(() => {
-      navigate("/"); // Redirect to Home Page after logout
-    });
-  };
+    instance.logoutRedirect();
+  };  
 
   const handleDrawerToggle = () => {
     if (isSmallScreen) {

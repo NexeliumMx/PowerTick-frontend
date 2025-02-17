@@ -34,10 +34,11 @@ export default function Home() {
   }, [accounts, navigate]);
 
   const handleLogin = () => {
-    instance.loginPopup()
-      .then(() => navigate("/dashboard")) // Redirect immediately after login
-      .catch(error => console.error("Login failed:", error));
+    instance.loginRedirect().catch(error => {
+      console.error("Login failed:", error);
+    });
   };
+  
 
   return (
     <Box
