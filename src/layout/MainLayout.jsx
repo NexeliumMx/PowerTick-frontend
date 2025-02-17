@@ -15,8 +15,8 @@
  *
  * Version History:
  * - 2024-xx-xx: Initial file creation.
- * - 2025-02-13: Integrated MSAL authentication for user info display.
- * - 2025-02-15: Implemented sign-out functionality with redirection to home page.
+ * - 2025-02-12: Integrated MSAL authentication for user info display.
+ * - 2025-02-13: Implemented sign-out functionality with redirection to home page.
  */
 
 import { useState, useContext } from "react";

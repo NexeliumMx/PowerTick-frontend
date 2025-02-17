@@ -14,22 +14,28 @@
  * All rights reserved.
  * 
  * Version History:
- * - 2025-02-08: Initial file creation.
+ * - 2025-02-08: Added MSAL configuration for Azure AD B2C.
+ * - 2025-02-17: Updated redirect URI for production environment.
  */
 
 import { PublicClientApplication } from "@azure/msal-browser";
 
+const isLocalhost = window.location.hostname === "localhost";
+
 const msalConfig = {
   auth: {
-    clientId: "9a8d0881-7579-403a-bdd6-1742c267b394",
-    authority: "https://powertickb2c.b2clogin.com/powertickb2c.onmicrosoft.com/B2C_1_SignIn",
-    knownAuthorities: ["powertickb2c.b2clogin.com"],
-    redirectUri: "http://localhost:5173/",  
-    postLogoutRedirectUri: "http://localhost:5173/",
+    clientId: "9a8d0881-7579-403a-bdd6-1742c267b394", // Your Azure AD B2C App ID
+    authority: "https://power-tick.b2clogin.com/power-tick.onmicrosoft.com/B2C_1_SignIn", // Change to your policy name
+    redirectUri: isLocalhost
+      ? "http://localhost:5173/" // Dev Environment
+      : "https://www.power-tick.nexelium.mx/", // Production
+    postLogoutRedirectUri: isLocalhost
+      ? "http://localhost:5173/"
+      : "https://www.power-tick.nexelium.mx/",
   },
   cache: {
     cacheLocation: "sessionStorage",
-    storeAuthStateInCookie: true,
+    storeAuthStateInCookie: !isLocalhost, // Use cookies only in production
   },
 };
 
