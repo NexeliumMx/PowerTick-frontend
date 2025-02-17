@@ -23,21 +23,19 @@ const isLocalhost = window.location.hostname === "localhost";
 
 const msalConfig = {
   auth: {
-    clientId: "9a8d0881-7579-403a-bdd6-1742c267b394", // Your Azure AD B2C App ID
-    authority: isLocalhost
-      ? "https://powertickb2c.b2clogin.com/powertickb2c.onmicrosoft.com/B2C_1_SignIn" // Local
-      : "https://powertickb2c.b2clogin.com/powertickb2c.onmicrosoft.com/B2C_1_SignIn", // Production
+    clientId: "9a8d0881-7579-403a-bdd6-1742c267b394",
+    authority: "https://powertickb2c.b2clogin.com/powertickb2c.onmicrosoft.com/B2C_1_SignIn",
     knownAuthorities: ["powertickb2c.b2clogin.com"],
     redirectUri: isLocalhost
-      ? "http://localhost:5173/" // Local Redirect
-      : "https://www.power-tick.nexelium.mx/", // Production Redirect
+      ? "http://localhost:5173/"  // Local Dev
+      : "https://www.power-tick.nexelium.mx/",  // Production
     postLogoutRedirectUri: isLocalhost
       ? "http://localhost:5173/"
       : "https://www.power-tick.nexelium.mx/",
   },
   cache: {
     cacheLocation: "sessionStorage",
-    storeAuthStateInCookie: !isLocalhost, // Cookies only in production
+    storeAuthStateInCookie: !isLocalhost,  // Cookies only in production
   },
 };
 
