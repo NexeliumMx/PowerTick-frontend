@@ -17,9 +17,10 @@
  * - 2024-xx-xx: Initial file creation.
  * - 2025-02-12: Integrated MSAL authentication for user info display.
  * - 2025-02-13: Implemented sign-out functionality with redirection to home page.
+ * - 2025-02-17: display all the user attributes that are returned in the authentication token.
  */
 
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import {
   Box,
   useMediaQuery,
@@ -43,35 +44,46 @@ const MainLayout = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const { instance, accounts } = useMsal();
-  const navigate = useNavigate(); // Use React Router for redirection
+  const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    if (accounts.length > 0) {
+      const account = accounts[0];
+
+      instance
+        .acquireTokenSilent({
+          scopes: ["openid", "profile", "email"],
+          account: account,
+        })
+        .then((response) => {
+          const claims = response.idTokenClaims;
+          setUserInfo({
+            name: claims.name || "N/A",
+            email: claims.emails?.[0] || claims.email || "N/A",
+            city: claims.city || "N/A",
+            country: claims.country || "N/A",
+            jobTitle: claims.jobTitle || "N/A",
+            postalCode: claims.postalCode || "N/A",
+            state: claims.state || "N/A",
+            street: claims.streetAddress || "N/A",
+            surname: claims.surname || "N/A",
+            objectId: claims.oid || "N/A",
+          });
+        })
+        .catch((error) => console.error("Error fetching token claims:", error));
+    }
+  }, [accounts, instance]);
 
   const handleLogout = () => {
     instance.logoutRedirect();
-  };  
-
-  const handleDrawerToggle = () => {
-    if (isSmallScreen) {
-      setDrawerOpen(true);
-    } else {
-      setCollapsed(!collapsed);
-    }
-  };
-
-  const toggleDrawer = (open) => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-    setDrawerOpen(open);
   };
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       {/* Topbar */}
       <Box sx={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 2 }}>
-        <Topbar handleDrawerToggle={handleDrawerToggle} />
+        <Topbar handleDrawerToggle={() => setDrawerOpen(!drawerOpen)} />
       </Box>
 
       {/* Sidebar and Content */}
@@ -91,10 +103,7 @@ const MainLayout = () => {
             <SidebarMenu collapsed={collapsed} />
           </Box>
         ) : (
-          <SmallScreenSidebarMenu
-            isOpen={drawerOpen}
-            toggleDrawer={toggleDrawer}
-          />
+          <SmallScreenSidebarMenu isOpen={drawerOpen} toggleDrawer={() => setDrawerOpen(false)} />
         )}
 
         {/* Content */}
@@ -107,41 +116,36 @@ const MainLayout = () => {
             overflowY: "auto",
           }}
         >
-          <Box
-            sx={{
-              maxWidth: "1400px",
-              margin: "0 auto",
-              padding: isSmallScreen ? "0 16px" : "0",
-            }}
-          >
-            {/* User Info & Logout Button */}
-            <Box sx={{ padding: 2, textAlign: "center", width: "100%" }}>
-              {accounts.length > 0 && (
-                <>
-                  <Typography variant="h6">
-                    Hello, {accounts[0].name}!
-                  </Typography>
-                  <Typography variant="body2">
-                    Email: {accounts[0].username}
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleLogout}
-                    sx={{ marginTop: 2 }}
-                  >
-                    Sign Out
-                  </Button>
-                </>
-              )}
-            </Box>
+          {/* User Info & Logout Button */}
+          <Box sx={{ padding: 2, textAlign: "center", width: "100%" }}>
+            {userInfo && (
+              <>
+                <Typography variant="h6">Hello, {userInfo.name}!</Typography>
+                <Typography variant="body2">Email: {userInfo.email}</Typography>
+                <Typography variant="body2">City: {userInfo.city}</Typography>
+                <Typography variant="body2">Country: {userInfo.country}</Typography>
+                <Typography variant="body2">Job Title: {userInfo.jobTitle}</Typography>
+                <Typography variant="body2">Postal Code: {userInfo.postalCode}</Typography>
+                <Typography variant="body2">State: {userInfo.state}</Typography>
+                <Typography variant="body2">Street: {userInfo.street}</Typography>
+                <Typography variant="body2">Surname: {userInfo.surname}</Typography>
+                <Typography variant="body2">User ID: {userInfo.objectId}</Typography>
 
-            <Outlet />
-            <BreakpointChecker />
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleLogout}
+                  sx={{ marginTop: 2 }}
+                >
+                  Sign Out
+                </Button>
+              </>
+            )}
           </Box>
-          <Box sx={{ width: "100%", bottom: 0, zIndex: 2 }}>
-            <Footer />
-          </Box>
+
+          <Outlet />
+          <BreakpointChecker />
+          <Footer />
         </Box>
       </Box>
     </Box>
