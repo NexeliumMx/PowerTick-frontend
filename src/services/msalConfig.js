@@ -15,7 +15,7 @@
  * 
  * Version History:
  * - 2025-02-08: Added MSAL configuration for Azure AD B2C.
- * - 2025-02-17: Updated redirect URI for production environment.
+ * - 2025-02-16: Updated redirect URI for production environment.
  */
 import { PublicClientApplication } from "@azure/msal-browser";
 
