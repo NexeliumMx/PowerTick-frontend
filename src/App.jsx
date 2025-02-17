@@ -1,3 +1,28 @@
+/**
+ * FileName: App.jsx
+* Author(s): Arturo Vargas
+ * Brief: Defines the main routing structure for the application.
+ * Date: 2024-08-20
+ *
+ * Description:
+ * This file is responsible for setting up the application's routing using `react-router-dom`. 
+ * It defines both public and authenticated routes, incorporating different pages and layouts.
+ * Routes without the navbar and sidebar are rendered independently, while other routes are wrapped 
+ * inside the `MainLayout` component for a consistent UI experience.
+ * 
+ * Key routes include:
+ * - Home, NotFound (standalone routes)
+ * - Dashboard, Downloads, Load Center, Users, Locations, Calendar, Substations, FAQ, User Manual, 
+ *   Add Meter (wrapped in MainLayout)
+ * - Test components for UI and Sidebar testing
+ *
+ * Copyright (c) 2025 BY: Nexelium Technological Solutions S.A. de C.V.
+ * All rights reserved.
+ *
+ * Version History:
+ * - 2024-08-20: Initial file creation.
+ */
+
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/home';
 import NotFound from './pages/NotFound';
