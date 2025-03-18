@@ -1,25 +1,26 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Box, Typography, Select, MenuItem } from "@mui/material";
 import NavButtons from "./components/ui/NavButtons";
 import Configuration from "./subpages/Configuration";
 import Overview from "./subpages/Overview";
 import Measurements from "./subpages/Measurements";
 import Header from "../../components/ui/Header";
-import { useData } from "../../context/DataProvider";
 import { ModeContext } from "../../context/AppModeContext";
-import LoadingOverlay from "../../components/LoadingOverlay";
+import LoadingOverlay from "../../components/test/LoadingOverlay";
+
+// Mock data
+const mockPowerMeters = [
+  { serial_number: "MOCK0000001" },
+  { serial_number: "MOCK0000002" },
+  { serial_number: "MOCK0000003" },
+];
 
 const Dashboard = () => {
-  const { powerMeters, isFetching, error, selectedPowerMeter, setSelectedPowerMeter } = useData(); // Use DataProvider context
   const { state } = useContext(ModeContext);
+  const [powerMeters, setPowerMeters] = useState(mockPowerMeters);
+  const [selectedPowerMeter, setSelectedPowerMeter] = useState(mockPowerMeters[0].serial_number);
+  const [isFetching, setIsFetching] = useState(false);
   const [activePage, setActivePage] = useState("Overview");
-
-  // Automatically select the first power meter by default
-  useEffect(() => {
-    if (!isFetching && powerMeters && powerMeters.length > 0 && !selectedPowerMeter) {
-      setSelectedPowerMeter(powerMeters[0].serial_number); // Set the first power meter if none is selected
-    }
-  }, [isFetching, powerMeters, selectedPowerMeter, setSelectedPowerMeter]);
 
   const renderPage = () => {
     switch (activePage) {
@@ -78,7 +79,7 @@ const Dashboard = () => {
       >
         <Select
           value={selectedPowerMeter || ""} // Ensure a fallback empty string
-          onChange={(e) => setSelectedPowerMeter(e.target.value)} // Update context state
+          onChange={(e) => setSelectedPowerMeter(e.target.value)} // Update state
           displayEmpty
           sx={{ minWidth: 200 }}
           disabled={isFetching} // Disable dropdown while loading

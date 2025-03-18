@@ -1,5 +1,5 @@
 import { Box, Button, Typography, Link } from "@mui/material";
-import BluuCard from "../../components/BluuCard";
+import BluuCard from "../../components/test/BluuCard";
 import { useTheme } from "@mui/material/styles";
 import Header from "../../components/ui/Header";
 

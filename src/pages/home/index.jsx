@@ -29,7 +29,7 @@ export default function Home() {
 
   useEffect(() => {
     if (accounts.length > 0) {
-      navigate("/dashboard"); // Redirect to dashboard if user is logged in
+      navigate("/load-center"); // Redirect to load-center if user is logged in
     }
   }, [accounts, navigate]);
 
