@@ -7,27 +7,50 @@ import Measurements from "./subpages/Measurements";
 import Header from "../../components/ui/Header";
 import { ModeContext } from "../../context/AppModeContext";
 import LoadingOverlay from "../../components/test/LoadingOverlay";
-
-// Mock data
-const mockPowerMeters = [
-  { serial_number: "MOCK0000001" },
-  { serial_number: "MOCK0000002" },
-  { serial_number: "MOCK0000003" },
-];
+import { fetchPowermetersByUserAccess, fetchRealTimeData } from "../../services/api/httpRequests";
 
 const Dashboard = () => {
   const { state } = useContext(ModeContext);
-  const [powerMeters, setPowerMeters] = useState(mockPowerMeters);
-  const [selectedPowerMeter, setSelectedPowerMeter] = useState(mockPowerMeters[0].serial_number);
+  const [powerMeters, setPowerMeters] = useState([]);
+  const [selectedPowerMeter, setSelectedPowerMeter] = useState("");
+  const [realTimeData, setRealTimeData] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const [activePage, setActivePage] = useState("Overview");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsFetching(true);
+      try {
+        const user_id = "4c7c56fe-99fc-4611-b57a-0d5683f9bc95"; // Replace with actual user_id
+        const data = await fetchPowermetersByUserAccess(user_id);
+        setPowerMeters(data);
+        if (data.length > 0) {
+          setSelectedPowerMeter(data[0].serial_number);
+          fetchRealTimeData(user_id, data[0].serial_number).then(setRealTimeData);
+        }
+      } catch (error) {
+        console.error("Error fetching powermeters:", error);
+      } finally {
+        setIsFetching(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (selectedPowerMeter) {
+      const user_id = "4c7c56fe-99fc-4611-b57a-0d5683f9bc95"; // Replace with actual user_id
+      fetchRealTimeData(user_id, selectedPowerMeter).then(setRealTimeData);
+    }
+  }, [selectedPowerMeter]);
 
   const renderPage = () => {
     switch (activePage) {
       case "Overview":
         return <Overview powerMeter={selectedPowerMeter} />;
       case "Measurements":
-        return <Measurements powerMeter={selectedPowerMeter} />;
+        return <Measurements powerMeter={selectedPowerMeter} realTimeData={realTimeData} />;
       case "Configuration":
         return <Configuration powerMeter={selectedPowerMeter} />;
       default:
