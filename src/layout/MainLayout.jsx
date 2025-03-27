@@ -13,7 +13,7 @@
  * Copyright (c) 2025 BY: Nexelium Technological Solutions S.A. de C.V.
  * All rights reserved.
  *
- * Version History:
+ * Version History: 
  * - 2024-xx-xx: Initial file creation.
  * - 2025-02-12: Integrated MSAL authentication for user info display.
  * - 2025-02-13: Implemented sign-out functionality with redirection to home page.
@@ -33,7 +33,7 @@ import { useMsal } from "@azure/msal-react";
 import Topbar from "../components/ui/Topbar";
 import SidebarMenu from "../components/ui/SidebarMenu";
 import SmallScreenSidebarMenu from "../components/ui/SmallScreenSidebarMenu";
-import BreakpointChecker from "../components/BreakpointChecker";
+import BreakpointChecker from "../components/test/BreakpointChecker";
 import Footer from "../components/ui/Footer";
 import { ModeContext } from "../context/AppModeContext";
 

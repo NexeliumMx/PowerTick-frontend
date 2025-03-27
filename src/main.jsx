@@ -13,7 +13,6 @@
  * All rights reserved.
  *
  * Version History:
- * - 2024-08-20: Initial file creation.
  * - 2024-09-01: Added Material UI and implemented Light/Dark Mode.
  * - 2024-09-11: Created `HomePage` and `NotFound` pages, added MUI test page, and integrated React Router.
  * - 2024-10-04: Implemented mode-based data fetching and improved error handling.
@@ -34,11 +33,10 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 
 // Context imports
 import { ModeProvider } from "./context/AppModeContext.jsx";
-import { DataProvider } from "./context/DataProvider.jsx";
 
 // MSAL imports
 import { MsalProvider } from "@azure/msal-react";
-import { msalInstance } from "./services/msalConfig";
+import { msalInstance } from "./services/auth/msalConfig.js";
 
 function MainApp() {
   const [theme, colorMode] = useMode();
@@ -50,9 +48,7 @@ function MainApp() {
           <CssBaseline />
           <BrowserRouter>
             <ModeProvider>
-              <DataProvider>
                 <App />
-              </DataProvider>
             </ModeProvider>
           </BrowserRouter>
         </ThemeProvider>

@@ -1,82 +1,70 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography, Card, CardContent, CardActions, Button } from "@mui/material";
 import Header from "../../components/ui/Header";
-import { useNavigate } from "react-router-dom";
-import { ModeContext } from "../../context/AppModeContext";
-import { useData } from "../../context/DataProvider";
-import { fetchAllPowerMeters } from "../../services/api/fetchDemoAPI";
-import LoadingOverlay from "../../components/LoadingOverlay";
+import { useMsal } from "@azure/msal-react";
+import { useEffect, useState } from "react";
+import { fetchPowermetersByUserAccess } from "../../services/api/httpRequests";
 
 const LoadCenter = () => {
-  const { state } = useContext(ModeContext);
-  const { setSelectedPowerMeter } = useData(); // Get setSelectedPowerMeter from DataProvider
-  const [powerMeters, setPowerMeters] = useState([]);
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const { instance, accounts } = useMsal();
+  const [powermetersData, setPowermetersData] = useState(null);
 
   useEffect(() => {
-    if (state.mode === "DEMO_MODE") {
-      setIsLoading(true);
-      fetchAllPowerMeters()
-        .then((data) => {
-          setPowerMeters(data);
-          setError("");
+    if (accounts.length > 0) {
+      const account = accounts[0];
+
+      instance
+        .acquireTokenSilent({
+          scopes: ["openid", "profile", "email"],
+          account: account,
         })
-        .catch((err) => {
-          console.error("Error fetching power meters:", err);
-          setError("Failed to retrieve power meters. Please try again.");
+        .then((response) => {
+          const claims = response.idTokenClaims;
+          const objectId = claims.oid || null;
+
+          if (objectId) {
+            fetchPowermetersByUserAccess(objectId)
+              .then((data) => {
+                setPowermetersData(data); // Store the fetched JSON data
+              })
+              .catch((error) => {
+                console.error("Error fetching powermeters:", error);
+              });
+          } else {
+            console.error("Object ID not found in token claims.");
+          }
         })
-        .finally(() => {
-          setIsLoading(false);
+        .catch((error) => {
+          console.error("Error fetching token claims:", error);
         });
     }
-  }, [state.mode]);
-
-  const handleNavigateToDashboard = (serialNumber) => {
-    setSelectedPowerMeter(serialNumber); // Update selected power meter in context
-    navigate(`/dashboard`); // Navigate to the dashboard
-  };
+  }, [accounts, instance]);
 
   return (
     <Box m="20px">
-      <LoadingOverlay loading={isLoading} /> {/* Add LoadingOverlay */}
-
-      <Header title="LOAD CENTERS" subtitle="Overview and Management of Energy Distribution and Consumption" />
-
-      {state.mode === "LIVE_MODE" && (
-        <Typography variant="body1" color="error" sx={{ textAlign: "center", marginTop: 4 }}>
-          Load centers are not available in LIVE mode.
-        </Typography>
-      )}
-
-      {state.mode === "DEMO_MODE" && error && (
-        <Typography variant="body1" color="error" sx={{ textAlign: "center", marginTop: 4 }}>
-          {error}
-        </Typography>
-      )}
-
-      {state.mode === "DEMO_MODE" && !isLoading && !error && powerMeters.length > 0 && (
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, marginTop: 4 }}>
-          {powerMeters.map((powerMeter, index) => (
-            <Button
-              key={index}
-              variant="contained"
-              color="primary"
-              sx={{ minWidth: "150px" }}
-              onClick={() => handleNavigateToDashboard(powerMeter.serial_number)} // Update and navigate
-            >
-              {powerMeter.serial_number}
-            </Button>
-          ))}
-        </Box>
-      )}
-
-      {state.mode === "DEMO_MODE" && !isLoading && !error && powerMeters.length === 0 && (
-        <Typography variant="body1" sx={{ textAlign: "center", marginTop: 4 }}>
-          No power meters available.
-        </Typography>
-      )}
+      <Header
+        title="LOAD CENTERS"
+        subtitle="Overview and Management of Energy Distribution and Consumption"
+      />
+      <Box>
+        {powermetersData ? (
+          powermetersData.map((powermeter, index) => (
+            <Card key={index} sx={{ minWidth: 275, marginBottom: 2 }}>
+              <CardContent>
+                <Typography variant="p" display="block">Serial Number: {powermeter.serial_number}</Typography>
+                <Typography variant="p" display="block">Client ID: {powermeter.client_id}</Typography>
+                <Typography variant="p" display="block">Client Alias: {powermeter.client_alias}</Typography>
+                <Typography variant="p" display="block">Installation ID: {powermeter.installation_id}</Typography>
+                <Typography variant="p" display="block">Installation Alias: {powermeter.installation_alias}</Typography>
+              </CardContent>
+              <CardActions>
+                <Button size="small">See info</Button>
+              </CardActions>
+            </Card>
+          ))
+        ) : (
+          <Typography>Loading...</Typography>
+        )}
+      </Box>
     </Box>
   );
 };
