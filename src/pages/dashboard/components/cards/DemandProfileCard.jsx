@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { fetchDemandProfile } from "../../../../services/api/httpRequests";
 import { useMsal } from "@azure/msal-react";
+import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer } from "recharts";
 
 const DemandProfileCard = ({ selectedPowerMeter }) => {
   const { accounts } = useMsal();
@@ -34,6 +35,15 @@ const DemandProfileCard = ({ selectedPowerMeter }) => {
     }
   };
 
+  // Transform data for Recharts
+  const chartData = demandProfileData?.map((item) => ({
+    name: item.demand_profile_hour_range_tz,
+    avgRealPower: parseFloat(item.avg_real_power_w),
+    maxRealPower: item.max_real_power_w,
+    avgVar: parseFloat(item.avg_var),
+    maxVar: item.max_var,
+  }));
+
   return (
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <CardHeader title="Demand Profile" />
@@ -42,9 +52,21 @@ const DemandProfileCard = ({ selectedPowerMeter }) => {
           {isLoading ? (
             <Typography variant="body1">Loading...</Typography>
           ) : demandProfileData ? (
-            <Typography variant="body1" component="pre">
-              {JSON.stringify(demandProfileData, null, 2)}
-            </Typography>
+            <ResponsiveContainer width="100%" height={400}>
+              <ComposedChart data={chartData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <CartesianGrid stroke="#f5f5f5" />
+                {/* Bars for avgRealPower and avgVar */}
+                <Bar dataKey="avgRealPower" barSize={20} fill="#8884d8" name="Avg Real Power (W)" />
+                <Bar dataKey="avgVar" barSize={20} fill="#82ca9d" name="Avg VAR" />
+                {/* Lines for maxRealPower and maxVar */}
+                <Line type="monotone" dataKey="maxRealPower" stroke="#413ea0" name="Max Real Power (W)" />
+                <Line type="monotone" dataKey="maxVar" stroke="#ff7300" name="Max VAR" />
+              </ComposedChart>
+            </ResponsiveContainer>
           ) : (
             <Typography variant="body1">No data available</Typography>
           )}

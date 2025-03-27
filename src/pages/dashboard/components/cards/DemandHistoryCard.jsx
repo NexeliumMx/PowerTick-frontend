@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { fetchDemandHistory } from "../../../../services/api/httpRequests";
 import { useMsal } from "@azure/msal-react";
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from "recharts";
 
 const DemandHistoryCard = ({ selectedPowerMeter }) => {
   const { accounts } = useMsal();
@@ -34,6 +35,13 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
     }
   };
 
+  // Transform data for Recharts
+  const chartData = demandHistoryData?.map((item) => ({
+    name: item.timestamp_tz, // Use the local timestamp for the X-axis
+    realPower: item.real_power_w,
+    reactivePower: item.reactive_power_var,
+  }));
+
   return (
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <CardHeader title="Demand History" />
@@ -42,9 +50,17 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
           {isLoading ? (
             <Typography variant="body1">Loading...</Typography>
           ) : demandHistoryData ? (
-            <Typography variant="body1" component="pre">
-              {JSON.stringify(demandHistoryData, null, 2)}
-            </Typography>
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="realPower" stroke="#8884d8" name="Real Power (W)" />
+                <Line type="monotone" dataKey="reactivePower" stroke="#82ca9d" name="Reactive Power (VAR)" />
+              </LineChart>
+            </ResponsiveContainer>
           ) : (
             <Typography variant="body1">No data available</Typography>
           )}

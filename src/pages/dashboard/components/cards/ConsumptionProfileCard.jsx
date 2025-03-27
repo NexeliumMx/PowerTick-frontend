@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { fetchConsumptionProfile } from "../../../../services/api/httpRequests";
 import { useMsal } from "@azure/msal-react";
+import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer } from "recharts";
 
 const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
   const { accounts } = useMsal();
@@ -34,6 +35,13 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
     }
   };
 
+  // Transform data for Recharts
+  const chartData = consumptionProfileData?.map((item) => ({
+    name: item.consumption_profile_hour_range_tz,
+    realEnergy: item.real_energy_wh,
+    reactiveEnergy: item.reactive_energy_varh,
+  }));
+
   return (
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <CardHeader title="Consumption Profile" />
@@ -42,9 +50,19 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
           {isLoading ? (
             <Typography variant="body1">Loading...</Typography>
           ) : consumptionProfileData ? (
-            <Typography variant="body1" component="pre">
-              {JSON.stringify(consumptionProfileData, null, 2)}
-            </Typography>
+            <ResponsiveContainer width="100%" height={400}>
+              <ComposedChart data={chartData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <CartesianGrid stroke="#f5f5f5" />
+                {/* Bars for realEnergy */}
+                <Bar dataKey="realEnergy" barSize={20} fill="#8884d8" name="Real Energy (Wh)" />
+                {/* Lines for reactiveEnergy */}
+                <Line type="monotone" dataKey="reactiveEnergy" stroke="#ff7300" name="Reactive Energy (VARh)" />
+              </ComposedChart>
+            </ResponsiveContainer>
           ) : (
             <Typography variant="body1">No data available</Typography>
           )}
