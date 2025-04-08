@@ -83,7 +83,13 @@ const MainLayout = () => {
     <Box display="flex" flexDirection="column" minHeight="100vh">
       {/* Topbar */}
       <Box sx={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 2 }}>
-        <Topbar handleDrawerToggle={() => setDrawerOpen(!drawerOpen)} />
+        <Topbar handleDrawerToggle={() =>  {
+    if (isSmallScreen) {
+      setDrawerOpen(true); // abrir el drawer temporal
+    } else {
+      setCollapsed((prev) => !prev); // colapsar el drawer permanente
+    }
+  }} />
       </Box>
 
       {/* Sidebar and Content */}
@@ -92,12 +98,12 @@ const MainLayout = () => {
           <Box
             sx={{
               position: "fixed",
-              top: "64px",
+              top: "85px",
               left: 0,
               bottom: 0,
               width: collapsed ? "80px" : "250px",
-              transition: "width 0.2s ease",
-              zIndex: 1,
+              transition:  "margin-left 0.3s ease-in-out",
+              zIndex: theme.zIndex.appBar - 1,
             }}
           >
             <SidebarMenu collapsed={collapsed} />
