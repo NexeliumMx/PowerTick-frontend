@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 import { fetchConsumptionProfile } from "../../../../services/api/httpRequests";
 import { useMsal } from "@azure/msal-react";
 import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer } from "recharts";
 
 const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
+  const theme = useTheme(); 
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid; // Retrieve user_id from MSAL
   const [timeInterval, setTimeInterval] = useState("day"); // Default to "day"
@@ -44,17 +46,28 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
 
   return (
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      <CardHeader title="Consumption Profile" />
+      <CardHeader title="Consumption Profile" 
+      titleTypographyProps={{variant: 'h2', sx: { textAlign: 'left',paddingLeft:10, alignSelf: 'flex-start' } // Tamaño del texto
+      }} />
       <CardContent sx={{ flexGrow: 1 }}>
-        <Box sx={{ width: "100%", height: "500px", overflow: "auto", p: 2 }}>
+        <Box sx={{ width: "100%", height: "600px", overflow: "auto", p: 2 }}>
           {isLoading ? (
             <Typography variant="body1">Loading...</Typography>
           ) : consumptionProfileData ? (
-            <ResponsiveContainer width="100%" height={400}>
+            <ResponsiveContainer width="100%" height={500}>
               <ComposedChart data={chartData}>
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip />
+                <Tooltip
+                contentStyle={{
+                  backgroundColor: theme.palette.background.paper,
+                  border: `1px solid ${theme.palette.divider}`,
+                  color: theme.palette.text.primary,
+                }}
+                labelStyle={{
+                  color: theme.palette.text.secondary,
+                }}
+                />
                 <Legend />
                 <CartesianGrid stroke="#f5f5f5" />
                 {/* Bars for realEnergy */}

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 import { fetchConsumptionHistory } from "../../../../services/api/httpRequests";
 import { useMsal } from "@azure/msal-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from "recharts";
 
 const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
+  const theme = useTheme(); 
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid; // Retrieve user_id from MSAL
   const [timeInterval, setTimeInterval] = useState("day"); // Default to "day"
@@ -44,7 +46,10 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
 
   return (
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      <CardHeader title="Consumption History" />
+      <CardHeader title="Consumption History" 
+      titleTypographyProps={{variant: 'h2', // Tamaño del texto 
+        sx: { textAlign: 'left',paddingLeft:12, alignSelf: 'flex-start' }
+       }} />  
       <CardContent sx={{ flexGrow: 1 }}>
         <Box sx={{ width: "100%", height: "500px", overflow: "auto", p: 2 }}>
           {isLoading ? (
@@ -55,7 +60,16 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip />
+                <Tooltip 
+                contentStyle={{
+                  backgroundColor: theme.palette.background.paper,
+                  border: `1px solid ${theme.palette.divider}`,
+                  color: theme.palette.text.primary,
+                }}
+                labelStyle={{
+                  color: theme.palette.text.secondary,
+                }}
+                />
                 <Legend />
                 <Line type="monotone" dataKey="realEnergy" stroke="#8884d8" name="Real Energy (Wh)" />
                 <Line type="monotone" dataKey="reactiveEnergy" stroke="#82ca9d" name="Reactive Energy (VARh)" />
