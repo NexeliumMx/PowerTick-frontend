@@ -61,7 +61,16 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
               <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
-                <YAxis />
+                {/* Eje Izquierdo*/}
+                <YAxis  yAxisId="left" domain={['auto','auto']} tick={{ fill: theme.palette.text.primary }}
+                 stroke={theme.palette.text.primary}
+                />
+                {/* Eje Derecho*/}
+                <YAxis  yAxisId="right" orientation="right"  tick={{ fill: theme.palette.text.primary }}
+                 stroke={theme.palette.text.primary}
+                />
+
+
                 <Tooltip 
                 contentStyle={{
                   backgroundColor: theme.palette.background.paper,
@@ -73,8 +82,8 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
                 }}
                 />
                 <Legend />
-                <Line type="monotone" dataKey="realEnergy" stroke="#8884d8" name="Real Energy (Wh)" />
-                <Line type="monotone" dataKey="reactiveEnergy" stroke="#82ca9d" name="Reactive Energy (VARh)" />
+                <Line type="monotone" dataKey="realEnergy" stroke="#8884d8" name="Real Energy (Wh)" dot={false} yAxisId="left" />
+                <Line type="monotone" dataKey="reactiveEnergy" stroke="#82ca9d" name="Reactive Energy (VARh)"  dot={false} yAxisId="right"/>
               </LineChart>
             </ResponsiveContainer>
           ) : (
