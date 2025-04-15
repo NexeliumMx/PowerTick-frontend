@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
+import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography,Skeleton } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import { fetchDemandProfile } from "../../../../services/api/httpRequests";
 import { useMsal } from "@azure/msal-react";
 import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer } from "recharts";
+import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 
 const DemandProfileCard = ({ selectedPowerMeter }) => {
   const theme = useTheme(); 
@@ -53,7 +54,7 @@ const DemandProfileCard = ({ selectedPowerMeter }) => {
       <CardContent sx={{ flexGrow: 1 }}>
         <Box sx={{ width: "100%", height: "600px", overflow: "auto", p: 2 }}>
           {isLoading ? (
-            <Typography variant="body1">Loading...</Typography>
+            <ChartSkeletonCard/>
           ) : demandProfileData ? (
             <ResponsiveContainer width="100%" height={500}>
               <ComposedChart data={chartData}>

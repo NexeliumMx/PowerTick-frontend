@@ -4,6 +4,8 @@ import { useTheme } from '@mui/material/styles';
 import { fetchConsumptionHistory } from "../../../../services/api/httpRequests";
 import { useMsal } from "@azure/msal-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from "recharts";
+import ChartSkeletonCard from "../cards/ChartSkeletonCard";
+
 
 const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
   const theme = useTheme(); 
@@ -53,7 +55,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
       <CardContent sx={{ flexGrow: 1 }}>
         <Box sx={{ width: "100%", height: "500px", overflow: "auto", p: 2 }}>
           {isLoading ? (
-            <Typography variant="body1">Loading...</Typography>
+            <ChartSkeletonCard/>
           ) : consumptionHistoryData ? (
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
