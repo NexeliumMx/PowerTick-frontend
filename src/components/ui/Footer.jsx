@@ -27,7 +27,7 @@ function Footer() {
         color: theme.palette.text.primary, // Usar color de texto del tema para mejor contraste
       }}
     >
-      <Typography variant="h6">Desarrollado por Nexelium Technology para UPElectric</Typography>
+      <Typography variant="h6">Desarrollado por: Nexelium</Typography>
 
       <Typography variant="h6">contacto@nexelium.com</Typography>
 
@@ -50,7 +50,7 @@ function Footer() {
         </Button>
       </Box>
 
-      <Typography variant="h6">PowerTIC ©</Typography>
+      <Typography variant="h6">PowerTick ©</Typography>
     </Box>
   );
 }

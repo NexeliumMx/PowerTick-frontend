@@ -38,7 +38,7 @@ import Footer from "../components/ui/Footer";
 import { ModeContext } from "../context/AppModeContext";
 
 const MainLayout = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { state } = useContext(ModeContext);
   const theme = useTheme();
@@ -122,7 +122,7 @@ const MainLayout = () => {
             overflowY: "auto",
           }}
         >
-          {/* User Info & Logout Button */}
+          {/* User Info & Logout Button 
           <Box sx={{ padding: 2, textAlign: "center", width: "100%" }}>
             {userInfo && (
               <>
@@ -148,6 +148,7 @@ const MainLayout = () => {
               </>
             )}
           </Box>
+          */}
 
           <Outlet />
           <BreakpointChecker />
