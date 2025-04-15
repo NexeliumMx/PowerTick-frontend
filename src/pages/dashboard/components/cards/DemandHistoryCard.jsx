@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 import { fetchDemandHistory } from "../../../../services/api/httpRequests";
 import { useMsal } from "@azure/msal-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from "recharts";
 
 const DemandHistoryCard = ({ selectedPowerMeter }) => {
+  const theme = useTheme(); 
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid; // Retrieve user_id from MSAL
   const [timeInterval, setTimeInterval] = useState("day"); // Default to "day"
@@ -44,18 +46,29 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
 
   return (
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      <CardHeader title="Demand History" />
+      <CardHeader title="Demand History" 
+      titleTypographyProps={{variant: 'h2' ,sx: { textAlign: 'left',paddingLeft:12, alignSelf: 'flex-start' }// Tamaño del texto
+      }} />
       <CardContent sx={{ flexGrow: 1 }}>
-        <Box sx={{ width: "100%", height: "500px", overflow: "auto", p: 2 }}>
+        <Box sx={{ width: "100%", height: "600px", overflow: "auto", p: 2 }}>
           {isLoading ? (
             <Typography variant="body1">Loading...</Typography>
           ) : demandHistoryData ? (
-            <ResponsiveContainer width="100%" height={400}>
+            <ResponsiveContainer width="100%" height={500}>
               <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip />
+                <Tooltip 
+                contentStyle={{
+                  backgroundColor: theme.palette.background.paper,
+                  border: `1px solid ${theme.palette.divider}`,
+                  color: theme.palette.text.primary,
+                }}
+                labelStyle={{
+                  color: theme.palette.text.secondary,
+                }}
+                 />
                 <Legend />
                 <Line type="monotone" dataKey="realPower" stroke="#8884d8" name="Real Power (W)" />
                 <Line type="monotone" dataKey="reactivePower" stroke="#82ca9d" name="Reactive Power (VAR)" />
