@@ -68,7 +68,7 @@ const ReactivePowerBarChart = ({ data }) => {
               data: [null, null, var_l3, null],
               label: 'L3',
               color: '#ffc658',
-              valueFormatter: (value) => `${value}  VAR`
+              valueFormatter: (value) => `${value} VAR`
             },
             {
               data: [null, null, null, totalVar],

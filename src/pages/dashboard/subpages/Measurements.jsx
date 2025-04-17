@@ -5,6 +5,7 @@ import VoltageBarChart from "../components/meas_cards/Voltage_lnBarChart";
 import VoltageLLBarChart from "../components/meas_cards/VoltageLLBarChart";
 import DemandBarChart from "../components/meas_cards/DemandBarChart";
 import ReactivePowerBarChart from "../components/meas_cards/ReactivePowerBarChart";
+import PowerFactorGaugeCard from "../components/meas_cards/PFGauge";
 
 
 
@@ -46,15 +47,21 @@ export default function Measurements({ realTimeData }) {
           <VoltageLLBarChart data={parsedData} />
         </Grid2>
 
-        {/* Gráfica #: Voltajes LL */}
+        {/* Gráfica #: Potencia reactiva por línea */}
         <Grid2 size={{ xs: 12, lg: 6 }}>
           <ReactivePowerBarChart data={parsedData} />
         </Grid2>
 
+        {/* Gráfica #:PF Gauges */}
+        <Grid2 size={{ xs: 12, lg: 6 }}>
+          <PowerFactorGaugeCard data={parsedData} />
+        </Grid2>
+
+
 
 
         {/* Gráficas 3 a 8 (placeholders) */}
-        {Array.from({ length: 3 }).map((_, index) => (
+        {Array.from({ length: 2 }).map((_, index) => (
           <Grid2 key={index} size={{ xs: 12, lg: 6 }}>
             <Paper elevation={3} sx={{ p: 2, height: 400 }}>
               <Typography variant="subtitle1">

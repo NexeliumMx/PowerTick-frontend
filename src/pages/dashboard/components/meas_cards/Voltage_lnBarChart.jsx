@@ -32,7 +32,7 @@ const VoltageBarChart = ({ data }) => {
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <BarChart
         animation={{duration: 1000, // en milisegundos
-easing: 'ease-out',   // opciones: 'linear', 'ease-in', 'ease-out', 'ease-in-out'
+        easing: 'ease-out',   // opciones: 'linear', 'ease-in', 'ease-out', 'ease-in-out'
 }}
         borderRadius={15}
         grid={{horizontal:true}}
