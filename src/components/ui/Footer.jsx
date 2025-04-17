@@ -27,7 +27,7 @@ function Footer() {
         color: theme.palette.text.primary, // Usar color de texto del tema para mejor contraste
       }}
     >
-      <Typography variant="h6">Desarrollado por: Nexelium</Typography>
+      <Typography variant="h6">Desarrollado por: Nexelium Technological Solutions S.A. de C.V</Typography>
 
       <Typography variant="h6">contacto@nexelium.com</Typography>
 
