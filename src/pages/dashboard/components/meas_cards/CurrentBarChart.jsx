@@ -7,7 +7,8 @@ const CurrentBarChart = ({ data }) => {
     typeof data.current_l1 === 'number' &&
     typeof data.current_l2 === 'number' &&
     typeof data.current_l3 === 'number';
-
+// 🔍 Aquí puedes ver si el componente recibe nuevos datos
+  console.log('Datos actuales del medidor:', data);
   if (!hasValidData) {
     return (
       <Paper elevation={3} sx={{ p: 2, height: 300 }}>
@@ -21,7 +22,7 @@ const CurrentBarChart = ({ data }) => {
     );
   }
 
-  const { current_l1, current_l2, current_l3 } = data;
+  const { current_l1, current_l2, current_l3 , timestamp_utc  } = data;
   const total = current_l1 + current_l2 + current_l3;
 
   return (
@@ -32,9 +33,6 @@ const CurrentBarChart = ({ data }) => {
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <BarChart
         borderRadius={15}
-        animation={{duration: 3000, // en milisegundos
-            easing: 'linear',   // opciones: 'linear', 'ease-in', 'ease-out', 'ease-in-out'
-            }}
         grid={{horizontal:true}}
          margin={{ left: 70, right: 20, top: 20, bottom: 20 }}
           xAxis={[
@@ -55,16 +53,19 @@ const CurrentBarChart = ({ data }) => {
               data: [current_l1, null, null, current_l1],
               label: 'L1',
               stack: 'total',
+              valueFormatter: (value) => `${value} A`
             },
             {
               data: [null, current_l2, null, current_l2],
               label: 'L2',
               stack: 'total',
+              valueFormatter: (value) => `${value} A`
             },
             {
               data: [null, null, current_l3, current_l3],
               label: 'L3',
               stack: 'total',
+              valueFormatter: (value) => `${value} A`
             },
           ]}
           colors={['#8884d8', '#82ca9d', '#ffc658']}
