@@ -3,12 +3,12 @@ import Grid2 from '@mui/material/Grid2';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 
 const getColorByFP = (value) => {
-  if (value >= 0.95) return '#4caf50';     // Verde
-  if (value >= 0.90) return '#ffb300';     // Amarillo
-  return '#f44336';                        // Rojo
+  if (value >= 0.95) return '#4caf50';     // Green
+  if (value >= 0.90) return '#ffb300';     // Yellow
+  return '#f44336';                        // Red
 };
 
-const PowerFactorGauges = ({ data }) => {
+const PowerFactor = ({ data }) => {
   const hasValidData =
     data &&
     typeof data.pf_l1 === 'number' &&
@@ -20,10 +20,10 @@ const PowerFactorGauges = ({ data }) => {
     return (
       <Paper elevation={3} sx={{ p: 2, height: 300 }}>
         <Typography variant="subtitle1" align="center">
-          Factor de Potencia
+          Power Factor
         </Typography>
         <Typography variant="body2" color="text.secondary" align="center">
-          Datos no disponibles.
+          Data not available.
         </Typography>
       </Paper>
     );
@@ -33,13 +33,13 @@ const PowerFactorGauges = ({ data }) => {
     { label: 'L1', value: data.pf_l1 / 1000 },
     { label: 'L2', value: data.pf_l2 / 1000 },
     { label: 'L3', value: data.pf_l3 / 1000 },
-    { label: 'Prom.', value: data.power_factor / 1000 },
+    { label: 'Avg.', value: data.power_factor / 1000 },
   ];
 
   return (
     <Paper elevation={3} sx={{ p: 1 }}>
       <Typography variant="subtitle1" align="center" gutterBottom>
-        Factor de Potencia (0 a 1)
+        Power Factor (0 to 1)
       </Typography>
       <Grid2 container spacing={2} justifyContent="center">
         {gauges.map(({ label, value }) => {
@@ -75,4 +75,4 @@ const PowerFactorGauges = ({ data }) => {
   );
 };
 
-export default PowerFactorGauges;
+export default PowerFactor;
