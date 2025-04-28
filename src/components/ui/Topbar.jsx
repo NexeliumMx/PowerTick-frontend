@@ -1,7 +1,14 @@
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import { ModeContext } from "../../context/AppModeContext";
-import { Box, IconButton, useTheme, MenuItem, Select, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  useTheme,
+  MenuItem,
+  Select,
+  useMediaQuery,
+} from "@mui/material";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
@@ -35,7 +42,7 @@ const Topbar = ({ handleDrawerToggle }) => {
         width: "100%",
       }}
     >
-      {/* Left Section: Logo and Menu Toggle */}
+      {/* Left Section: Logo, Typography, and Menu Toggle */}
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Box
           sx={{
@@ -45,19 +52,36 @@ const Topbar = ({ handleDrawerToggle }) => {
             transition: "width 0.3s ease, opacity 0.3s ease",
             opacity: isSmallScreen ? 0 : 1,
             visibility: isSmallScreen ? "hidden" : "visible",
+            display: "flex",
+            alignItems: "center",
           }}
         >
           <img
-            src="/assets/logoipsum-288.svg"
+            src="/assets/logo_powertick-03.svg"
             alt="Logo"
-            style={{ width: "100%", height: "100%", cursor: "pointer" }}
+            style={{ width: "50px", height: "100%", cursor: "pointer" }}
           />
+        {!isSmallScreen && (
+          <Box sx={{ ml: 1, mr: 1, display: "flex", alignItems: "center" }}>
+            <span
+              style={{
+                fontWeight: 700,
+                fontSize: "1.25rem",
+                color: theme.palette.text.primary,
+                letterSpacing: "0.05em",
+              }}
+            >
+              PowerTick
+            </span>
+          </Box>
+        )}
         </Box>
+        {/* PowerTick Typography */}
+        
         <IconButton onClick={handleDrawerToggle}>
           <MenuIcon />
         </IconButton>
       </Box>
-
       {/* Center: Search Bar */}
       <Box
         sx={{
