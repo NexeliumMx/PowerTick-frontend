@@ -9,7 +9,7 @@ import ConsumptionHistoryCard from "../components/cards/ConsumptionHistoryCard";
 
 
 
-const Overview = ({ powerMeter }) => {
+const Analysis = ({ powerMeter }) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
@@ -30,4 +30,4 @@ const Overview = ({ powerMeter }) => {
   );
 };
 
-export default Overview;
+export default Analysis;

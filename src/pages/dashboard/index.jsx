@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { Box, Typography, Select, MenuItem } from "@mui/material";
 import NavButtons from "./components/ui/NavButtons";
 import Configuration from "./subpages/Configuration";
-import Overview from "./subpages/Overview";
+import Analysis from "./subpages/Analysis";
 import Measurements from "./subpages/Measurements";
 import Header from "../../components/ui/Header";
 import { ModeContext } from "../../context/AppModeContext";
@@ -15,7 +15,7 @@ const Dashboard = () => {
   const [selectedPowerMeter, setSelectedPowerMeter] = useState("");
   const [realTimeData, setRealTimeData] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
-  const [activePage, setActivePage] = useState("Overview");
+  const [activePage, setActivePage] = useState("Analysis");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,14 +47,14 @@ const Dashboard = () => {
 
   const renderPage = () => {
     switch (activePage) {
-      case "Overview":
-        return <Overview powerMeter={selectedPowerMeter} />;
+      case "Analysis":
+        return <Analysis powerMeter={selectedPowerMeter} />;
       case "Measurements":
         return <Measurements powerMeter={selectedPowerMeter} realTimeData={realTimeData} />;
       case "Configuration":
         return <Configuration powerMeter={selectedPowerMeter} />;
       default:
-        return <Overview powerMeter={selectedPowerMeter} />;
+        return <Analysis powerMeter={selectedPowerMeter} />;
     }
   };
 

@@ -71,8 +71,8 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
                 }}
                  />
                 <Legend />
-                <Line type="monotone" dataKey="realPower" stroke="#8884d8" name="Real Power (W)" dot={false} />
-                <Line type="monotone" dataKey="reactivePower" stroke="#82ca9d" name="Reactive Power (VAR)" dot={false}/>
+                <Line type="monotone" dataKey="realPower" stroke="#8884d8" name="Real Power (W)" dot={false} strokeWidth={3}/>
+                <Line type="monotone" dataKey="reactivePower" stroke="#82ca9d" name="Reactive Power (VAR)" dot={false} strokeWidth={3}/>
               </LineChart>
             </ResponsiveContainer>
           ) : (

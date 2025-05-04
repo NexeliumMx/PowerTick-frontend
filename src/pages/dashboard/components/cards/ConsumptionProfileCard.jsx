@@ -75,7 +75,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
                 {/* Bars for realEnergy */}
                 <Bar dataKey="realEnergy" barSize={20} fill="#8884d8" name="Real Energy (Wh)" />
                 {/* Lines for reactiveEnergy */}
-                <Line type="monotone" dataKey="reactiveEnergy" stroke="#ff7300" name="Reactive Energy (VARh)" />
+                <Line type="monotone" dataKey="reactiveEnergy" stroke="#ff7300" name="Reactive Energy (VARh)" strokeWidth={3}/>
               </ComposedChart>
             </ResponsiveContainer>
           ) : (

@@ -8,6 +8,7 @@ import {
   MenuItem,
   Select,
   useMediaQuery,
+  Typography,
 } from "@mui/material";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
@@ -47,7 +48,7 @@ const Topbar = ({ handleDrawerToggle }) => {
         <Box
           sx={{
             width: isSmallScreen ? "0px" : "150px",
-            height: "40px",
+            height: "45px",
             overflow: "hidden",
             transition: "width 0.3s ease, opacity 0.3s ease",
             opacity: isSmallScreen ? 0 : 1,
@@ -57,27 +58,33 @@ const Topbar = ({ handleDrawerToggle }) => {
           }}
         >
           <img
-            src="/assets/logo_powertick-03.svg"
+            src="/assets/logo_powertick-02.svg"
             alt="Logo"
-            style={{ width: "50px", height: "100%", cursor: "pointer" }}
+            style={{
+              width: "100%",
+              height: "100%",
+              cursor: "pointer",
+              filter: "brightness(0) invert(1)", // Makes logo white
+            }}
           />
-        {!isSmallScreen && (
-          <Box sx={{ ml: 1, mr: 1, display: "flex", alignItems: "center" }}>
-            <span
-              style={{
-                fontWeight: 700,
-                fontSize: "1.25rem",
-                color: theme.palette.text.primary,
-                letterSpacing: "0.05em",
-              }}
-            >
-              PowerTick
-            </span>
-          </Box>
-        )}
+          {!isSmallScreen && (
+            <Box sx={{ ml: 1, mr: 1, display: "flex", alignItems: "center" }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 700,
+                  fontSize: "1.2rem",
+                  color: theme.palette.text.primary,
+                  letterSpacing: "0.05em",
+                }}
+              >
+                PowerTick
+              </Typography>
+            </Box>
+          )}
         </Box>
         {/* PowerTick Typography */}
-        
+
         <IconButton onClick={handleDrawerToggle}>
           <MenuIcon />
         </IconButton>
