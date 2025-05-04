@@ -14,7 +14,8 @@ const Analysis = ({ powerMeter }) => {
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid size={12}>
-          <DemandProfileCard selectedPowerMeter={powerMeter} />
+         
+          <ConsumptionHistoryCard selectedPowerMeter={powerMeter} />
         </Grid>
         <Grid size={12}>
           <DemandHistoryCard selectedPowerMeter={powerMeter} />
@@ -23,7 +24,7 @@ const Analysis = ({ powerMeter }) => {
           <ConsumptionProfileCard selectedPowerMeter={powerMeter} />
         </Grid>
         <Grid size={12}>
-          <ConsumptionHistoryCard selectedPowerMeter={powerMeter} />
+        <DemandProfileCard selectedPowerMeter={powerMeter} />
         </Grid>
       </Grid>
     </Box>
