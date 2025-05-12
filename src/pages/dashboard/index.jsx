@@ -7,40 +7,22 @@ import Measurements from "./subpages/Measurements";
 import Header from "../../components/ui/Header";
 import { ModeContext } from "../../context/AppModeContext";
 import LoadingOverlay from "../../components/test/LoadingOverlay";
-import { fetchPowermetersByUserAccess, fetchRealTimeData } from "../../services/api/httpRequests";
+import { fetchRealTimeData } from "../../services/api/httpRequests";
+import { usePowermeters } from "../../services/query/usePowermeters";
+import { useMsal } from "@azure/msal-react";
 
 const Dashboard = () => {
   const { state } = useContext(ModeContext);
-  const [powerMeters, setPowerMeters] = useState([]);
+  const { accounts } = useMsal ? useMsal() : { accounts: [] };
+  const user_id = accounts && accounts[0]?.idTokenClaims?.oid;
+  const { data: powerMeters = [], isLoading: isPowerMetersLoading, error: powerMetersError } = usePowermeters(user_id);
   const [selectedPowerMeter, setSelectedPowerMeter] = useState("");
   const [realTimeData, setRealTimeData] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const [activePage, setActivePage] = useState("Analysis");
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsFetching(true);
-      try {
-        const user_id = "4c7c56fe-99fc-4611-b57a-0d5683f9bc95"; // Replace with actual user_id
-        const data = await fetchPowermetersByUserAccess(user_id);
-        setPowerMeters(data);
-        if (data.length > 0) {
-          setSelectedPowerMeter(data[0].serial_number);
-          fetchRealTimeData(user_id, data[0].serial_number).then(setRealTimeData);
-        }
-      } catch (error) {
-        console.error("Error fetching powermeters:", error);
-      } finally {
-        setIsFetching(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     if (selectedPowerMeter) {
-      const user_id = "4c7c56fe-99fc-4611-b57a-0d5683f9bc95"; // Replace with actual user_id
       fetchRealTimeData(user_id, selectedPowerMeter).then(setRealTimeData);
     }
   }, [selectedPowerMeter]);
@@ -101,11 +83,11 @@ const Dashboard = () => {
         }}
       >
         <Select
-          value={selectedPowerMeter || ""} // Ensure a fallback empty string
-          onChange={(e) => setSelectedPowerMeter(e.target.value)} // Update state
+          value={selectedPowerMeter || ""}
+          onChange={(e) => setSelectedPowerMeter(e.target.value)}
           displayEmpty
           sx={{ minWidth: 200 }}
-          disabled={isFetching} // Disable dropdown while loading
+          disabled={isPowerMetersLoading}
         >
           <MenuItem value="" disabled>
             Select Power Meter

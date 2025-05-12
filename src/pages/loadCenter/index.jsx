@@ -4,6 +4,7 @@ import { useMsal } from "@azure/msal-react";
 import { useEffect, useState } from "react";
 import { fetchPowermetersByUserAccess } from "../../services/api/httpRequests";
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
+import { usePowermeters } from '../../services/query/usePowermeters';
 
 // Helper to group powermeters by installation_id
 const groupByInstallation = (powermeters) => {
@@ -23,46 +24,9 @@ const groupByInstallation = (powermeters) => {
 };
 
 const LoadCenter = () => {
-  const [showSkeleton, setShowSkeleton] = useState(true);
-  const { instance, accounts } = useMsal();
-  const [powermetersData, setPowermetersData] = useState(null);
-
-  useEffect(() => {
-    if (accounts.length > 0) {
-      const account = accounts[0];
-
-      instance
-        .acquireTokenSilent({
-          scopes: ["openid", "profile", "email"],
-          account: account,
-        })
-        .then((response) => {
-          const claims = response.idTokenClaims;
-          const objectId = claims.oid || null;
-
-          if (objectId) {
-            fetchPowermetersByUserAccess(objectId)
-              .then((data) => {
-                setPowermetersData(data);
-                setTimeout(() => {
-                  setShowSkeleton(false);
-                }, 1000);
-              })
-              .catch((error) => {
-                console.error("Error fetching powermeters:", error);
-                setShowSkeleton(false);
-              });
-          } else {
-            console.error("Object ID not found in token claims.");
-            setShowSkeleton(false);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching token claims:", error);
-          setShowSkeleton(false);
-        });
-    }
-  }, [accounts, instance]);
+  const { accounts } = useMsal();
+  const user_id = accounts[0]?.idTokenClaims?.oid;
+  const { data: powermetersData, isLoading, error } = usePowermeters(user_id);
 
   // Group powermeters by installation
   const installations = powermetersData ? groupByInstallation(powermetersData) : {};
@@ -74,7 +38,7 @@ const LoadCenter = () => {
         subtitle="Overview and Management of Energy Distribution and Consumption"
       />
       <Box>
-        {showSkeleton || !powermetersData ? (
+        {isLoading || !powermetersData ? (
           <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
             <CircularProgress color="secondary" />
           </Box>
