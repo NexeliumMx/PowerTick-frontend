@@ -3,7 +3,7 @@ import Header from "../../components/ui/Header";
 import { useMsal } from "@azure/msal-react";
 import { useEffect, useState } from "react";
 import { fetchPowermetersByUserAccess } from "../../services/api/httpRequests";
-import { Gauge } from '@mui/x-charts/Gauge';
+import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 
 // Helper to group powermeters by installation_id
 const groupByInstallation = (powermeters) => {
@@ -93,8 +93,28 @@ const LoadCenter = () => {
                           {item.powermeter_alias || "Sin alias"}
                         </Typography>
                         <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }}>
-                          <Gauge width={100} height={100} value={60} />
-                          <Gauge width={100} height={100} value={60} startAngle={-90} endAngle={90} />
+                          <Gauge
+                            width={100}
+                            height={100}
+                            value={60}
+                            sx={{
+                              [`& .${gaugeClasses.valueArc}`]: {
+                                fill: '#82ca9d',
+                              },
+                            }}
+                          />
+                          <Gauge
+                            width={100}
+                            height={100}
+                            value={60}
+                            startAngle={-90}
+                            endAngle={90}
+                            sx={{
+                              [`& .${gaugeClasses.valueArc}`]: {
+                                fill: '#8884d8',
+                              },
+                            }}
+                          />
                         </Stack>
                       </CardContent>
                       <CardActions>
