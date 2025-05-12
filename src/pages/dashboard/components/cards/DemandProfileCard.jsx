@@ -76,7 +76,7 @@ const DemandProfileCard = ({ selectedPowerMeter }) => {
                 <Bar dataKey="avgRealPower" barSize={20} fill="#8884d8" name="Avg Real Power (W)" />
                 <Bar dataKey="avgVar" barSize={20} fill="#82ca9d" name="Avg VAR" />
                 {/* Lines for maxRealPower and maxVar */}
-                <Line type="monotone" dataKey="maxRealPower" stroke="#413ea0" name="Max Real Power (W)" strokeWidth={3}/>
+                <Line type="monotone" dataKey="maxRealPower" stroke="#ffc658" name="Max Real Power (W)" strokeWidth={3}/>
                 <Line type="monotone" dataKey="maxVar" stroke="#ff7300" name="Max VAR" strokeWidth={3}/>
               </ComposedChart>
             </ResponsiveContainer>
