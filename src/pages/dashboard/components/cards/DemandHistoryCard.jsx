@@ -1,36 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
-import { fetchDemandHistory } from "../../../../services/api/httpRequests";
 import { useMsal } from "@azure/msal-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
+import { useDemandHistory } from '../../../../services/query/useDemandHistory';
 
 const DemandHistoryCard = ({ selectedPowerMeter }) => {
   const theme = useTheme(); 
   const { accounts } = useMsal();
-  const user_id = accounts[0]?.idTokenClaims?.oid; // Retrieve user_id from MSAL
-  const [timeInterval, setTimeInterval] = useState("day"); // Default to "day"
-  const [demandHistoryData, setDemandHistoryData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const user_id = accounts[0]?.idTokenClaims?.oid;
+  const [timeInterval, setTimeInterval] = useState("day");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user_id && selectedPowerMeter && timeInterval) {
-        setIsLoading(true);
-        try {
-          const data = await fetchDemandHistory(user_id, selectedPowerMeter, timeInterval);
-          setDemandHistoryData(data);
-        } catch (error) {
-          console.error("Error fetching demand history:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchData();
-  }, [user_id, selectedPowerMeter, timeInterval]);
+  // Use React Query hook for on-demand fetching and caching
+  const { data: demandHistoryData, isLoading } = useDemandHistory(user_id, selectedPowerMeter, timeInterval);
 
   const handleTimeIntervalChange = (event, newTimeInterval) => {
     if (newTimeInterval) {
@@ -40,7 +23,7 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
 
   // Transform data for Recharts
   const chartData = demandHistoryData?.map((item) => ({
-    name: item.timestamp_tz, // Use the local timestamp for the X-axis
+    name: item.timestamp_tz,
     realPower: item.real_power_w,
     reactivePower: item.reactive_power_var,
   }));

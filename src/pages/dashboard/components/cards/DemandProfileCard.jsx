@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography,Skeleton } from "@mui/material";
+import React, { useState } from "react";
+import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography, Skeleton } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
-import { fetchDemandProfile } from "../../../../services/api/httpRequests";
+import { useDemandProfile } from '../../../../services/query/useDemandProfile';
 import { useMsal } from "@azure/msal-react";
 import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
@@ -11,26 +11,9 @@ const DemandProfileCard = ({ selectedPowerMeter }) => {
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid; // Retrieve user_id from MSAL
   const [timeInterval, setTimeInterval] = useState("day"); // Default to "day"
-  const [demandProfileData, setDemandProfileData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user_id && selectedPowerMeter && timeInterval) {
-        setIsLoading(true);
-        try {
-          const data = await fetchDemandProfile(user_id, selectedPowerMeter, timeInterval);
-          setDemandProfileData(data);
-        } catch (error) {
-          console.error("Error fetching demand profile:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchData();
-  }, [user_id, selectedPowerMeter, timeInterval]);
+  // Use React Query hook for on-demand fetching and caching
+  const { data: demandProfileData, isLoading } = useDemandProfile(user_id, selectedPowerMeter, timeInterval);
 
   const handleTimeIntervalChange = (event, newTimeInterval) => {
     if (newTimeInterval) {

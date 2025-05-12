@@ -6,8 +6,13 @@ import VoltageLL from "../components/cards/VoltageLL";
 import RealPower from "../components/cards/RealPower";
 import ReactivePower from "../components/cards/ReactivePower";
 import PowerFactor from "../components/cards/PowerFactor";
+import { useMsal } from "@azure/msal-react";
+import { useRealTimeData } from "../../../services/query/useRealTimeData";
 
-export default function Measurements({ realTimeData }) {
+export default function Measurements({ powerMeter }) {
+  const { accounts } = useMsal();
+  const user_id = accounts[0]?.idTokenClaims?.oid;
+  const { data: realTimeData, isLoading } = useRealTimeData(user_id, powerMeter);
   const parsedData = realTimeData?.[0];
 
   return (
@@ -16,23 +21,18 @@ export default function Measurements({ realTimeData }) {
         <Grid2 size={{ xs: 12, lg: 6 }}>
           <RealPower data={parsedData} />
         </Grid2>
-
         <Grid2 size={{ xs: 12, lg: 6 }}>
           <ReactivePower data={parsedData} />
         </Grid2>
-
         <Grid2 size={{ xs: 12, lg: 6 }}>
           <Currents data={parsedData} />
         </Grid2>
-
         <Grid2 size={{ xs: 12, lg: 6 }}>
           <PowerFactor data={parsedData} />
         </Grid2>
-
         <Grid2 size={{ xs: 12, lg: 6 }}>
           <VoltageLN data={parsedData} />
         </Grid2>
-
         <Grid2 size={{ xs: 12, lg: 6 }}>
           <VoltageLL data={parsedData} />
         </Grid2>
