@@ -1,37 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
-import { fetchConsumptionProfile } from "../../../../services/api/httpRequests";
 import { useMsal } from "@azure/msal-react";
 import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
-
+import { useConsumptionProfile } from '../../../../services/query/useConsumptionProfile';
 
 const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
   const theme = useTheme(); 
   const { accounts } = useMsal();
-  const user_id = accounts[0]?.idTokenClaims?.oid; // Retrieve user_id from MSAL
-  const [timeInterval, setTimeInterval] = useState("day"); // Default to "day"
-  const [consumptionProfileData, setConsumptionProfileData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const user_id = accounts[0]?.idTokenClaims?.oid;
+  const [timeInterval, setTimeInterval] = useState("day");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user_id && selectedPowerMeter && timeInterval) {
-        setIsLoading(true);
-        try {
-          const data = await fetchConsumptionProfile(user_id, selectedPowerMeter, timeInterval);
-          setConsumptionProfileData(data);
-        } catch (error) {
-          console.error("Error fetching consumption profile:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchData();
-  }, [user_id, selectedPowerMeter, timeInterval]);
+  // Use React Query hook for on-demand fetching and caching
+  const { data: consumptionProfileData, isLoading } = useConsumptionProfile(user_id, selectedPowerMeter, timeInterval);
 
   const handleTimeIntervalChange = (event, newTimeInterval) => {
     if (newTimeInterval) {
@@ -75,7 +57,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
                 {/* Bars for realEnergy */}
                 <Bar dataKey="realEnergy" barSize={20} fill="#8884d8" name="Real Energy (Wh)" />
                 {/* Lines for reactiveEnergy */}
-                <Line type="monotone" dataKey="reactiveEnergy" stroke="#ff7300" name="Reactive Energy (VARh)" />
+                <Line type="monotone" dataKey="reactiveEnergy" stroke="#ff7300" name="Reactive Energy (VARh)" strokeWidth={3}/>
               </ComposedChart>
             </ResponsiveContainer>
           ) : (

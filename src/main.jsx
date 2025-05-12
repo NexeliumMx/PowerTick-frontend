@@ -38,6 +38,9 @@ import { ModeProvider } from "./context/AppModeContext.jsx";
 import { MsalProvider } from "@azure/msal-react";
 import { msalInstance } from "./services/auth/msalConfig.js";
 
+// React Query imports
+import ReactQueryProvider from "./services/query/ReactQueryProvider";
+
 function MainApp() {
   const [theme, colorMode] = useMode();
 
@@ -48,7 +51,9 @@ function MainApp() {
           <CssBaseline />
           <BrowserRouter>
             <ModeProvider>
+              <ReactQueryProvider>
                 <App />
+              </ReactQueryProvider>
             </ModeProvider>
           </BrowserRouter>
         </ThemeProvider>

@@ -4,12 +4,12 @@ import { Activity, Gauge, Settings } from 'lucide-react';
 
 const NavButtons = ({ setActivePage }) => {
   const theme = useTheme();
-  const [activeButton, setActiveButton] = useState('Overview'); // Updated to 'Overview'
+  const [activeButton, setActiveButton] = useState('Analysis'); // Updated to 'Analysis'
 
   const buttons = [
-    { id: 'Overview', label: 'Overview', icon: <Activity /> }, // Updated 'Consumption' to 'Overview'
+    { id: 'Analysis', label: 'Analysis', icon: <Activity /> }, // Updated 'Consumption' to 'Analysis'
     { id: 'Measurements', label: 'Measurements', icon: <Gauge /> },
-    { id: 'Configuration', label: 'Configuration', icon: <Settings /> },
+    { id: 'Configuration', label: 'Meter Info.', icon: <Settings /> },
   ];
 
   const handleButtonClick = (buttonId) => {

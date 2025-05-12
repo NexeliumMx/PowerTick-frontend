@@ -2,59 +2,52 @@ import { useState, useEffect, useContext } from "react";
 import { Box, Typography, Select, MenuItem } from "@mui/material";
 import NavButtons from "./components/ui/NavButtons";
 import Configuration from "./subpages/Configuration";
-import Overview from "./subpages/Overview";
+import Analysis from "./subpages/Analysis";
 import Measurements from "./subpages/Measurements";
 import Header from "../../components/ui/Header";
 import { ModeContext } from "../../context/AppModeContext";
 import LoadingOverlay from "../../components/test/LoadingOverlay";
-import { fetchPowermetersByUserAccess, fetchRealTimeData } from "../../services/api/httpRequests";
+import { fetchRealTimeData } from "../../services/api/httpRequests";
+import { usePowermeters } from "../../services/query/usePowermeters";
+import { useMsal } from "@azure/msal-react";
+import { useLocation } from "react-router-dom";
 
 const Dashboard = () => {
   const { state } = useContext(ModeContext);
-  const [powerMeters, setPowerMeters] = useState([]);
+  const { accounts } = useMsal ? useMsal() : { accounts: [] };
+  const user_id = accounts && accounts[0]?.idTokenClaims?.oid;
+  const { data: powerMeters = [], isLoading: isPowerMetersLoading, error: powerMetersError } = usePowermeters(user_id);
   const [selectedPowerMeter, setSelectedPowerMeter] = useState("");
   const [realTimeData, setRealTimeData] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
-  const [activePage, setActivePage] = useState("Overview");
+  const [activePage, setActivePage] = useState("Analysis");
+  const location = useLocation();
 
+  // Set selectedPowerMeter from query param if present
   useEffect(() => {
-    const fetchData = async () => {
-      setIsFetching(true);
-      try {
-        const user_id = "4c7c56fe-99fc-4611-b57a-0d5683f9bc95"; // Replace with actual user_id
-        const data = await fetchPowermetersByUserAccess(user_id);
-        setPowerMeters(data);
-        if (data.length > 0) {
-          setSelectedPowerMeter(data[0].serial_number);
-          fetchRealTimeData(user_id, data[0].serial_number).then(setRealTimeData);
-        }
-      } catch (error) {
-        console.error("Error fetching powermeters:", error);
-      } finally {
-        setIsFetching(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+    const params = new URLSearchParams(location.search);
+    const serialFromQuery = params.get('serial_number');
+    if (serialFromQuery && powerMeters.some(m => m.serial_number === serialFromQuery)) {
+      setSelectedPowerMeter(serialFromQuery);
+    }
+  }, [location.search, powerMeters]);
 
   useEffect(() => {
     if (selectedPowerMeter) {
-      const user_id = "4c7c56fe-99fc-4611-b57a-0d5683f9bc95"; // Replace with actual user_id
       fetchRealTimeData(user_id, selectedPowerMeter).then(setRealTimeData);
     }
   }, [selectedPowerMeter]);
 
   const renderPage = () => {
     switch (activePage) {
-      case "Overview":
-        return <Overview powerMeter={selectedPowerMeter} />;
+      case "Analysis":
+        return <Analysis powerMeter={selectedPowerMeter} />;
       case "Measurements":
         return <Measurements powerMeter={selectedPowerMeter} realTimeData={realTimeData} />;
       case "Configuration":
         return <Configuration powerMeter={selectedPowerMeter} />;
       default:
-        return <Overview powerMeter={selectedPowerMeter} />;
+        return <Analysis powerMeter={selectedPowerMeter} />;
     }
   };
 
@@ -101,18 +94,18 @@ const Dashboard = () => {
         }}
       >
         <Select
-          value={selectedPowerMeter || ""} // Ensure a fallback empty string
-          onChange={(e) => setSelectedPowerMeter(e.target.value)} // Update state
+          value={selectedPowerMeter || ""}
+          onChange={(e) => setSelectedPowerMeter(e.target.value)}
           displayEmpty
           sx={{ minWidth: 200 }}
-          disabled={isFetching} // Disable dropdown while loading
+          disabled={isPowerMetersLoading}
         >
           <MenuItem value="" disabled>
             Select Power Meter
           </MenuItem>
           {powerMeters.map((meter, index) => (
             <MenuItem key={index} value={meter.serial_number}>
-              {meter.serial_number}
+              {meter.powermeter_alias || meter.serial_number}
             </MenuItem>
           ))}
         </Select>

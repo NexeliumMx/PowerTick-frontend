@@ -1,37 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
-import { fetchConsumptionHistory } from "../../../../services/api/httpRequests";
 import { useMsal } from "@azure/msal-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
-
+import { useConsumptionHistory } from '../../../../services/query/useConsumptionHistory';
 
 const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
   const theme = useTheme(); 
   const { accounts } = useMsal();
-  const user_id = accounts[0]?.idTokenClaims?.oid; // Retrieve user_id from MSAL
-  const [timeInterval, setTimeInterval] = useState("day"); // Default to "day"
-  const [consumptionHistoryData, setConsumptionHistoryData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const user_id = accounts[0]?.idTokenClaims?.oid;
+  const [timeInterval, setTimeInterval] = useState("day");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user_id && selectedPowerMeter && timeInterval) {
-        setIsLoading(true);
-        try {
-          const data = await fetchConsumptionHistory(user_id, selectedPowerMeter, timeInterval);
-          setConsumptionHistoryData(data);
-        } catch (error) {
-          console.error("Error fetching consumption history:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchData();
-  }, [user_id, selectedPowerMeter, timeInterval]);
+  // Use React Query hook for on-demand fetching and caching
+  const { data: consumptionHistoryData, isLoading } = useConsumptionHistory(user_id, selectedPowerMeter, timeInterval);
 
   const handleTimeIntervalChange = (event, newTimeInterval) => {
     if (newTimeInterval) {
@@ -41,7 +23,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
 
   // Transform data for Recharts
   const chartData = consumptionHistoryData?.map((item) => ({
-    name: item.timestamp_tz, // Use the local timestamp for the X-axis
+    name: item.timestamp_tz,
     realEnergy: item.real_energy_wh,
     reactiveEnergy: item.reactive_energy_varh,
   }));
@@ -82,8 +64,8 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
                 }}
                 />
                 <Legend />
-                <Line type="monotone" dataKey="realEnergy" stroke="#8884d8" name="Real Energy (Wh)" dot={false} yAxisId="left" />
-                <Line type="monotone" dataKey="reactiveEnergy" stroke="#82ca9d" name="Reactive Energy (VARh)"  dot={false} yAxisId="right"/>
+                <Line type="monotone" dataKey="realEnergy" stroke="#8884d8" name="Real Energy (Wh)" dot={false} yAxisId="left" strokeWidth={3}/>
+                <Line type="monotone" dataKey="reactiveEnergy" stroke="#82ca9d" name="Reactive Energy (VARh)"  dot={false} yAxisId="right" strokeWidth={3}/>
               </LineChart>
             </ResponsiveContainer>
           ) : (

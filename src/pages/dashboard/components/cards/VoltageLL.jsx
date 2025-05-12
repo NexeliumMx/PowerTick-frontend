@@ -1,50 +1,48 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
 
-const ReactivePowerBarChart = ({ data }) => {
+const VoltageLL = ({ data }) => {
   const hasValidData =
     data &&
-    typeof data.var_l1 === 'number' &&
-    typeof data.var_l2 === 'number' &&
-    typeof data.var_l3 === 'number' &&
-    typeof data['var'] === 'number';
+    typeof data['voltage_l1-l2'] === 'number' &&
+    typeof data['voltage_l2-l3'] === 'number' &&
+    typeof data['voltage_l3-l1'] === 'number' &&
+    typeof data.voltage_ll === 'number';
 
   if (!hasValidData) {
     return (
       <Paper elevation={3} sx={{ p: 2, height: 300 }}>
         <Typography variant="subtitle1" gutterBottom>
-          Potencia Reactiva por Línea
+          Line-to-line voltage per phase
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Datos no disponibles.
+          Data not available.
         </Typography>
       </Paper>
     );
   }
 
-  const { var_l1, var_l2, var_l3 } = data;
-  const totalVar = data['var'];
+  const { ['voltage_l1-l2']: v12, ['voltage_l2-l3']: v23, ['voltage_l3-l1']: v31, voltage_ll } = data;
 
   return (
     <Paper elevation={3} sx={{ p: 3 }}>
       <Typography variant="subtitle1" gutterBottom align="center">
-        Potencia Reactiva por Línea
+        Line-to-Line Voltage
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <BarChart
           borderRadius={15}
-
           grid={{ horizontal: true }}
-          margin={{ left: 70, right: 20, top: 20, bottom: 20 }}
           height={450}
+          margin={{ left: 70, right: 20, top: 20, bottom: 20 }}
           xAxis={[{
-            data: ['L1', 'L2', 'L3', 'Total'],
+            data: ['L1-L2', 'L2-L3', 'L3-L1', 'Average'],
             scaleType: 'band',
             categoryGapRatio: 0.2,
             barGapRatio: -1,
           }]}
           yAxis={[{
-            label: 'Potencia Reactiva (VAR)',
+            label: 'Voltage (V)',
             labelStyle: {
               transform: 'translateX(-20px)',
               writingMode: 'sideways-lr',
@@ -53,30 +51,31 @@ const ReactivePowerBarChart = ({ data }) => {
           }]}
           series={[
             {
-              data: [var_l1, null, null, null],
-              label: 'L1',
+              data: [v12, 0, 0, 0],
+              label: 'L1-L2',
               color: '#8884d8',
-              valueFormatter: (value) => `${value} VAR`
+              valueFormatter: (value) => `${value} V`
             },
             {
-              data: [null, var_l2, null, null],
-              label: 'L2',
+              data: [0, v23, 0, 0],
+              label: 'L2-L3',
               color: '#82ca9d',
-              valueFormatter: (value) => `${value} VAR`
+                valueFormatter: (value) => `${value} V`
             },
             {
-              data: [null, null, var_l3, null],
-              label: 'L3',
+              data: [0, 0, v31, 0],
+              label: 'L3-L1',
               color: '#ffc658',
-              valueFormatter: (value) => `${value} VAR`
+                            valueFormatter: (value) => `${value} V`
             },
             {
-              data: [null, null, null, totalVar],
-              label: 'Total',
+              data: [0, 0, 0, voltage_ll],
+              label: 'Average',
               color: '#ccc',
-              valueFormatter: (value) => `${value} VAR`
-            }
+                            valueFormatter: (value) => `${value} V`
+            },
           ]}
+        
           tooltip={{
             trigger: 'item',
             render: (params) => {
@@ -85,7 +84,7 @@ const ReactivePowerBarChart = ({ data }) => {
                 return (
                   <Box sx={{ p: 1 }}>
                     <Typography variant="body2">
-                      <strong>{item.category}:</strong> {item.value} VAR
+                      <strong>{item.seriesLabel}:</strong> {item.value} V
                     </Typography>
                   </Box>
                 );
@@ -99,4 +98,4 @@ const ReactivePowerBarChart = ({ data }) => {
   );
 };
 
-export default ReactivePowerBarChart;
+export default VoltageLL;

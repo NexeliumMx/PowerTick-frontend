@@ -1,56 +1,37 @@
-import { Box, Typography, Card, CardContent, CardActions, Button, Grid2,Accordion,AccordionSummary,AccordionDetails,Skeleton } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Box, Typography, Card, CardActions, Button, Grid2, CardContent, Stack, CircularProgress } from "@mui/material";
 import Header from "../../components/ui/Header";
 import { useMsal } from "@azure/msal-react";
 import { useEffect, useState } from "react";
 import { fetchPowermetersByUserAccess } from "../../services/api/httpRequests";
+import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
+import { usePowermeters } from '../../services/query/usePowermeters';
+import { useNavigate } from 'react-router-dom';
 
-
-
+// Helper to group powermeters by installation_id
+const groupByInstallation = (powermeters) => {
+  if (!powermeters) return {};
+  return powermeters.reduce((acc, meter) => {
+    const id = meter.installation_id;
+    if (!id) return acc;
+    if (!acc[id]) {
+      acc[id] = {
+        installation_alias: meter.installation_alias,
+        meters: [],
+      };
+    }
+    acc[id].meters.push(meter);
+    return acc;
+  }, {});
+};
 
 const LoadCenter = () => {
-  const [showSkeleton, setShowSkeleton] = useState(true);
-  const { instance, accounts } = useMsal();
-  const [powermetersData, setPowermetersData] = useState(null);
-  
+  const { accounts } = useMsal();
+  const user_id = accounts[0]?.idTokenClaims?.oid;
+  const { data: powermetersData, isLoading, error } = usePowermeters(user_id);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (accounts.length > 0) {
-      const account = accounts[0];
-
-      instance
-        .acquireTokenSilent({
-          scopes: ["openid", "profile", "email"],
-          account: account,
-        })
-        .then((response) => {
-          const claims = response.idTokenClaims;
-          const objectId = claims.oid || null;
-
-          if (objectId) {
-            fetchPowermetersByUserAccess(objectId)
-              .then((data) => {
-                setPowermetersData(data); // Store the fetched JSON data
-                setTimeout(() => {
-                  setShowSkeleton(false);
-                }, 1000);
-
-              })
-              .catch((error) => {
-                console.error("Error fetching powermeters:", error);
-                setShowSkeleton(false);
-              });
-          } else {
-            console.error("Object ID not found in token claims.");
-            setShowSkeleton(false);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching token claims:", error);
-          setShowSkeleton(false);
-        });
-    }
-  }, [accounts, instance]);
+  // Group powermeters by installation
+  const installations = powermetersData ? groupByInstallation(powermetersData) : {};
 
   return (
     <Box m="20px">
@@ -59,109 +40,68 @@ const LoadCenter = () => {
         subtitle="Overview and Management of Energy Distribution and Consumption"
       />
       <Box>
-        <Grid2 container spacing={2}>
-          {(showSkeleton || !powermetersData
-            ? Array.from({ length: 4 }) // Skeletons
-            : powermetersData // Datos reales
-          ).map((item, index) => (
-            <Grid2
-              key={
-                showSkeleton || !powermetersData
-                  ? `skeleton-${index}`
-                  : item.serial_number
-              }
-              size={{ xs: 12, lg: 6 }}
-            >
-              {showSkeleton || !powermetersData ? (
-                <Card sx={{ minWidth: 275, padding: 1 }}>
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    sx={{ mb: 1 }}
-                  >
-                    <Skeleton animation="wave" variant="text" width="40%" height={30} />
-                    <Skeleton animation="wave" variant="circular" width={24} height={24} />
-                  </Box>
-                  <Skeleton animation="wave" variant="rectangular" height={120} sx={{ mb: 2 }} />
-  
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    sx={{ mb: 1 }}
-                  >
-                    <Skeleton animation="wave" variant="text" width="50%" height={30} />
-                    <Skeleton animation="wave" variant="circular" width={24} height={24} />
-                  </Box>
-                  <Box sx={{ mb: 2 }}>
-                    {Array.from({ length: 4 }).map((_, i) => (
-                      <Skeleton
-                        key={`skeleton-line-${index}-${i}`}
-                        animation="wave"
-                        variant="text"
-                        width="80%"
-                        height={20}
-                        sx={{ mb: 1 }}
-                      />
-                    ))}
-                  </Box>
-                  <Skeleton
-                    animation="wave"
-                    variant="rectangular"
-                    width={140}
-                    height={36}
-                    sx={{ mx: 1 }}
-                  />
-                </Card>
-              ) : (
-                <Card sx={{ minWidth: 275, padding: 1 }}>
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Visualizations</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Typography variant="body2">
-                        Aquí irán las gráficas de Consumo y Factor de Potencia (Recharts)
-                      </Typography>
-                    </AccordionDetails>
-                  </Accordion>
-  
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Meter Information</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Typography variant="body2" display="block">
-                        Serial Number: {item.serial_number}
-                      </Typography>
-                      <Typography variant="body2" display="block">
-                        Client ID: {item.client_id}
-                      </Typography>
-                      <Typography variant="body2" display="block">
-                        Client Alias: {item.client_alias}
-                      </Typography>
-                      <Typography variant="body2" display="block">
-                        Installation ID: {item.installation_id}
-                      </Typography>
-                      <Typography variant="body2" display="block">
-                        Installation Alias: {item.installation_alias}
-                      </Typography>
-                    </AccordionDetails>
-                  </Accordion>
-  
-                  <CardActions>
-                    <Button variant="contained" size="small">Go to dashboard</Button>
-                  </CardActions>
-                </Card>
-              )}
-            </Grid2>
-          ))}
-        </Grid2>
+        {isLoading || !powermetersData ? (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            <CircularProgress color="secondary" />
+          </Box>
+        ) : (
+          Object.entries(installations).map(([installationId, { installation_alias, meters }]) => (
+            <Box key={installationId} sx={{ mb: 4 }}>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                {installation_alias || "Sin alias"}
+              </Typography>
+              <Grid2 container spacing={2}>
+                {meters.map((item) => (
+                  <Grid2 key={item.serial_number} xs={12} sm={6} md={3}>
+                    <Card sx={{ minWidth: 275, padding: 1 }}>
+                      <CardContent>
+                        <Typography variant="subtitle1" sx={{ mb: 2 }}>
+                          {item.powermeter_alias || "Sin alias"}
+                        </Typography>
+                        <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }}>
+                          <Gauge
+                            width={100}
+                            height={100}
+                            value={60}
+                            sx={{
+                              [`& .${gaugeClasses.valueArc}`]: {
+                                fill: '#82ca9d',
+                              },
+                            }}
+                          />
+                          <Gauge
+                            width={100}
+                            height={100}
+                            value={60}
+                            startAngle={-90}
+                            endAngle={90}
+                            sx={{
+                              [`& .${gaugeClasses.valueArc}`]: {
+                                fill: '#8884d8',
+                              },
+                            }}
+                          />
+                        </Stack>
+                      </CardContent>
+                      <CardActions>
+                        <Button 
+                          variant="contained" 
+                          size="small"
+                          onClick={() => navigate(`/dashboard?serial_number=${item.serial_number}`)}
+                        >
+                          Go to dashboard
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </Grid2>
+                ))}
+              </Grid2>
+            </Box>
+          ))
+        )}
       </Box>
     </Box>
   );
-  
 };
 
 export default LoadCenter;

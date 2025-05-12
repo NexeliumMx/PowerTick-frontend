@@ -1,22 +1,22 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
 
-const CurrentBarChart = ({ data }) => {
+const Currents = ({ data }) => {
   const hasValidData =
     data &&
     typeof data.current_l1 === 'number' &&
     typeof data.current_l2 === 'number' &&
     typeof data.current_l3 === 'number';
-// 🔍 Aquí puedes ver si el componente recibe nuevos datos
-  console.log('Datos actuales del medidor:', data);
+  // 🔍 Here you can see if the component receives new data
+  console.log('Current meter data:', data);
   if (!hasValidData) {
     return (
       <Paper elevation={3} sx={{ p: 2, height: 300 }}>
         <Typography variant="subtitle1" gutterBottom>
-          Corriente por línea
+          Currents
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Datos no disponibles.
+          Data not available.
         </Typography>
       </Paper>
     );
@@ -28,7 +28,7 @@ const CurrentBarChart = ({ data }) => {
   return (
     <Paper elevation={3} sx={{ p: 3 }}>
       <Typography variant="subtitle1" gutterBottom align="center">
-        Corriente por línea
+        Currents
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <BarChart
@@ -43,8 +43,8 @@ const CurrentBarChart = ({ data }) => {
           ]}
           yAxis={[
             {
-              label: 'Corriente (A)',
-              labelStyle: { transform: 'translateX(-20px)', writingMode: 'sideways-lr', textAnchor: 'middle'} // Separación del eje
+              label: 'Current (A)',
+              labelStyle: { transform: 'translateX(-20px)', writingMode: 'sideways-lr', textAnchor: 'middle'} // Axis separation
             },
           ]}
           height={450}
@@ -84,7 +84,7 @@ const CurrentBarChart = ({ data }) => {
                   </Box>
                 );
               }
-              return null; // Usar el tooltip por defecto para otras barras
+              return null; // Use default tooltip for other bars
             },
           }}
         />
@@ -93,4 +93,4 @@ const CurrentBarChart = ({ data }) => {
   );
 };
 
-export default CurrentBarChart;
+export default Currents;
