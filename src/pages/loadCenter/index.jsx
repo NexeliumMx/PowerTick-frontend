@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { fetchPowermetersByUserAccess } from "../../services/api/httpRequests";
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import { usePowermeters } from '../../services/query/usePowermeters';
+import { useNavigate } from 'react-router-dom';
 
 // Helper to group powermeters by installation_id
 const groupByInstallation = (powermeters) => {
@@ -27,6 +28,7 @@ const LoadCenter = () => {
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid;
   const { data: powermetersData, isLoading, error } = usePowermeters(user_id);
+  const navigate = useNavigate();
 
   // Group powermeters by installation
   const installations = powermetersData ? groupByInstallation(powermetersData) : {};
@@ -82,7 +84,13 @@ const LoadCenter = () => {
                         </Stack>
                       </CardContent>
                       <CardActions>
-                        <Button variant="contained" size="small">Go to dashboard</Button>
+                        <Button 
+                          variant="contained" 
+                          size="small"
+                          onClick={() => navigate(`/dashboard?serial_number=${item.serial_number}`)}
+                        >
+                          Go to dashboard
+                        </Button>
                       </CardActions>
                     </Card>
                   </Grid2>

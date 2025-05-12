@@ -10,6 +10,7 @@ import LoadingOverlay from "../../components/test/LoadingOverlay";
 import { fetchRealTimeData } from "../../services/api/httpRequests";
 import { usePowermeters } from "../../services/query/usePowermeters";
 import { useMsal } from "@azure/msal-react";
+import { useLocation } from "react-router-dom";
 
 const Dashboard = () => {
   const { state } = useContext(ModeContext);
@@ -20,6 +21,16 @@ const Dashboard = () => {
   const [realTimeData, setRealTimeData] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const [activePage, setActivePage] = useState("Analysis");
+  const location = useLocation();
+
+  // Set selectedPowerMeter from query param if present
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const serialFromQuery = params.get('serial_number');
+    if (serialFromQuery && powerMeters.some(m => m.serial_number === serialFromQuery)) {
+      setSelectedPowerMeter(serialFromQuery);
+    }
+  }, [location.search, powerMeters]);
 
   useEffect(() => {
     if (selectedPowerMeter) {
