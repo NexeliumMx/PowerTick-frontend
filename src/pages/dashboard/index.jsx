@@ -112,7 +112,7 @@ const Dashboard = () => {
           </MenuItem>
           {powerMeters.map((meter, index) => (
             <MenuItem key={index} value={meter.serial_number}>
-              {meter.serial_number}
+              {meter.powermeter_alias || meter.serial_number}
             </MenuItem>
           ))}
         </Select>
