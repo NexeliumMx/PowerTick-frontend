@@ -5,6 +5,7 @@ import { useDemandProfile } from '../../../../services/query/useDemandProfile';
 import { useMsal } from "@azure/msal-react";
 import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
+import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
 
 const DemandProfileCard = ({ selectedPowerMeter }) => {
   const theme = useTheme(); 
@@ -22,13 +23,23 @@ const DemandProfileCard = ({ selectedPowerMeter }) => {
   };
 
   // Transform data for Recharts
-  const chartData = demandProfileData?.map((item) => ({
-    name: item.demand_profile_hour_range_utc,
-    avgRealPower: parseFloat(item.avg_real_power_w),
-    maxRealPower: item.max_real_power_w,
-    avgVar: parseFloat(item.avg_var),
-    maxVar: item.max_var,
-  }));
+  const chartData = demandProfileData?.map((item) => {
+    let name = '';
+    if (timeInterval === 'day') {
+      name = formatDashboardTimestamp(item.demand_profile_hour_range_utc, 'day');
+    } else if (timeInterval === 'month') {
+      name = formatDashboardTimestamp(item.demand_profile_day_range_tz, 'month');
+    } else if (timeInterval === 'year') {
+      name = formatDashboardTimestamp(item.demand_profile_month_range_tz, 'year');
+    }
+    return {
+      name,
+      avgRealPower: parseFloat(item.avg_real_power_w),
+      maxRealPower: item.max_real_power_w,
+      avgVar: parseFloat(item.avg_var),
+      maxVar: item.max_var,
+    };
+  });
 
   return (
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
