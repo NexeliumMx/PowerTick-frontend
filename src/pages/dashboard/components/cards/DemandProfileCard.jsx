@@ -23,7 +23,7 @@ const DemandProfileCard = ({ selectedPowerMeter }) => {
 
   // Transform data for Recharts
   const chartData = demandProfileData?.map((item) => ({
-    name: item.demand_profile_hour_range_tz,
+    name: item.demand_profile_hour_range_utc,
     avgRealPower: parseFloat(item.avg_real_power_w),
     maxRealPower: item.max_real_power_w,
     avgVar: parseFloat(item.avg_var),

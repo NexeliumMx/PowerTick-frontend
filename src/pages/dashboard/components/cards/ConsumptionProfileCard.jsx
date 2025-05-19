@@ -23,7 +23,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
 
   // Transform data for Recharts
   const chartData = consumptionProfileData?.map((item) => ({
-    name: item.consumption_profile_hour_range_tz,
+    name: item.consumption_profile_hour_range_utc,
     realEnergy: item.real_energy_wh,
     reactiveEnergy: item.reactive_energy_varh,
   }));
