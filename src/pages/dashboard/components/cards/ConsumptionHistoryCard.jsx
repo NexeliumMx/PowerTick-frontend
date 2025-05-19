@@ -23,7 +23,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
 
   // Transform data for Recharts
   const chartData = consumptionHistoryData?.map((item) => ({
-    name: item.timestamp_tz,
+    name: item.timestamp_utc,
     realEnergy: item.real_energy_wh,
     reactiveEnergy: item.reactive_energy_varh,
   }));

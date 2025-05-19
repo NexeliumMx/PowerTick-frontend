@@ -23,7 +23,7 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
 
   // Transform data for Recharts
   const chartData = demandHistoryData?.map((item) => ({
-    name: item.timestamp_tz,
+    name: item.timestamp_utc,
     realPower: item.real_power_w,
     reactivePower: item.reactive_power_var,
   }));
