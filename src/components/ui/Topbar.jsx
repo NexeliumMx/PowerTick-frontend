@@ -90,6 +90,7 @@ const Topbar = ({ handleDrawerToggle }) => {
         </IconButton>
       </Box>
       {/* Center: Search Bar */}
+      {/*
       <Box
         sx={{
           display: "flex",
@@ -111,6 +112,7 @@ const Topbar = ({ handleDrawerToggle }) => {
           inputProps={{ "aria-label": "search" }}
         />
       </Box>
+      */}
 
       {/* Right Section */}
       <Box sx={{ display: "flex", alignItems: "center" }}>

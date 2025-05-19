@@ -5,6 +5,7 @@ import { useMsal } from "@azure/msal-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import { useDemandHistory } from '../../../../services/query/useDemandHistory';
+import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
 
 const DemandHistoryCard = ({ selectedPowerMeter }) => {
   const theme = useTheme(); 
@@ -23,7 +24,7 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
 
   // Transform data for Recharts
   const chartData = demandHistoryData?.map((item) => ({
-    name: item.timestamp_tz,
+    name: formatDashboardTimestamp(item.timestamp_utc),
     realPower: item.real_power_w,
     reactivePower: item.reactive_power_var,
   }));

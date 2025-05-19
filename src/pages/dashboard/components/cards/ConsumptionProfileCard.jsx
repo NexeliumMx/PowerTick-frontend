@@ -5,6 +5,7 @@ import { useMsal } from "@azure/msal-react";
 import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import { useConsumptionProfile } from '../../../../services/query/useConsumptionProfile';
+import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
 
 const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
   const theme = useTheme(); 
@@ -22,11 +23,21 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
   };
 
   // Transform data for Recharts
-  const chartData = consumptionProfileData?.map((item) => ({
-    name: item.consumption_profile_hour_range_tz,
-    realEnergy: item.real_energy_wh,
-    reactiveEnergy: item.reactive_energy_varh,
-  }));
+  const chartData = consumptionProfileData?.map((item) => {
+    let name = '';
+    if (timeInterval === 'day') {
+      name = formatDashboardTimestamp(item.consumption_profile_hour_range_utc, 'day');
+    } else if (timeInterval === 'month') {
+      name = formatDashboardTimestamp(item.consumption_profile_day_range_tz, 'month');
+    } else if (timeInterval === 'year') {
+      name = formatDashboardTimestamp(item.consumption_profile_month_range_tz, 'year');
+    }
+    return {
+      name,
+      realEnergy: item.real_energy_wh,
+      reactiveEnergy: item.reactive_energy_varh,
+    };
+  });
 
   return (
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>

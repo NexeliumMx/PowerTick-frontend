@@ -22,15 +22,6 @@ const SidebarMenu = ({ collapsed }) => {
       case "/dashboard":
         setSelected("Dashboard");
         break;
-      case "/user-manual":
-        setSelected("User Manual");
-        break;
-      case "/mui-components-test":
-        setSelected("Test Page");
-        break;
-      case "/sidebar-menu-test":
-        setSelected("Sidebar Menu Test");
-        break;
       default:
         setSelected("");
     }
@@ -75,36 +66,6 @@ const SidebarMenu = ({ collapsed }) => {
             rootStyles={getMenuItemStyles(selected === "Dashboard")}
           >
             Dashboard
-          </MenuItem>
-
-          {/* User Manual */}
-          <MenuItem
-            icon={<ScienceIcon />}
-            active={selected === "User Manual"}
-            component={<Link to="/user-manual" />}
-            rootStyles={getMenuItemStyles(selected === "User Manual")}
-          >
-            User Manual
-          </MenuItem>
-
-          {/* Test Page */}
-          <MenuItem
-            icon={<ScienceIcon />}
-            active={selected === "Test Page"}
-            component={<Link to="/mui-components-test" />}
-            rootStyles={getMenuItemStyles(selected === "Test Page")}
-          >
-            Test Page
-          </MenuItem>
-
-          {/* Sidebar Menu Test */}
-          <MenuItem
-            icon={<ScienceIcon />}
-            active={selected === "Sidebar Menu Test"}
-            component={<Link to="/sidebar-menu-test" />}
-            rootStyles={getMenuItemStyles(selected === "Sidebar Menu Test")}
-          >
-            Sidebar Menu Test
           </MenuItem>
         </Menu>
       </Sidebar>
