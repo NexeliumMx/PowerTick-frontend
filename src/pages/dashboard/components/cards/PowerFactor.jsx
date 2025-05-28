@@ -40,9 +40,9 @@ const PowerFactor = ({ data }) => {
   ];
 
   return (
-    <Paper elevation={3} sx={{ p: 3, minHeight: 600, display: 'flex', flexDirection: 'column' }}>
+    <Paper elevation={3} sx={{ p: 3, minHeight: 500, display: 'flex', flexDirection: 'column' }}>
       <Typography 
- variant="h2" 
+ variant="h3" 
   sx={{ textAlign: 'left', paddingLeft: 10, alignSelf: 'flex-start', paddingTop: '10px' }}
 >
         Power Factor (0 to 1)
@@ -55,8 +55,12 @@ const PowerFactor = ({ data }) => {
         {gauges.map(({ label, value }) => {
           const color = getColorByFP(value);
           return (
-            <Grid2 key={label} xs={6} md={3} display="flex" flexDirection="column" alignItems="center">
-            <Box sx={{ width: 180, height: 200, mx: 'auto' }}>
+          <Grid2
+                  key={label}
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+      ><Box sx={{ width: 140, height: 150, mx: 'auto' }}>
               <Gauge
                   value={value}
                   valueMin={0}

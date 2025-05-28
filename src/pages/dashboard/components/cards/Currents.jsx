@@ -26,21 +26,21 @@ const Currents = ({ data }) => {
   const total = current_l1 + current_l2 + current_l3;
 
   return (
-    <Paper elevation={3} sx={{ p: 3, minHeight: 600, display: 'flex', flexDirection: 'column' }}>
+    <Paper elevation={3} sx={{ p: 3, minHeight: 500, display: 'flex', flexDirection: 'column' }}>
       <Typography 
-  variant="h2" 
+  variant="h3" 
   sx={{ textAlign: 'left', paddingLeft: 10, alignSelf: 'flex-start', paddingTop: '10px' }}
 >
   Currents
 </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
         borderRadius={15}
         grid={{horizontal:true}}
-         margin={{ left: 70, right: 20, top: 20, bottom: 20 }}
+         margin={{ left: 70, right: 20, top: 50, bottom: 20 }}
           xAxis={[
             {
-              data: ['L1', 'L2', 'L3', 'Total'],
+              data: ['Phase 1', 'Phase 2', 'Phase 3', 'Total'],
               scaleType: 'band',
             },
           ]}
@@ -50,23 +50,23 @@ const Currents = ({ data }) => {
               labelStyle: { transform: 'translateX(-20px)', writingMode: 'sideways-lr', textAnchor: 'middle'} // Axis separation
             },
           ]}
-          height={450}
+          height={350}
           series={[
             {
               data: [current_l1, null, null, current_l1],
-              label: 'L1',
+              label: 'Phase 1',
               stack: 'total',
               valueFormatter: (value) => `${value} A`
             },
             {
               data: [null, current_l2, null, current_l2],
-              label: 'L2',
+              label: 'Phase 2',
               stack: 'total',
               valueFormatter: (value) => `${value} A`
             },
             {
               data: [null, null, current_l3, current_l3],
-              label: 'L3',
+              label: 'Phase 3',
               stack: 'total',
               valueFormatter: (value) => `${value} A`
             },

@@ -42,14 +42,14 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
   return (
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <CardHeader title="Consumption Profile" 
-      titleTypographyProps={{variant: 'h2', sx: { textAlign: 'left',paddingLeft:10, alignSelf: 'flex-start' , paddingTop:'10px'} // Tamaño del texto
+      titleTypographyProps={{variant: 'h3', sx: { textAlign: 'left',paddingLeft:10, alignSelf: 'flex-start' , paddingTop:'10px'} // Tamaño del texto
       }} />
       <CardContent sx={{ flexGrow: 1 }}>
         <Box sx={{ width: "100%", height: "600px", overflow: "auto", p: 2}}>
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : consumptionProfileData ? (
-            <ResponsiveContainer width="100%" height={500}>
+            <ResponsiveContainer width="100%" height={350}>
               <ComposedChart data={chartData}>
                 <XAxis 
                   dataKey="name" 

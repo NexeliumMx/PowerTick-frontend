@@ -28,14 +28,14 @@ const VoltageLN = ({ data }) => {
   const { voltage_l1, voltage_l2, voltage_l3, voltage_ln } = data;
 
   return (
-    <Paper elevation={3} sx={{ p: 3, minHeight: 600, display: 'flex', flexDirection: 'column' }}>
+    <Paper elevation={3} sx={{ p: 3, minHeight: 500, display: 'flex', flexDirection: 'column' }}>
       <Typography 
-  variant="h2" 
+  variant="h3" 
   sx={{ textAlign: 'left', paddingLeft: 10, alignSelf: 'flex-start', paddingTop: '10px' }}
 >
         Line-to-Neutral Voltage
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
           animation={{
             duration: 1000, // in milliseconds
@@ -43,8 +43,8 @@ const VoltageLN = ({ data }) => {
           }}
           borderRadius={15}
           grid={{ horizontal: true }}
-          height={450}
-          margin={{ left: 70, right: 20, top: 20, bottom: 20 }}
+          height={350}
+          margin={{ left: 70, right: 20, top: 50, bottom: 20 }}
           xAxis={[
             {
               data: ['L1', 'L2', 'L3', 'Average'],
