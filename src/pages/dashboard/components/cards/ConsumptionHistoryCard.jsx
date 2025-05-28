@@ -6,13 +6,17 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Responsi
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import { useConsumptionHistory } from '../../../../services/query/useConsumptionHistory';
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
+import { Select, MenuItem, FormControl, InputLabel, Divider } from "@mui/material";
 
 const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
   const theme = useTheme(); 
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid;
   const [timeInterval, setTimeInterval] = useState("day");
-
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedDay, setSelectedDay] = useState(new Date().getDate());
+  const [selectedHour, setSelectedHour] = useState(new Date().getHours());
   // Use React Query hook for on-demand fetching and caching
   const { data: consumptionHistoryData, isLoading } = useConsumptionHistory(user_id, selectedPowerMeter, timeInterval);
 
@@ -21,6 +25,12 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
       setTimeInterval(newTimeInterval);
     }
   };
+  //Hacer que despliegue los meses y años disponibles
+  const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
+  const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
+  const hours = Array.from({ length: 24 }, (_, i) => i);
+
 
   // Transform data for Recharts
   const chartData = consumptionHistoryData?.map((item) => ({
@@ -30,12 +40,12 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
   }));
 
   return (
-    <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    <Card sx={{ minHeight: "600px", display: "flex", flexDirection: "column" }}>
       <CardHeader title="Consumption History" 
      titleTypographyProps={{variant: 'h3', sx: { textAlign: 'left',paddingLeft:10, alignSelf: 'flex-start' , paddingTop:'10px'} // Tamaño del texto
       }} />
       <CardContent sx={{ flexGrow: 1 }}>
-        <Box sx={{ width: "100%", height: "500px", overflow: "auto", p: 2 }}>
+        <Box sx={{ width: "100%", overflow: "auto", p: 2 }}>
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : consumptionHistoryData ? (
@@ -77,8 +87,31 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
           )}
         </Box>
       </CardContent>
-      <CardActions sx={{ justifyContent: "center", mt: 2, mb: 2 }}>
-        <ToggleButtonGroup
+      <Divider
+        variant="middle"
+        sx={{ my: 2, borderColor: 'primary.main', borderBottomWidth: 3 }}
+      />
+      <CardActions 
+      sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mt: 0,
+          mb: 2,
+          px: 2,
+        }}
+      >
+          <Box sx={{
+            width: "40%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+    <Typography variant="h5" sx={{ mb: 2 }}>
+      Intervalo de análisis
+    </Typography>
+      <ToggleButtonGroup
           value={timeInterval}
           exclusive
           onChange={handleTimeIntervalChange}
@@ -91,6 +124,88 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
             Hourly
           </ToggleButton>
         </ToggleButtonGroup>
+        </Box>
+        <Box sx={{
+        width: "60%", 
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center", 
+        justifyContent: "center"
+         }}>
+        <Typography variant="h5" sx={{ mb: 2 }}>
+          Filtro de tiempo
+        </Typography> 
+        <Box sx={{ 
+          width: "100%", 
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "center",
+          gap: 1
+        }}>
+          {(timeInterval === "year" || timeInterval === "month" || timeInterval === "day" || timeInterval === "hour") && (
+            <FormControl size="small" sx={{ minWidth: 90 }}>
+              <InputLabel id="year-label">Año</InputLabel>
+              <Select
+                size="small"
+                value={selectedYear}
+                onChange={e => setSelectedYear(e.target.value)}
+                label="Año"
+              >
+                {years.map(year => (
+                  <MenuItem key={year} value={year}>{year}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+          {(timeInterval === "month" || timeInterval === "day" || timeInterval === "hour") && (
+            <FormControl size="small" sx={{ minWidth: 90 }}>
+              <InputLabel id="month-label">Mes</InputLabel>
+              <Select
+                size="small"
+                value={selectedMonth}
+                onChange={e => setSelectedMonth(e.target.value)}
+                label="Mes"
+              >
+                {months.map((month, idx) => (
+                  <MenuItem key={month} value={idx + 1}>{month}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+          {(timeInterval === "day" || timeInterval === "hour") && (
+            <FormControl size="small" sx={{ minWidth: 90 }}>
+              <InputLabel id="day-label">Día</InputLabel>
+              <Select
+                size="small"
+                value={selectedDay}
+                onChange={e => setSelectedDay(e.target.value)}
+                label="Día"
+              >
+                {days.map(day => (
+                  <MenuItem key={day} value={day}>{day}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+          {timeInterval === "hour" && (
+            <FormControl size="small" sx={{ minWidth: 90 }}>
+              <InputLabel id="hour-label">Hora</InputLabel>
+              <Select
+                size="small"
+                value={selectedHour}
+                onChange={e => setSelectedHour(e.target.value)}
+                label="Hora"
+              >
+                {hours.map(hour => (
+                  <MenuItem key={hour} value={hour}>
+                    {hour.toString().padStart(2, '0')}:00
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+        </Box>
+      </Box>
       </CardActions>
     </Card>
   );
