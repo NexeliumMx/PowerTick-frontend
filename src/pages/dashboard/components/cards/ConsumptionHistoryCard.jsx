@@ -32,18 +32,21 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
   return (
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <CardHeader title="Consumption History" 
-      titleTypographyProps={{variant: 'h2', // Tamaño del texto 
-        sx: { textAlign: 'left',paddingLeft:12, alignSelf: 'flex-start' }
-       }} />  
+     titleTypographyProps={{variant: 'h2', sx: { textAlign: 'left',paddingLeft:10, alignSelf: 'flex-start' , paddingTop:'10px'} // Tamaño del texto
+      }} />
       <CardContent sx={{ flexGrow: 1 }}>
         <Box sx={{ width: "100%", height: "500px", overflow: "auto", p: 2 }}>
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : consumptionHistoryData ? (
-            <ResponsiveContainer width="100%" height={400}>
+            <ResponsiveContainer width="100%" height={450}>
               <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis 
+                  dataKey="name" 
+                  stroke={theme.palette.text.primary}
+                  tick={{ fill: theme.palette.text.primary }}
+                />
                 {/* Eje Izquierdo*/}
                 <YAxis  yAxisId="left" domain={['auto','auto']} tick={{ fill: theme.palette.text.primary }}
                  stroke={theme.palette.text.primary}

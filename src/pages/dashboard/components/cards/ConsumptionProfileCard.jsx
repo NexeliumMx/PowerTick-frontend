@@ -42,17 +42,23 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
   return (
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <CardHeader title="Consumption Profile" 
-      titleTypographyProps={{variant: 'h2', sx: { textAlign: 'left',paddingLeft:10, alignSelf: 'flex-start' } // Tamaño del texto
+      titleTypographyProps={{variant: 'h2', sx: { textAlign: 'left',paddingLeft:10, alignSelf: 'flex-start' , paddingTop:'10px'} // Tamaño del texto
       }} />
       <CardContent sx={{ flexGrow: 1 }}>
-        <Box sx={{ width: "100%", height: "600px", overflow: "auto", p: 2 }}>
+        <Box sx={{ width: "100%", height: "600px", overflow: "auto", p: 2}}>
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : consumptionProfileData ? (
             <ResponsiveContainer width="100%" height={500}>
               <ComposedChart data={chartData}>
-                <XAxis dataKey="name" />
-                <YAxis />
+                <XAxis 
+                  dataKey="name" 
+                  stroke={theme.palette.text.primary}
+                  tick={{ fill: theme.palette.text.primary }}
+                />
+                <YAxis
+                  stroke={theme.palette.text.primary}
+                  tick={{ fill: theme.palette.text.primary }} />
                 <Tooltip
                 contentStyle={{
                   backgroundColor: theme.palette.background.paper,
@@ -76,7 +82,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
           )}
         </Box>
       </CardContent>
-      <CardActions sx={{ justifyContent: "center", mt: 2, mb: 2 }}>
+      <CardActions sx={{ justifyContent: "center", mt:2, mb: 2 }}>
         <ToggleButtonGroup
           value={timeInterval}
           exclusive

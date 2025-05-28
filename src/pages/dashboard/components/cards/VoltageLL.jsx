@@ -12,7 +12,10 @@ const VoltageLL = ({ data }) => {
   if (!hasValidData) {
     return (
       <Paper elevation={3} sx={{ p: 2, height: 300 }}>
-        <Typography variant="subtitle1" gutterBottom>
+       <Typography 
+  variant="h2" 
+  sx={{ textAlign: 'left', paddingLeft: 10, alignSelf: 'flex-start', paddingTop: '10px' }}
+>
           Line-to-line voltage per phase
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -25,8 +28,11 @@ const VoltageLL = ({ data }) => {
   const { ['voltage_l1-l2']: v12, ['voltage_l2-l3']: v23, ['voltage_l3-l1']: v31, voltage_ll } = data;
 
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
-      <Typography variant="subtitle1" gutterBottom align="center">
+    <Paper elevation={3} sx={{ p: 3, minHeight: 600, display: 'flex', flexDirection: 'column' }}>
+      <Typography 
+  variant="h2" 
+  sx={{ textAlign: 'left', paddingLeft: 10, alignSelf: 'flex-start', paddingTop: '10px' }}
+>
         Line-to-Line Voltage
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>

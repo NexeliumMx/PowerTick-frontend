@@ -12,7 +12,10 @@ const ReactivePower = ({ data }) => {
   if (!hasValidData) {
     return (
       <Paper elevation={3} sx={{ p: 2, height: 300 }}>
-        <Typography variant="subtitle1" gutterBottom>
+        <Typography 
+  variant="h2" 
+  sx={{ textAlign: 'left', paddingLeft: 10, alignSelf: 'flex-start', paddingTop: '10px' }}
+>
           Reactive Power
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -26,8 +29,11 @@ const ReactivePower = ({ data }) => {
   const totalVar = data['var'];
 
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
-      <Typography variant="subtitle1" gutterBottom align="center">
+    <Paper elevation={3} sx={{ p: 3, minHeight: 600, display: 'flex', flexDirection: 'column' }}>
+      <Typography 
+  variant="h2" 
+  sx={{ textAlign: 'left', paddingLeft: 10, alignSelf: 'flex-start', paddingTop: '10px' }}
+>
         Reactive Power
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>

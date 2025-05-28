@@ -32,18 +32,24 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
   return (
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <CardHeader title="Demand History" 
-      titleTypographyProps={{variant: 'h2' ,sx: { textAlign: 'left',paddingLeft:12, alignSelf: 'flex-start' }// Tamaño del texto
+      titleTypographyProps={{variant: 'h2', sx: { textAlign: 'left',paddingLeft:10, alignSelf: 'flex-start' , paddingTop:'10px'} // Tamaño del texto
       }} />
       <CardContent sx={{ flexGrow: 1 }}>
         <Box sx={{ width: "100%", height: "600px", overflow: "auto", p: 2 }}>
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : demandHistoryData ? (
-            <ResponsiveContainer width="100%" height={500}>
+            <ResponsiveContainer width="100%" height={450}>
               <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
+                <XAxis 
+                  dataKey="name" 
+                  stroke={theme.palette.text.primary}
+                  tick={{ fill: theme.palette.text.primary }}
+                />
+                <YAxis
+                  stroke={theme.palette.text.primary}
+                  tick={{ fill: theme.palette.text.primary }} />
                 <Tooltip 
                 contentStyle={{
                   backgroundColor: theme.palette.background.paper,

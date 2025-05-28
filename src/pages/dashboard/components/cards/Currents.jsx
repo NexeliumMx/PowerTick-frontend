@@ -12,7 +12,7 @@ const Currents = ({ data }) => {
   if (!hasValidData) {
     return (
       <Paper elevation={3} sx={{ p: 2, height: 300 }}>
-        <Typography variant="subtitle1" gutterBottom>
+        <Typography variant="h2" gutterBottom>
           Currents
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -26,10 +26,13 @@ const Currents = ({ data }) => {
   const total = current_l1 + current_l2 + current_l3;
 
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
-      <Typography variant="subtitle1" gutterBottom align="center">
-        Currents
-      </Typography>
+    <Paper elevation={3} sx={{ p: 3, minHeight: 600, display: 'flex', flexDirection: 'column' }}>
+      <Typography 
+  variant="h2" 
+  sx={{ textAlign: 'left', paddingLeft: 10, alignSelf: 'flex-start', paddingTop: '10px' }}
+>
+  Currents
+</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <BarChart
         borderRadius={15}
