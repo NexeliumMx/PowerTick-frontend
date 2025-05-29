@@ -31,6 +31,15 @@ const getColorByFP = (value) => {
   if (value >= 0.90) return chartColors.powerFactorModerate;
   return chartColors.powerFactorPoor;
 };
+const getColorByDemand = (demand_kw, capacity_kw) => {
+  if (!capacity_kw || capacity_kw === 0) return chartColors.undefined;
+  const ratio = capacity_kw/demand_kw;
+  if (ratio > 3) return chartColors.overdimensioned;
+  if (ratio > 1.3) return chartColors.welldimensioned;
+  return chartColors.underdimensioned;
+};
+const demand_kw = 1000;
+const capacity_kw = 900;
 
 const LoadCenter = () => {
   const { accounts } = useMsal();
@@ -38,7 +47,6 @@ const LoadCenter = () => {
   const { data: powermetersData, isLoading, error } = usePowermeters(user_id);
   const navigate = useNavigate();
   const theme = useTheme();
-
   // Group powermeters by installation
   const installations = powermetersData ? groupByInstallation(powermetersData) : {};
 
@@ -77,7 +85,7 @@ const LoadCenter = () => {
                         <Typography variant="h6" sx={{ mb: 2 , fontWeight:600}}>
                           {item.powermeter_alias || "Sin alias"}
                         </Typography>
-                        <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }}>
+                        <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }} alignItems={"center"}>
                           <Box sx={{flexDirection: 'column', alignItems: 'center'}}>
                           <Gauge
                             width={100}
@@ -93,35 +101,43 @@ const LoadCenter = () => {
                                 fill: getColorByFP(0.96), // Use actual value here
                               },
                               [`& .${gaugeClasses.valueText}`]: {
-                                fontSize: 24,
+                                fontSize: 18,
                               },
                             }}
                           />
-                          <Typography variant="body2" sx={{ textAlign: 'center', mt: 1 }}>
+                          <Typography variant="body2" sx={{ textAlign: 'center', mt: 0 }}>
                             Factor de potencia
                           </Typography>
                           </Box>
+                          <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: { xs: 0, md: 2 } }} />
+                          <Divider orientation="horizontal" variant="middle" flexItem sx={{ mx: { xs: 2, md: 0 } }} />
                           <Box sx={{flexDirection: 'column', alignItems: 'center'}}>
                           <Gauge
                             width={100}
                             height={100}
-                            value={70}
-                            valueFormatter={value => `${value} %`} 
-                            startAngle={-90}
-                            endAngle={90}
+                            value={Math.min(demand_kw, capacity_kw)}
+                            valueMin={0}
+                            valueMax={capacity_kw} 
+                            startAngle={-110}
+                            endAngle={110}
+                            text={({ value }) => `${value.toFixed(0)} kW`} 
                             sx={{
                               [`& .${gaugeClasses.valueArc}`]: {
-                                fill: '#8884d8',
+                                fill: getColorByDemand(demand_kw, capacity_kw),
+                              },
+                              [`& .${gaugeClasses.valueText}`]: {
+                                fontSize: 16,
                               },
                             }}
                           />
-                          <Typography variant="body2" sx={{ textAlign: 'center', mt: 1 }}>
+
+                          <Typography variant="body2" sx={{ textAlign: 'center', mt: 0 }}>
                             Demanda
                           </Typography>
                           </Box>
                         </Stack>
                       </CardContent>
-                      <CardActions>
+                      <CardActions sx={{ justifyContent: "flex-end" }}>
                         <Button 
                           variant="contained" 
                           size="small"

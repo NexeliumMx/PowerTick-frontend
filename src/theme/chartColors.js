@@ -17,6 +17,12 @@ const chartColors = {
   powerFactorGood: "#4caf50",
   powerFactorModerate: "#ffb300",
   powerFactorPoor: "#f44336",
+
+// Demand LoadCenters
+  welldimensioned: "#2ECC71", // Green
+  overdimensioned: "#F1C40F", // Yellow
+  underdimensioned: "#E74C3C", // Red
+  undefined: "#9E9E9E", // Grey for undefined values
 };
 
 export default chartColors;
