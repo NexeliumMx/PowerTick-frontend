@@ -1,6 +1,6 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
-
+import chartColors from '../../../../theme/chartColors';
 const RealPower = ({ data }) => {
   const hasValidData =
     data &&
@@ -64,21 +64,21 @@ const RealPower = ({ data }) => {
               data: [watts_l1, null, null, watts_l1],
               label: 'L1',
               stack: 'total',
-              color: '#8884d8',
+              color: chartColors.phase1,
               valueFormatter: (value) => `${value} W`
             },
             {
               data: [null, watts_l2, null, watts_l2],
               label: 'L2',
               stack: 'total',
-              color: '#82ca9d',
+              color: chartColors.phase2,
               valueFormatter: (value) => `${value} W`
             },
             {
               data: [null, null, watts_l3, watts_l3],
               label: 'L3',
               stack: 'total',
-              color: '#ffc658',
+              color: chartColors.phase3,
               valueFormatter: (value) => `${value} W`
             },
           ]}

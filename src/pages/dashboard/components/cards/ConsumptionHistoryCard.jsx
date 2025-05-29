@@ -7,7 +7,7 @@ import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import { useConsumptionHistory } from '../../../../services/query/useConsumptionHistory';
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
 import { Select, MenuItem, FormControl, InputLabel, Divider } from "@mui/material";
-
+import chartColors from "../../../../theme/chartColors";
 const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
   const theme = useTheme(); 
   const { accounts } = useMsal();
@@ -134,8 +134,8 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
                 }}
                 />
                 <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{marginRight: 40, paddingBottom: 8}} />
-                <Line type="monotone" dataKey="realEnergy" stroke="#8884d8" name="Real Energy (Wh)" dot={false} yAxisId="left" strokeWidth={3}/>
-                <Line type="monotone" dataKey="reactiveEnergy" stroke="#82ca9d" name="Reactive Energy (VARh)"  dot={false} yAxisId="right" strokeWidth={3}/>
+                <Line type="monotone" dataKey="realEnergy" stroke={chartColors.realEnergy} name="Real Energy (Wh)" dot={false} yAxisId="left" strokeWidth={3}/>
+                <Line type="monotone" dataKey="reactiveEnergy" stroke={chartColors.reactiveEnergy} name="Reactive Energy (VARh)"  dot={false} yAxisId="right" strokeWidth={3}/>
               </LineChart>
             </ResponsiveContainer>
           ) : (

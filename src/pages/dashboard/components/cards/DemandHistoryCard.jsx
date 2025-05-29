@@ -7,6 +7,7 @@ import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import { useDemandHistory } from '../../../../services/query/useDemandHistory';
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
 import { Select, MenuItem, FormControl, InputLabel, Divider } from "@mui/material";
+import chartColors from "../../../../theme/chartColors";
 
 const DemandHistoryCard = ({ selectedPowerMeter }) => {
   const theme = useTheme(); 
@@ -107,8 +108,8 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
                 }}
                  />
                 <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{paddingBottom: 8}} />
-                <Line type="monotone" dataKey="realPower" stroke="#8884d8" name="Real Power (W)" dot={false} strokeWidth={3}/>
-                <Line type="monotone" dataKey="reactivePower" stroke="#82ca9d" name="Reactive Power (VAR)" dot={false} strokeWidth={3}/>
+                <Line type="monotone" dataKey="realPower" stroke={chartColors.realEnergy} name="Real Power (W)" dot={false} strokeWidth={3}/>
+                <Line type="monotone" dataKey="reactivePower" stroke={chartColors.reactiveEnergy} name="Reactive Power (VAR)" dot={false} strokeWidth={3}/>
               </LineChart>
             </ResponsiveContainer>
           ) : (

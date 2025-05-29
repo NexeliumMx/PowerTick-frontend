@@ -1,6 +1,6 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
-
+import chartColors from '../../../../theme/chartColors';
 const ReactivePower = ({ data }) => {
   const hasValidData =
     data &&
@@ -60,25 +60,25 @@ const ReactivePower = ({ data }) => {
             {
               data: [var_l1, null, null, null],
               label: 'L1',
-              color: '#8884d8',
+              color: chartColors.phase1,
               valueFormatter: (value) => `${value} VAR`
             },
             {
               data: [null, var_l2, null, null],
               label: 'L2',
-              color: '#82ca9d',
+              color: chartColors.phase2,
               valueFormatter: (value) => `${value} VAR`
             },
             {
               data: [null, null, var_l3, null],
               label: 'L3',
-              color: '#ffc658',
+              color: chartColors.phase3,
               valueFormatter: (value) => `${value} VAR`
             },
             {
               data: [null, null, null, totalVar],
               label: 'Total',
-              color: '#ccc',
+              color: chartColors.phaseTotal,
               valueFormatter: (value) => `${value} VAR`
             }
           ]}

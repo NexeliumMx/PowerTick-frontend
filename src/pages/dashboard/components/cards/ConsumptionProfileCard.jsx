@@ -7,6 +7,7 @@ import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import { useConsumptionProfile } from '../../../../services/query/useConsumptionProfile';
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
 import { Select, MenuItem, FormControl, InputLabel, Divider } from "@mui/material";
+import chartColors from "../../../../theme/chartColors";
 
 const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
   const theme = useTheme(); 
@@ -119,9 +120,9 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
                                 <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{paddingBottom: 8}} />
                 <CartesianGrid stroke="#f5f5f5" />
                 {/* Bars for realEnergy */}
-                <Bar dataKey="realEnergy" barSize={20} fill="#8884d8" name="Real Energy (Wh)" />
+                <Bar dataKey="realEnergy" barSize={20} fill={chartColors.realEnergy} name="Real Energy (Wh)" />
                 {/* Lines for reactiveEnergy */}
-                <Line type="monotone" dataKey="reactiveEnergy" stroke="#ff7300" name="Reactive Energy (VARh)" strokeWidth={3}/>
+                <Line type="monotone" dataKey="reactiveEnergy" stroke={chartColors.reactiveEnergy} name="Reactive Energy (VARh)" strokeWidth={3}/>
               </ComposedChart>
             </ResponsiveContainer>
           ) : (

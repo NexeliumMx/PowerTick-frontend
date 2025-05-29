@@ -7,6 +7,7 @@ import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line,
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
 import { Select, MenuItem, FormControl, InputLabel, Divider } from "@mui/material";
+import chartColors from "../../../../theme/chartColors";
 const DemandProfileCard = ({ selectedPowerMeter }) => {
   const theme = useTheme(); 
   const { accounts } = useMsal();
@@ -118,11 +119,11 @@ const DemandProfileCard = ({ selectedPowerMeter }) => {
                 <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{paddingBottom: 8}} />
                 <CartesianGrid stroke="#f5f5f5" />
                 {/* Bars for avgRealPower and avgVar */}
-                <Bar dataKey="avgRealPower" barSize={20} fill="#8884d8" name="Avg Real Power (W)" />
-                <Bar dataKey="avgVar" barSize={20} fill="#82ca9d" name="Avg VAR" />
+                <Bar dataKey="avgRealPower" barSize={20} fill={chartColors.avgRealPower} name="Avg Real Power (W)" />
+                <Bar dataKey="avgVar" barSize={20} fill={chartColors.avgVar} name="Avg VAR" />
                 {/* Lines for maxRealPower and maxVar */}
-                <Line type="monotone" dataKey="maxRealPower" stroke="#ffc658" name="Max Real Power (W)" strokeWidth={3}/>
-                <Line type="monotone" dataKey="maxVar" stroke="#ff7300" name="Max VAR" strokeWidth={3}/>
+                <Line type="monotone" dataKey="maxRealPower" stroke={chartColors.maxRealPower} name="Max Real Power (W)" strokeWidth={3}/>
+                <Line type="monotone" dataKey="maxVar" stroke={chartColors.maxVar} name="Max VAR" strokeWidth={3}/>
               </ComposedChart>
             </ResponsiveContainer>
           ) : (

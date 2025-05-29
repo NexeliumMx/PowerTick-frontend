@@ -1,5 +1,6 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
+import chartColors from '../../../../theme/chartColors';
 
 const VoltageLN = ({ data }) => {
   const hasValidData =
@@ -67,25 +68,25 @@ const VoltageLN = ({ data }) => {
             {
               data: [voltage_l1, 0, 0, 0],
               label: 'L1',
-              color: '#8884d8',
+              color: chartColors.phase1,
               valueFormatter: (value) => `${value} V`
             },
             {
               data: [0, voltage_l2, 0, 0],
               label: 'L2',
-              color: '#82ca9d',
+              color: chartColors.phase2,
               valueFormatter: (value) => `${value} V`
             },
             {
               data: [0, 0, voltage_l3, 0],
               label: 'L3',
-              color: '#ffc658',
+              color: chartColors.phase3,
               valueFormatter: (value) => `${value} V`
             },
             {
               data: [0, 0, 0, voltage_ln],
               label: 'Average',
-              color: '#ccc',
+              color: chartColors.phaseTotal,
               valueFormatter: (value) => `${value} V`
             },
           ]}

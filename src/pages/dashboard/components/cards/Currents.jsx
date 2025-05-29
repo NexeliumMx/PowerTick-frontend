@@ -1,6 +1,6 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
-
+import chartColors from '../../../../theme/chartColors';
 const Currents = ({ data }) => {
   const hasValidData =
     data &&
@@ -71,7 +71,7 @@ const Currents = ({ data }) => {
               valueFormatter: (value) => `${value} A`
             },
           ]}
-          colors={['#8884d8', '#82ca9d', '#ffc658']}
+          colors={[chartColors.phase1, chartColors.phase2, chartColors.phase3]}
           tooltip={{
             trigger: 'item',
             render: (params) => {
