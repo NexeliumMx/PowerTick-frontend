@@ -28,7 +28,7 @@ import "./index.css";
 
 // MUI imports
 import { BrowserRouter } from "react-router-dom";
-import { ColorModeContext, useMode } from "./theme.js";
+import { ColorModeContext, useMode } from "./theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 
 // Context imports
