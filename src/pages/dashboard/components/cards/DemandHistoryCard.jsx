@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import { useMsal } from "@azure/msal-react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer, Label } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import { useDemandHistory } from '../../../../services/query/useDemandHistory';
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
@@ -31,6 +31,18 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
   const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
   const hours = Array.from({ length: 24 }, (_, i) => i);
+  
+    //X lable variable title
+  const xAxisLabel = timeInterval === "year"
+  ? "Mes"
+  : timeInterval === "month"
+  ? "Día"
+  : timeInterval === "day"
+  ? "Hora"
+  : timeInterval === "hour"
+  ? "Minutos"
+      : "Tiempo";
+      
   // Transform data for Recharts
   const chartData = demandHistoryData?.map((item) => ({
     name: formatDashboardTimestamp(item.timestamp_utc),
@@ -39,12 +51,22 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
   }));
 
   return (
-    <Card sx={{ minHeight: "600px", display: "flex", flexDirection: "column" }}>
-      <CardHeader title="Demand History" 
-      titleTypographyProps={{variant: 'h3', sx: { textAlign: 'left',paddingLeft:10, alignSelf: 'flex-start' , paddingTop:'10px'} // Tamaño del texto
-      }} />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Box sx={{ width: "100%", overflow: "auto", p: 2 }}>
+    <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
+      <CardHeader
+        title="Demand History"
+        titleTypographyProps={{
+          variant: 'h3',
+          sx: {
+            textAlign: 'left',
+            paddingLeft: 2, 
+            alignSelf: 'flex-start',
+            paddingTop: '2px',  
+            paddingBottom: 0
+          }
+        }}
+      />
+      <CardContent sx={{ flexGrow: 1, pt: 0 }}>
+        <Box sx={{ width: "100%", overflow: "auto", px: 2, py:1 }}>
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : demandHistoryData ? (
@@ -55,10 +77,25 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
                   dataKey="name" 
                   stroke={theme.palette.text.primary}
                   tick={{ fill: theme.palette.text.primary }}
-                />
+                >
+                  <Label
+                    value={xAxisLabel}
+                    offset={-5}
+                    position="insideBottom"
+                    style={{ fill: theme.palette.text.primary, fontWeight: 600 }}
+                  />
+                </XAxis>
                 <YAxis
                   stroke={theme.palette.text.primary}
-                  tick={{ fill: theme.palette.text.primary }} />
+                  tick={{ fill: theme.palette.text.primary }}>
+                   <Label
+                    value="Potencia (W|VAr)"
+                    angle={-90}
+                    position="insideLeft"
+                    style={{ textAnchor: 'middle', fill: theme.palette.text.primary, fontWeight: 600 }}
+                    offset={10}
+                  />
+                </YAxis>
                 <Tooltip 
                 contentStyle={{
                   backgroundColor: theme.palette.background.paper,
@@ -69,7 +106,7 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
                   color: theme.palette.text.secondary,
                 }}
                  />
-                <Legend />
+                <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{paddingBottom: 8}} />
                 <Line type="monotone" dataKey="realPower" stroke="#8884d8" name="Real Power (W)" dot={false} strokeWidth={3}/>
                 <Line type="monotone" dataKey="reactivePower" stroke="#82ca9d" name="Reactive Power (VAR)" dot={false} strokeWidth={3}/>
               </LineChart>
@@ -81,7 +118,7 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
       </CardContent>
       <Divider
         variant="middle"
-        sx={{ my: 2, borderColor: 'primary.main', borderBottomWidth: 3 }}
+        sx={{ mb: 1, borderColor: 'primary.main', borderBottomWidth: 3 }}
       />
       <CardActions
         sx={{

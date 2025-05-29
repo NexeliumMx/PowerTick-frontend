@@ -3,7 +3,7 @@ import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonG
 import { useTheme } from '@mui/material/styles';
 import { useDemandProfile } from '../../../../services/query/useDemandProfile';
 import { useMsal } from "@azure/msal-react";
-import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer } from "recharts";
+import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer, Label} from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
 import { Select, MenuItem, FormControl, InputLabel, Divider } from "@mui/material";
@@ -29,6 +29,18 @@ const DemandProfileCard = ({ selectedPowerMeter }) => {
   const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
+    //X lable variable title
+  const xAxisLabel = timeInterval === "year"
+  ? "Mes"
+  : timeInterval === "month"
+  ? "Día"
+  : timeInterval === "day"
+  ? "Hora"
+  : timeInterval === "hour"
+  ? "Minutos"
+      : "Tiempo";
+
+
   // Transform data for Recharts
   const chartData = demandProfileData?.map((item) => {
     let name = '';
@@ -49,24 +61,50 @@ const DemandProfileCard = ({ selectedPowerMeter }) => {
   });
 
   return (
-    <Card sx={{ minHeight:"600px", display: "flex", flexDirection: "column" }}>
-      <CardHeader title="Demand Profile" titleTypographyProps={{variant: 'h3', sx: { textAlign: 'left',paddingLeft:10, alignSelf: 'flex-start' , paddingTop:'10px'} // Tamaño del texto
-      }} />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Box sx={{ width: "100%", overflow: "auto", p: 2 }}>
+    <Card sx={{ minHeight:"580px", display: "flex", flexDirection: "column" }}>
+      <CardHeader
+        title="Demand Profile"
+        titleTypographyProps={{
+          variant: 'h3',
+          sx: {
+            textAlign: 'left',
+            paddingLeft: 2,
+            alignSelf: 'flex-start',
+            paddingTop: '2px',
+            paddingBottom:0
+          }
+        }}
+      />
+      <CardContent sx={{ flexGrow: 1, pt:0 }}>
+        <Box sx={{ width: "100%", overflow: "auto", px: 2,py:1 }}>
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : demandProfileData ? (
             <ResponsiveContainer width="100%" height={350}>
               <ComposedChart data={chartData}>
                 <XAxis 
-                dataKey="name" 
-                stroke={theme.palette.text.primary}
-                tick={{ fill: theme.palette.text.primary }}
-              />
+                  dataKey="name" 
+                  stroke={theme.palette.text.primary}
+                  tick={{ fill: theme.palette.text.primary }}
+                >
+                  <Label
+                    value={xAxisLabel}
+                    offset={-5}
+                    position="insideBottom"
+                    style={{ fill: theme.palette.text.primary, fontWeight: 600 }}
+                  />
+                </XAxis>
               <YAxis
                 stroke={theme.palette.text.primary}
-                tick={{ fill: theme.palette.text.primary }} />
+                tick={{ fill: theme.palette.text.primary }}>
+                  <Label
+                  value="Potencia (W|VAr)"
+                  angle={-90}
+                  position="insideLeft"
+                  style={{ textAnchor: 'middle', fill: theme.palette.text.primary, fontWeight: 600 }}
+                  offset={10}
+                />
+              </YAxis>
                 <Tooltip 
                 contentStyle={{
                   backgroundColor: theme.palette.background.paper,
@@ -77,7 +115,7 @@ const DemandProfileCard = ({ selectedPowerMeter }) => {
                   color: theme.palette.text.secondary,
                 }}
                 />
-                <Legend />
+                <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{paddingBottom: 8}} />
                 <CartesianGrid stroke="#f5f5f5" />
                 {/* Bars for avgRealPower and avgVar */}
                 <Bar dataKey="avgRealPower" barSize={20} fill="#8884d8" name="Avg Real Power (W)" />
@@ -94,7 +132,7 @@ const DemandProfileCard = ({ selectedPowerMeter }) => {
       </CardContent>
       <Divider
           variant="middle"
-          sx={{ my: 2, borderColor: 'primary.main', borderBottomWidth: 3 }}
+          sx={{ mb:1, borderColor: 'primary.main', borderBottomWidth: 3 }}
         ></Divider>
       <CardActions
       sx={{

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import { useMsal } from "@azure/msal-react";
-import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer } from "recharts";
+import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer, Label } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import { useConsumptionProfile } from '../../../../services/query/useConsumptionProfile';
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
@@ -31,6 +31,16 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
   const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
+  //X lable variable title
+  const xAxisLabel = timeInterval === "year"
+  ? "Mes"
+  : timeInterval === "month"
+  ? "Día"
+  : timeInterval === "day"
+  ? "Hora"
+  : timeInterval === "hour"
+  ? "Minutos"
+      : "Tiempo";
 
   // Transform data for Recharts
   const chartData = consumptionProfileData?.map((item) => {
@@ -50,12 +60,22 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
   });
 
   return (
-    <Card sx={{ minHeight: "600px", display: "flex", flexDirection: "column" }}>
-      <CardHeader title="Consumption Profile" 
-      titleTypographyProps={{variant: 'h3', sx: { textAlign: 'left',paddingLeft:10, alignSelf: 'flex-start' , paddingTop:'10px'} // Tamaño del texto
-      }} />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Box sx={{ width: "100%", overflow: "auto", p: 2}}>
+    <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
+      <CardHeader
+        title="Consumption Profile"
+        titleTypographyProps={{
+          variant: 'h3',
+          sx: {
+            textAlign: 'left',
+            paddingLeft: 2,      // Reduced from a larger value
+            alignSelf: 'flex-start',
+            paddingTop: '2px',   // Reduced from a larger value
+            paddingBottom: 0
+          }
+        }}
+      />
+      <CardContent sx={{ flexGrow: 1, pt: 0 }}>
+        <Box sx={{ width: "100%", overflow: "auto", px: 2, py:1}}>
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : consumptionProfileData ? (
@@ -65,10 +85,27 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
                   dataKey="name" 
                   stroke={theme.palette.text.primary}
                   tick={{ fill: theme.palette.text.primary }}
-                />
+                >
+                  <Label
+                    value={xAxisLabel}
+                    offset={-5}
+                    position="insideBottom"
+                    style={{ fill: theme.palette.text.primary, fontWeight: 600 }}
+                  />
+                </XAxis>
+                
                 <YAxis
                   stroke={theme.palette.text.primary}
-                  tick={{ fill: theme.palette.text.primary }} />
+                  tick={{ fill: theme.palette.text.primary }}>
+                    <Label
+                    value="Energía (Wh|VArh)"
+                    angle={-90}
+                    position="insideLeft"
+                    style={{ textAnchor: 'middle', fill: theme.palette.text.primary, fontWeight: 600 }}
+                    offset={10}
+                  />
+                </YAxis>
+
                 <Tooltip
                 contentStyle={{
                   backgroundColor: theme.palette.background.paper,
@@ -79,7 +116,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
                   color: theme.palette.text.secondary,
                 }}
                 />
-                <Legend />
+                                <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{paddingBottom: 8}} />
                 <CartesianGrid stroke="#f5f5f5" />
                 {/* Bars for realEnergy */}
                 <Bar dataKey="realEnergy" barSize={20} fill="#8884d8" name="Real Energy (Wh)" />
@@ -94,7 +131,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
       </CardContent>
       <Divider
         variant="middle"
-        sx={{ my: 2, borderColor: 'primary.main', borderBottomWidth: 3 }}
+        sx={{ mb: 1, borderColor: 'primary.main', borderBottomWidth: 3 }}
       />
       <CardActions
         sx={{
@@ -172,7 +209,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
             size="small"
             value={selectedMonth}
             onChange={e => setSelectedMonth(e.target.value)}
-            label="Mes"
+            label="Month"
           >
             {months.map(month => (
               <MenuItem key={month} value={month}>{month}</MenuItem>
@@ -187,7 +224,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
             size="small"
             value={selectedDay}
             onChange={e => setSelectedDay(e.target.value)}
-            label="Día"
+            label="Day"
           >
             {days.map(day => (
               <MenuItem key={day} value={day}>{day}</MenuItem>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import { useMsal } from "@azure/msal-react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer, Label } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import { useConsumptionHistory } from '../../../../services/query/useConsumptionHistory';
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
@@ -31,6 +31,16 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
+  //X lable variable title
+  const xAxisLabel = timeInterval === "year"
+  ? "Mes"
+  : timeInterval === "month"
+  ? "Día"
+  : timeInterval === "day"
+  ? "Hora"
+  : timeInterval === "hour"
+  ? "Minutos"
+      : "Tiempo";
 
   // Transform data for Recharts
   const chartData = consumptionHistoryData?.map((item) => ({
@@ -40,12 +50,21 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
   }));
 
   return (
-    <Card sx={{ minHeight: "600px", display: "flex", flexDirection: "column" }}>
-      <CardHeader title="Consumption History" 
-     titleTypographyProps={{variant: 'h3', sx: { textAlign: 'left',paddingLeft:10, alignSelf: 'flex-start' , paddingTop:'10px'} // Tamaño del texto
-      }} />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Box sx={{ width: "100%", overflow: "auto", p: 2 }}>
+    <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
+      <CardHeader
+          title="Consumption History"
+          titleTypographyProps={{
+            variant: 'h3',
+            sx: {
+              textAlign: 'left',
+              paddingLeft: 2,
+              alignSelf: 'flex-start',
+              paddingTop: '2px' // reduce from '10px' to '2px'
+            }
+          }}
+        />
+      <CardContent sx={{ flexGrow: 1, pt: 0 }}>
+        <Box sx={{ width: "100%", overflow: "auto", px: 2, py:1 }}>
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : consumptionHistoryData ? (
@@ -53,18 +72,55 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
               <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
-                  dataKey="name" 
-                  stroke={theme.palette.text.primary}
-                  tick={{ fill: theme.palette.text.primary }}
-                />
+                                  dataKey="name" 
+                                  stroke={theme.palette.text.primary}
+                                  tick={{ fill: theme.palette.text.primary }}
+                                >
+                                  <Label
+                                    value={xAxisLabel}
+                                    offset={-5}
+                                    position="insideBottom"
+                                    style={{ fill: theme.palette.text.primary, fontWeight: 600 }}
+                                  />
+                                </XAxis>
                 {/* Eje Izquierdo*/}
-                <YAxis  yAxisId="left" domain={['auto','auto']} tick={{ fill: theme.palette.text.primary }}
-                 stroke={theme.palette.text.primary}
-                />
+                <YAxis
+                  yAxisId="left"
+                  domain={['auto','auto']}
+                  tick={{ fill: theme.palette.text.primary }}
+                  stroke={theme.palette.text.primary}
+                >
+                  <Label
+                    value="Energía activa (Wh)"
+                    angle={-90}
+                    position="insideLeft"
+                    offset={-10}
+                    style={{
+                      textAnchor: 'middle',
+                      fill: theme.palette.text.primary,
+                      fontWeight: 600,
+                    }}
+                  />
+                </YAxis>
                 {/* Eje Derecho*/}
-                <YAxis  yAxisId="right" orientation="right"  tick={{ fill: theme.palette.text.primary }}
-                 stroke={theme.palette.text.primary}
-                />
+                <YAxis
+                    yAxisId="right"
+                    orientation="right"
+                    tick={{ fill: theme.palette.text.primary }}
+                    stroke={theme.palette.text.primary}
+                  >
+                    <Label
+                      value="Energía reactiva (VArh)"
+                      angle={-90}
+                      position="insideRight"
+                      offset={-10}
+                      style={{
+                        textAnchor: 'middle',
+                        fill: theme.palette.text.primary,
+                        fontWeight: 600,
+                      }}
+                    />
+                  </YAxis>
 
 
                 <Tooltip 
@@ -77,7 +133,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
                   color: theme.palette.text.secondary,
                 }}
                 />
-                <Legend />
+                <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{marginRight: 40, paddingBottom: 8}} />
                 <Line type="monotone" dataKey="realEnergy" stroke="#8884d8" name="Real Energy (Wh)" dot={false} yAxisId="left" strokeWidth={3}/>
                 <Line type="monotone" dataKey="reactiveEnergy" stroke="#82ca9d" name="Reactive Energy (VARh)"  dot={false} yAxisId="right" strokeWidth={3}/>
               </LineChart>
@@ -89,7 +145,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
       </CardContent>
       <Divider
         variant="middle"
-        sx={{ my: 2, borderColor: 'primary.main', borderBottomWidth: 3 }}
+        sx={{ mb: 1, borderColor: 'primary.main', borderBottomWidth: 3 }}
       />
       <CardActions 
       sx={{
