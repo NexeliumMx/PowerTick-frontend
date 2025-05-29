@@ -61,7 +61,8 @@ const DemandHistoryCard = ({ selectedPowerMeter }) => {
             textAlign: 'left',
             paddingLeft: 2, 
             alignSelf: 'flex-start',
-            paddingTop: '2px',  
+            paddingTop: '2px', 
+            fontWeight:600 , 
             paddingBottom: 0
           }
         }}

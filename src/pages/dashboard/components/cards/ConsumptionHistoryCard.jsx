@@ -59,6 +59,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
               textAlign: 'left',
               paddingLeft: 2,
               alignSelf: 'flex-start',
+              fontWeight:600 ,
               paddingTop: '2px' // reduce from '10px' to '2px'
             }
           }}

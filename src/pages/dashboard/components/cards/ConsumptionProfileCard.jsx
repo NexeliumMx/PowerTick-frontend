@@ -68,9 +68,10 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
           variant: 'h3',
           sx: {
             textAlign: 'left',
-            paddingLeft: 2,      // Reduced from a larger value
+            paddingLeft: 2,
             alignSelf: 'flex-start',
-            paddingTop: '2px',   // Reduced from a larger value
+            paddingTop: '2px',
+            fontWeight:600 ,
             paddingBottom: 0
           }
         }}

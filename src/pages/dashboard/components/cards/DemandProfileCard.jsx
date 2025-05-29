@@ -72,6 +72,7 @@ const DemandProfileCard = ({ selectedPowerMeter }) => {
             paddingLeft: 2,
             alignSelf: 'flex-start',
             paddingTop: '2px',
+            fontWeight:600 ,
             paddingBottom:0
           }
         }}

@@ -21,7 +21,7 @@ const PowerFactor = ({ data }) => {
       <Paper elevation={3} sx={{ p: 2, height: 300 }}>
         <Typography 
   variant="h2" 
-  sx={{ textAlign: 'left', paddingLeft: 10, alignSelf: 'flex-start', paddingTop: '10px' }}
+  sx={{ textAlign: 'left', paddingLeft: 3, alignSelf: 'flex-start', paddingTop: 1 }}
 >
           Power Factor
         </Typography>
@@ -40,10 +40,10 @@ const PowerFactor = ({ data }) => {
   ];
 
   return (
-    <Paper elevation={3} sx={{ p: 3, minHeight: 500, display: 'flex', flexDirection: 'column' }}>
+    <Paper elevation={3} sx={{ p: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
       <Typography 
  variant="h3" 
-  sx={{ textAlign: 'left', paddingLeft: 10, alignSelf: 'flex-start', paddingTop: '10px' }}
+  sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 0 }}
 >
         Power Factor (0 to 1)
       </Typography>

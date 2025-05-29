@@ -15,7 +15,7 @@ const VoltageLN = ({ data }) => {
       <Paper elevation={3} sx={{ p: 2, height: 300 }}>
 <Typography 
   variant="h2" 
-  sx={{ textAlign: 'left', paddingLeft: 10, alignSelf: 'flex-start', paddingTop: '10px' }}
+  sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 3, alignSelf: 'flex-start', paddingTop: 1 }}
 >
           Line-to-Neutral Voltage
         </Typography>
@@ -29,10 +29,10 @@ const VoltageLN = ({ data }) => {
   const { voltage_l1, voltage_l2, voltage_l3, voltage_ln } = data;
 
   return (
-    <Paper elevation={3} sx={{ p: 3, minHeight: 500, display: 'flex', flexDirection: 'column' }}>
+    <Paper elevation={3} sx={{ p: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
       <Typography 
   variant="h3" 
-  sx={{ textAlign: 'left', paddingLeft: 10, alignSelf: 'flex-start', paddingTop: '10px' }}
+  sx={{ textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 0 }}
 >
         Line-to-Neutral Voltage
       </Typography>
@@ -45,13 +45,16 @@ const VoltageLN = ({ data }) => {
           borderRadius={15}
           grid={{ horizontal: true }}
           height={350}
-          margin={{ left: 70, right: 20, top: 50, bottom: 20 }}
+          margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[
             {
               data: ['L1', 'L2', 'L3', 'Average'],
               scaleType: 'band',
               categoryGapRatio: 0.2,
               barGapRatio: -1,
+              label: 'Phases',
+              labelStyle: { textAnchor: 'middle'}
+              
             },
           ]}
           yAxis={[

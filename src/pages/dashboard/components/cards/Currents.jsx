@@ -26,10 +26,10 @@ const Currents = ({ data }) => {
   const total = current_l1 + current_l2 + current_l3;
 
   return (
-    <Paper elevation={3} sx={{ p: 3, minHeight: 500, display: 'flex', flexDirection: 'column' }}>
+    <Paper elevation={3} sx={{ p: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
       <Typography 
   variant="h3" 
-  sx={{ textAlign: 'left', paddingLeft: 10, alignSelf: 'flex-start', paddingTop: '10px' }}
+  sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 0 }}
 >
   Currents
 </Typography>
@@ -37,11 +37,15 @@ const Currents = ({ data }) => {
         <BarChart
         borderRadius={15}
         grid={{horizontal:true}}
-         margin={{ left: 70, right: 20, top: 50, bottom: 20 }}
+         margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[
             {
               data: ['Phase 1', 'Phase 2', 'Phase 3', 'Total'],
               scaleType: 'band',
+              label: 'Phases',
+              labelStyle: { textAnchor: 'middle'} 
+              
+
             },
           ]}
           yAxis={[
