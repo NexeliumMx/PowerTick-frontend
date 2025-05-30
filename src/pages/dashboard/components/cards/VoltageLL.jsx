@@ -11,14 +11,14 @@ const VoltageLL = ({ data }) => {
 
   if (!hasValidData) {
     return (
-      <Paper elevation={3} sx={{ p: 2, height: 300 }}>
+      <Paper elevation={3} sx={{ px: 2, height: 450 }}>
        <Typography 
-  variant="h2" 
-  sx={{ textAlign: 'left', paddingLeft: 3, alignSelf: 'flex-start', paddingTop: 1 }}
+  variant="h3" 
+  sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
 >
           Line-to-line voltage per phase
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" pt={20}>
           Data not available.
         </Typography>
       </Paper>
@@ -28,10 +28,10 @@ const VoltageLL = ({ data }) => {
   const { ['voltage_l1-l2']: v12, ['voltage_l2-l3']: v23, ['voltage_l3-l1']: v31, voltage_ll } = data;
 
   return (
-    <Paper elevation={3} sx={{ p: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
+    <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
       <Typography 
   variant="h3" 
-  sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 0 }}
+  sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
 >
         Line-to-Line Voltage
       </Typography>

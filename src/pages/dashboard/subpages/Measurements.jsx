@@ -16,7 +16,7 @@ export default function Measurements({ powerMeter }) {
   const parsedData = realTimeData?.[0];
 
   return (
-    <Box m="20px">
+    <Box>
       <Grid2 container spacing={2}>
         <Grid2 size={{ xs: 12, lg: 6 }}>
           <RealPower data={parsedData} />
