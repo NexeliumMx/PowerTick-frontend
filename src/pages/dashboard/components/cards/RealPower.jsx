@@ -39,7 +39,7 @@ const RealPower = ({ data }) => {
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
           key={timestamp_utc}
-          borderRadius={15}
+          borderRadius={10}
           grid={{ horizontal: true }}
           margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           height={350}
@@ -48,7 +48,9 @@ const RealPower = ({ data }) => {
               data: ['L1', 'L2', 'L3', 'Total'],
               scaleType: 'band',
               label: 'Phases',
-              labelStyle: { textAnchor: 'middle'}
+              labelStyle: { textAnchor: 'middle'},
+              categoryGapRatio: 0.2,
+              barGapRatio: -1,
             },
           ]}
           yAxis={[
@@ -63,26 +65,29 @@ const RealPower = ({ data }) => {
           ]}
           series={[
             {
-              data: [watts_l1, null, null, watts_l1],
+              data: [watts_l1, null, null, null],
               label: 'L1',
-              stack: 'total',
               color: chartColors.phase1,
               valueFormatter: (value) => `${value} W`
             },
             {
-              data: [null, watts_l2, null, watts_l2],
+              data: [null, watts_l2, null, null],
               label: 'L2',
-              stack: 'total',
               color: chartColors.phase2,
               valueFormatter: (value) => `${value} W`
             },
             {
-              data: [null, null, watts_l3, watts_l3],
+              data: [null, null, watts_l3, null],
               label: 'L3',
-              stack: 'total',
               color: chartColors.phase3,
               valueFormatter: (value) => `${value} W`
             },
+            {
+              data: [null, null, null, watts],
+              label: 'Total',
+              color: chartColors.phaseTotal,
+              valueFormatter: (value) => `${value} W`
+            }
           ]}
           tooltip={{
             trigger: 'item',

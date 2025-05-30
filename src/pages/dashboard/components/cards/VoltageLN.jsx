@@ -42,7 +42,7 @@ const VoltageLN = ({ data }) => {
             duration: 1000, // in milliseconds
             easing: 'ease-out', // options: 'linear', 'ease-in', 'ease-out', 'ease-in-out'
           }}
-          borderRadius={15}
+          borderRadius={10}
           grid={{ horizontal: true }}
           height={350}
           margin={{ left: 70, right: 20, top: 50, bottom: 40 }}

@@ -37,7 +37,7 @@ const Currents = ({ data }) => {
 </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
-        borderRadius={15}
+        borderRadius={10}
         grid={{horizontal:true}}
          margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[
@@ -45,8 +45,9 @@ const Currents = ({ data }) => {
               data: ['Phase 1', 'Phase 2', 'Phase 3', 'Total'],
               scaleType: 'band',
               label: 'Phases',
-              labelStyle: { textAnchor: 'middle'} 
-              
+              labelStyle: { textAnchor: 'middle'}, 
+              categoryGapRatio: 0.2, 
+              barGapRatio: -1,
 
             },
           ]}
@@ -59,25 +60,26 @@ const Currents = ({ data }) => {
           height={350}
           series={[
             {
-              data: [current_l1, null, null, current_l1],
+              data: [current_l1, null, null, null],
               label: 'Phase 1',
-              stack: 'total',
               valueFormatter: (value) => `${value} A`
             },
             {
-              data: [null, current_l2, null, current_l2],
+              data: [null, current_l2, null, null],
               label: 'Phase 2',
-              stack: 'total',
               valueFormatter: (value) => `${value} A`
             },
             {
-              data: [null, null, current_l3, current_l3],
+              data: [null, null, current_l3, null],
               label: 'Phase 3',
-              stack: 'total',
+              valueFormatter: (value) => `${value} A`
+            },
+            {data: [null, null, null, total],
+              label: 'Total',
               valueFormatter: (value) => `${value} A`
             },
           ]}
-          colors={[chartColors.phase1, chartColors.phase2, chartColors.phase3]}
+          colors={[chartColors.phase1, chartColors.phase2, chartColors.phase3, chartColors.phaseTotal]}
           tooltip={{
             trigger: 'item',
             render: (params) => {

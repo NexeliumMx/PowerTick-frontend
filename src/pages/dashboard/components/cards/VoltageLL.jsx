@@ -37,7 +37,7 @@ const VoltageLL = ({ data }) => {
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
-          borderRadius={15}
+          borderRadius={10}
           grid={{ horizontal: true }}
           height={350}
           margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
