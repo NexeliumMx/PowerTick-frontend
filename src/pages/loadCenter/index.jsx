@@ -52,11 +52,20 @@ const LoadCenter = () => {
 
   return (
     
-    <Box m="20px">
-      <Header
-        title="LOAD CENTERS"
-        subtitle="Overview and Management of Energy Distribution and Consumption"
-      />
+    <Box sx={{ minHeight: "100vh", padding: "20px", boxSizing: "border-box" }}>
+      <Box
+    sx={{
+      display: "flex",
+      justifyContent:"flex-start",
+      flexDirection:"column",
+      pt: 2,
+    }}
+  >
+        <Header
+          title="LOAD CENTERS"
+          subtitle="Overview and Management of Energy Distribution and Consumption"
+        />
+        </Box>
       <Box>
         {isLoading || !powermetersData ? (
           <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">

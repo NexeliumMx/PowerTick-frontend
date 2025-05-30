@@ -71,45 +71,42 @@ const Dashboard = () => {
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
-          position: "absolute",
-          top: "20px",
-          left: "20px",
-          right: "20px",
+          alignItems: {xs:"stretch", sm: "center"},
+          flexDirection: { xs: "column", sm: "row" },
+           gap: { xs: 3, sm: 0 },
+          pt: 2,
         }}
       >
-        <Header title="DASHBOARD" subtitle="Comprehensive Monitoring of Energy Metrics and Historical Performance" />
-        <NavButtons setActivePage={setActivePage} />
-      </Box>
-
-      {/* Power Meter Dropdown */}
-      <Box
-        sx={{
-          marginTop: "100px",
-          marginBottom: "20px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-        }}
-      >
-        <Select
-          value={selectedPowerMeter || ""}
-          onChange={(e) => setSelectedPowerMeter(e.target.value)}
-          displayEmpty
-          sx={{ minWidth: 200 }}
-          disabled={isPowerMetersLoading}
-        >
-          <MenuItem value="" disabled>
-            Select Power Meter
-          </MenuItem>
-          {powerMeters.map((meter, index) => (
-            <MenuItem key={index} value={meter.serial_number}>
-              {meter.powermeter_alias || meter.serial_number}
+        <Header 
+        title="DASHBOARD" 
+        subtitle="Comprehensive Monitoring of Energy Metrics and Historical Performance" 
+        
+        />
+        
+        
+        {/* Power Meter Dropdown */}
+         
+          <Select
+            value={selectedPowerMeter || ""}
+            onChange={(e) => setSelectedPowerMeter(e.target.value)}
+            displayEmpty
+            sx={{ minWidth: 200 }}
+            disabled={isPowerMetersLoading}
+          >
+            <MenuItem value="" disabled>
+              Select Power Meter
             </MenuItem>
-          ))}
-        </Select>
-      </Box>
+            {powerMeters.map((meter, index) => (
+              <MenuItem key={index} value={meter.serial_number}>
+                {meter.powermeter_alias || meter.serial_number}
+              </MenuItem>
+            ))}
+          </Select>
+        
+        <NavButtons setActivePage={setActivePage} />
+    </Box>
+
+      
 
       {/* Render Active Page */}
       <Box sx={{ marginTop: "20px", textAlign: "center", minHeight: "100%" }}>{renderPage()}</Box>
