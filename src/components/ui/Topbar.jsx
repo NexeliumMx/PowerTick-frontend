@@ -47,7 +47,7 @@ const Topbar = ({ handleDrawerToggle }) => {
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Box
           sx={{
-            width: isSmallScreen ? "0px" : "150px",
+            width: isSmallScreen ? "0px" : "180px",
             height: "45px",
             overflow: "hidden",
             transition: "width 0.3s ease, opacity 0.3s ease",
@@ -57,25 +57,36 @@ const Topbar = ({ handleDrawerToggle }) => {
             alignItems: "center",
           }}
         >
+          <Box
+            sx={{
+              width: "45px",
+              height: "45px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {/* Logo */}
           <img
             src="/assets/logo_powertick-02.svg"
             alt="Logo"
             style={{
-              width: "100%",
-              height: "100%",
+              width: "200%",
+              height: "200%",
               cursor: "pointer",
               filter: "brightness(0) invert(1)", // Makes logo white
             }}
           />
+          </Box>
           {!isSmallScreen && (
             <Box sx={{ ml: 1, mr: 1, display: "flex", alignItems: "center" }}>
               <Typography
-                variant="h6"
+                variant="h3"
                 sx={{
                   fontWeight: 700,
-                  fontSize: "1.2rem",
                   color: theme.palette.text.primary,
                   letterSpacing: "0.05em",
+                  marginLeft: "15px",
                 }}
               >
                 PowerTick
@@ -115,7 +126,7 @@ const Topbar = ({ handleDrawerToggle }) => {
       */}
 
       {/* Right Section */}
-      <Box sx={{ display: "flex", alignItems: "center" }}>
+<Box sx={{ display: "flex", alignItems: "center" }}>
         {/* Mode Switcher */}
         {!isSmallScreen && (
           <Select
