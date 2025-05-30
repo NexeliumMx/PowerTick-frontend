@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, useTheme } from "@mui/material";
+import { Box, useTheme, Typography } from "@mui/material";
 import { Link, useLocation } from "react-router-dom"; 
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import ElectricMeterOutlinedIcon from '@mui/icons-material/ElectricMeterOutlined';
@@ -50,22 +50,26 @@ const SidebarMenu = ({ collapsed }) => {
         <Menu>
           {/* Load Center */}
           <MenuItem
-            icon={<ElectricMeterOutlinedIcon />}
+            icon={<ElectricMeterOutlinedIcon sx={{ fontSize: 26 }} />}
             active={selected === "Load Center"}
             component={<Link to="/load-center" />}
             rootStyles={getMenuItemStyles(selected === "Load Center")}
           >
-            Load Center
+            <Typography variant="h5" fontWeight={600}>
+            Centros de Carga
+            </Typography>
           </MenuItem>
 
           {/* Dashboard */}
           <MenuItem
-            icon={<DashboardOutlinedIcon />}
+            icon={<DashboardOutlinedIcon sx={{ fontSize: 26 }}/>}
             active={selected === "Dashboard"}
             component={<Link to="/dashboard" />}
             rootStyles={getMenuItemStyles(selected === "Dashboard")}
           >
+            <Typography variant="h5" fontWeight={600}>
             Dashboard
+            </Typography>
           </MenuItem>
         </Menu>
       </Sidebar>
