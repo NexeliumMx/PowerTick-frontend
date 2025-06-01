@@ -7,13 +7,13 @@ import RealPower from "../components/cards/RealPower";
 import ReactivePower from "../components/cards/ReactivePower";
 import PowerFactor from "../components/cards/PowerFactor";
 import { useMsal } from "@azure/msal-react";
-import { useRealTimeData } from "../../../services/query/useRealTimeData";
+import { useRealTimeData } from "../../../hooks/useRealTimeData";
 
 export default function Measurements({ powerMeter }) {
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid;
   const { data: realTimeData, isLoading } = useRealTimeData(user_id, powerMeter);
-  const parsedData = realTimeData?.[0];
+  const parsedData = Array.isArray(realTimeData) ? realTimeData[0] : realTimeData;
 
   return (
     <Box>

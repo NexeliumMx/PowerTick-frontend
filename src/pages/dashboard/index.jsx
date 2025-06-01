@@ -8,35 +8,33 @@ import Header from "../../components/ui/Header";
 import { ModeContext } from "../../context/AppModeContext";
 import LoadingOverlay from "../../components/test/LoadingOverlay";
 import { fetchRealTimeData } from "../../services/api/httpRequests";
-import { usePowermeters } from "../../services/query/usePowermeters";
+
+//Hooks
+import { usePowermetersByUserAccess } from '../../hooks/usePowermetersByUserAccess';
 import { useMsal } from "@azure/msal-react";
 import { useLocation } from "react-router-dom";
+import { useRealTimeData } from '../../hooks/useRealTimeData';
 
 const Dashboard = () => {
   const { state } = useContext(ModeContext);
   const { accounts } = useMsal ? useMsal() : { accounts: [] };
   const user_id = accounts && accounts[0]?.idTokenClaims?.oid;
-  const { data: powerMeters = [], isLoading: isPowerMetersLoading, error: powerMetersError } = usePowermeters(user_id);
+  const { data: powerMeters = [], isLoading: isPowerMetersLoading, error: powerMetersError } = usePowermetersByUserAccess(user_id, state.mode);
   const [selectedPowerMeter, setSelectedPowerMeter] = useState("");
-  const [realTimeData, setRealTimeData] = useState(null);
-  const [isFetching, setIsFetching] = useState(false);
   const [activePage, setActivePage] = useState("Analysis");
   const location = useLocation();
 
   // Set selectedPowerMeter from query param if present
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const serialFromQuery = params.get('serial_number');
-    if (serialFromQuery && powerMeters.some(m => m.serial_number === serialFromQuery)) {
-      setSelectedPowerMeter(serialFromQuery);
+    const powermeterIdFromQuery = params.get('powermeter_id');
+    if (powermeterIdFromQuery && powerMeters.some(m => String(m.powermeter_id) === String(powermeterIdFromQuery))) {
+      setSelectedPowerMeter(powermeterIdFromQuery);
     }
   }, [location.search, powerMeters]);
 
-  useEffect(() => {
-    if (selectedPowerMeter) {
-      fetchRealTimeData(user_id, selectedPowerMeter).then(setRealTimeData);
-    }
-  }, [selectedPowerMeter]);
+  // Fetch real-time data for selected powermeter
+  const { data: realTimeData, isLoading: isRealTimeLoading } = useRealTimeData(user_id, selectedPowerMeter, state.mode);
 
   const renderPage = () => {
     switch (activePage) {
@@ -64,7 +62,7 @@ const Dashboard = () => {
   return (
     <Box sx={{ position: "relative", minHeight: "100vh", padding: "20px", boxSizing: "border-box" }}>
       {/* Loading Overlay */}
-      <LoadingOverlay loading={isFetching} />
+      <LoadingOverlay loading={isRealTimeLoading} />
 
       {/* Header and Navigation */}
       <Box
@@ -80,34 +78,26 @@ const Dashboard = () => {
         <Header 
         title="DASHBOARD" 
         subtitle="Comprehensive Monitoring of Energy Metrics and Historical Performance" 
-        
         />
-        
-        
         {/* Power Meter Dropdown */}
-         
-          <Select
-            value={selectedPowerMeter || ""}
-            onChange={(e) => setSelectedPowerMeter(e.target.value)}
-            displayEmpty
-            sx={{ minWidth: 200 }}
-            disabled={isPowerMetersLoading}
-          >
-            <MenuItem value="" disabled>
-              Select Power Meter
+        <Select
+          value={selectedPowerMeter || ""}
+          onChange={(e) => setSelectedPowerMeter(e.target.value)}
+          displayEmpty
+          sx={{ minWidth: 200 }}
+          disabled={isPowerMetersLoading}
+        >
+          <MenuItem value="" disabled>
+            Select Power Meter
+          </MenuItem>
+          {powerMeters.map((meter, index) => (
+            <MenuItem key={index} value={meter.powermeter_id}>
+              {meter.powermeter_alias || meter.powermeter_id}
             </MenuItem>
-            {powerMeters.map((meter, index) => (
-              <MenuItem key={index} value={meter.serial_number}>
-                {meter.powermeter_alias || meter.serial_number}
-              </MenuItem>
-            ))}
-          </Select>
-        
+          ))}
+        </Select>
         <NavButtons setActivePage={setActivePage} />
-    </Box>
-
-      
-
+      </Box>
       {/* Render Active Page */}
       <Box sx={{ marginTop: "20px", textAlign: "center", minHeight: "100%" }}>{renderPage()}</Box>
     </Box>

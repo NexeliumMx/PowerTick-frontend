@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import { useMsal } from "@azure/msal-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer, Label } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
-import { useConsumptionHistory } from '../../../../services/query/useConsumptionHistory';
+import { useConsumptionHistory } from '../../../../hooks/useConsumptionHistory';
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
 import { Select, MenuItem, FormControl, InputLabel, Divider } from "@mui/material";
 import chartColors from "../../../../theme/chartColors";

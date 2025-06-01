@@ -26,7 +26,7 @@ const RealPower = ({ data }) => {
     );
   }
 
-  const { watts_l1, watts_l2, watts_l3, watts, timestamp_utc } = data;
+  const { watts_l1, watts_l2, watts_l3, watts, timestamp } = data;
 
   return (
     <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
@@ -38,7 +38,7 @@ const RealPower = ({ data }) => {
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
-          key={timestamp_utc}
+          key={timestamp}
           borderRadius={10}
           grid={{ horizontal: true }}
           margin={{ left: 70, right: 20, top: 50, bottom: 40 }}

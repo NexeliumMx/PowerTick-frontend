@@ -1,13 +1,16 @@
 import { Box, Typography, Card, CardActions, Button, Grid2, CardContent, Stack, CircularProgress, Divider } from "@mui/material";
 import Header from "../../components/ui/Header";
 import { useMsal } from "@azure/msal-react";
-import { useEffect, useState } from "react";
-import { fetchPowermetersByUserAccess } from "../../services/api/httpRequests";
+import { useEffect, useState, useContext } from "react";
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
-import { usePowermeters } from '../../services/query/usePowermeters';
+
+import chartColors from "../../theme/chartColors";
+import { ModeContext } from "../../context/AppModeContext";
+
+//Hooks
+import { usePowermetersByUserAccess } from '../../hooks/usePowermetersByUserAccess';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from "@mui/material/styles";
-import chartColors from "../../theme/chartColors";
 
 
 // Helper to group powermeters by installation_id
@@ -44,7 +47,8 @@ const capacity_kw = 900;
 const LoadCenter = () => {
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid;
-  const { data: powermetersData, isLoading, error } = usePowermeters(user_id);
+  const { state } = useContext(ModeContext); // get mode from context
+  const { data: powermetersData, isLoading, error } = usePowermetersByUserAccess(user_id, state.mode);
   const navigate = useNavigate();
   const theme = useTheme();
   // Group powermeters by installation
@@ -115,7 +119,7 @@ const LoadCenter = () => {
                             }}
                           />
                           <Typography variant="body2" sx={{ textAlign: 'center', mt: 0 }}>
-                            Factor de potencia
+                            Power Factor
                           </Typography>
                           </Box>
                           <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: { xs: 0, md: 2 } }} />
@@ -141,7 +145,7 @@ const LoadCenter = () => {
                           />
 
                           <Typography variant="body2" sx={{ textAlign: 'center', mt: 0 }}>
-                            Demanda
+                            Demand
                           </Typography>
                           </Box>
                         </Stack>

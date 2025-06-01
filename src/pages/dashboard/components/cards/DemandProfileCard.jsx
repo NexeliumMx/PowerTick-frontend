@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography, Skeleton } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
-import { useDemandProfile } from '../../../../services/query/useDemandProfile';
+import { useDemandProfile } from '../../../../hooks/useDemandProfile';
 import { useMsal } from "@azure/msal-react";
 import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer, Label} from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";

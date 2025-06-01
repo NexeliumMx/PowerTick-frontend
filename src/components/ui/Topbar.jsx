@@ -134,8 +134,9 @@ const Topbar = ({ handleDrawerToggle }) => {
             onChange={handleModeChange}
             sx={{ color: colors.grey[100], marginRight: "16px" }}
           >
-            <MenuItem value="DEMO_MODE">Demo Mode</MenuItem>
-            <MenuItem value="LIVE_MODE">Live Mode</MenuItem>
+            <MenuItem value="DEMO">Demo</MenuItem>
+            <MenuItem value="DEV">Dev</MenuItem>
+            <MenuItem value="PRODUCTION">Production</MenuItem>
           </Select>
         )}
 
