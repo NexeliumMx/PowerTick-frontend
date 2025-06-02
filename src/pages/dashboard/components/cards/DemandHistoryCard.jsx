@@ -14,6 +14,8 @@ import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+const LAST_HOUR_VALUE = 'last_hour';
+
 const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter }) => {
   const theme = useTheme(); 
   const { accounts } = useMsal();
@@ -23,7 +25,8 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
   const [selectedYear, setSelectedYear] = useState(defaultTimeFilter?.year || new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(defaultTimeFilter?.month || new Date().getMonth() + 1);
   const [selectedDay, setSelectedDay] = useState(defaultTimeFilter?.day || new Date().getDate());
-  const [selectedHour, setSelectedHour] = useState(defaultTimeFilter?.hour || new Date().getHours());
+  // Default hour: 'last_hour' if timeInterval is 'hour', otherwise defaultTimeFilter.hour
+  const [selectedHour, setSelectedHour] = useState(timeInterval === 'hour' ? LAST_HOUR_VALUE : (defaultTimeFilter?.hour || new Date().getHours()));
 
   // Update time filter if defaultTimeFilter changes
   useEffect(() => {
@@ -31,25 +34,72 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
       setSelectedYear(defaultTimeFilter.year);
       setSelectedMonth(defaultTimeFilter.month);
       setSelectedDay(defaultTimeFilter.day);
-      setSelectedHour(defaultTimeFilter.hour);
+      setSelectedHour(timeInterval === 'hour' ? LAST_HOUR_VALUE : defaultTimeFilter.hour);
     }
-  }, [defaultTimeFilter]);
+  }, [defaultTimeFilter, timeInterval]);
 
-  // Use React Query hook for on-demand fetching and caching
-  const { data: demandHistoryData, isLoading } = useDemandHistory(user_id, selectedPowerMeter, timeInterval);
-
-  const handleTimeIntervalChange = (event, newTimeInterval) => {
-    if (newTimeInterval) {
-      setTimeInterval(newTimeInterval);
+  // Compute start_utc and end_utc based on timeInterval and time filter
+  const tz = dayjs.tz.guess();
+  let start_utc = null;
+  let end_utc = null;
+  const now = dayjs();
+  const isToday =
+    selectedYear === now.year() &&
+    selectedMonth === now.month() + 1 &&
+    selectedDay === now.date();
+  if (timeInterval === "hour") {
+    if (selectedHour === LAST_HOUR_VALUE) {
+      const start = now.subtract(1, 'hour');
+      start_utc = start.utc().format();
+      end_utc = now.utc().format();
+    } else {
+      const start = dayjs.tz(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}T${String(selectedHour).padStart(2, '0')}:00:00`, tz);
+      let end;
+      if (selectedHour < 23) {
+        end = start.add(1, 'hour');
+      } else {
+        end = start.endOf('hour');
+      }
+      start_utc = start.utc().format();
+      end_utc = end.utc().format();
     }
-  };
-  // Generate years, months, days, hours arrays
+  } else if (timeInterval === "day") {
+    const start = dayjs.tz(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}T00:00:00`, tz);
+    const end = isToday ? now : start.endOf('day');
+    start_utc = start.utc().format();
+    end_utc = end.utc().format();
+  }
+
+  // Generate hour options: 'Last Hour' + 00:00-23:00 (as { value, label } objects)
+  let hours = [];
+  if (isToday) {
+    hours = [
+      { value: LAST_HOUR_VALUE, label: 'Last Hour' },
+      ...Array.from({ length: now.hour() + 1 }, (_, i) => {
+        const hour = now.hour() - i;
+        return {
+          value: hour,
+          label: `${String(hour).padStart(2, '0')}:00`,
+        };
+      })
+    ];
+  } else {
+    hours = Array.from({ length: 24 }, (_, i) => ({
+      value: i,
+      label: `${String(i).padStart(2, '0')}:00`,
+    }));
+    // If 'Last Hour' is selected but not available, reset to 0
+    if (selectedHour === LAST_HOUR_VALUE) {
+      setSelectedHour(0);
+    }
+  }
+
+  // Time filter arrays (copied from ConsumptionHistoryCard)
   const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
   const months = Array.from({ length: 12 }, (_, i) => dayjs().month(i).format('MMMM'));
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
-  const hours = Array.from({ length: 24 }, (_, i) => i);
 
-  // Compute valid years, months, days, hours based on measurementRange
+  // Compute valid years, months, days, and hours based on measurementRange
   let validYears = years;
   let validMonths = months;
   let validDays = days;
@@ -78,41 +128,69 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     if (selectedYear === max.year() && selectedMonth === max.month() + 1) endDay = max.date();
     validDays = [];
     for (let d = startDay; d <= endDay; d++) validDays.push(d);
-    // Hours
+    // Hours (always as { value, label })
     if (
       selectedYear === min.year() && selectedMonth === min.month() + 1 && selectedDay === min.date() &&
       selectedYear === max.year() && selectedMonth === max.month() + 1 && selectedDay === max.date()
     ) {
       validHours = [];
-      for (let h = min.hour(); h <= max.hour(); h++) validHours.push(h);
+      for (let h = min.hour(); h <= max.hour(); h++) {
+        validHours.push({ value: h, label: `${String(h).padStart(2, '0')}:00` });
+      }
     } else if (selectedYear === min.year() && selectedMonth === min.month() + 1 && selectedDay === min.date()) {
       validHours = [];
-      for (let h = min.hour(); h < 24; h++) validHours.push(h);
+      for (let h = min.hour(); h < 24; h++) {
+        validHours.push({ value: h, label: `${String(h).padStart(2, '0')}:00` });
+      }
     } else if (selectedYear === max.year() && selectedMonth === max.month() + 1 && selectedDay === max.date()) {
       validHours = [];
-      for (let h = 0; h <= max.hour(); h++) validHours.push(h);
+      for (let h = 0; h <= max.hour(); h++) {
+        validHours.push({ value: h, label: `${String(h).padStart(2, '0')}:00` });
+      }
     } else {
       validHours = hours;
     }
+    // If selectedHour is not in validHours, reset to first available
+    if (timeInterval === 'hour' && !validHours.some(h => h.value === selectedHour)) {
+      setSelectedHour(validHours.length > 0 ? validHours[0].value : '');
+    }
   }
 
-  // X axis label
-  const xAxisLabel = timeInterval === "year"
-    ? "Month"
-    : timeInterval === "month"
-    ? "Day"
-    : timeInterval === "day"
-    ? "Hour"
-    : timeInterval === "hour"
-    ? "Minutes"
-    : "Time";
+  // Use new hook for demand history
+  const { data: demandHistoryData, isLoading } = useDemandHistory(
+    user_id,
+    selectedPowerMeter,
+    start_utc,
+    end_utc,
+    // Use app mode if available, fallback to PRODUCTION
+    (typeof appModeState !== 'undefined' && appModeState.mode) ? appModeState.mode : 'PRODUCTION'
+  );
 
-  // Transform data for Recharts
+  // Transform data for Recharts (show local time)
   const chartData = demandHistoryData?.map((item) => ({
-    name: formatDashboardTimestamp(item.timestamp_utc),
+    name: dayjs.utc(item.utc_time).tz(tz).format('HH:mm'), // x-axis label in local time
+    timestamp_local: dayjs.utc(item.utc_time).tz(tz).format('YYYY-MM-DD HH:mm'), // for tooltip
     realPower: item.real_power_w,
     reactivePower: item.reactive_power_var,
   }));
+
+  // X label variable title (copied from ConsumptionHistoryCard)
+  const xAxisLabel = timeInterval === "year"
+    ? "Mes"
+    : timeInterval === "month"
+    ? "Día"
+    : timeInterval === "day"
+    ? "Hora"
+    : timeInterval === "hour"
+    ? "Minutos"
+    : "Tiempo";
+
+  // Add handleTimeIntervalChange (copied from ConsumptionHistoryCard)
+  const handleTimeIntervalChange = (event, newTimeInterval) => {
+    if (newTimeInterval) {
+      setTimeInterval(newTimeInterval);
+    }
+  };
 
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
@@ -290,9 +368,9 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
                 onChange={e => setSelectedHour(e.target.value)}
                 label="Hour"
               >
-                {hours.map(hour => (
-                  <MenuItem key={hour} value={hour}>
-                    {hour.toString().padStart(2, '0')}:00
+                {validHours.map(hour => (
+                  <MenuItem key={hour.value} value={hour.value}>
+                    {hour.label}
                   </MenuItem>
                 ))}
               </Select>
