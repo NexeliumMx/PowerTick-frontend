@@ -1,45 +1,53 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
-
+import chartColors from '../../../../theme/chartColors';
 const VoltageLL = ({ data }) => {
   const hasValidData =
     data &&
-    typeof data['voltage_l1-l2'] === 'number' &&
-    typeof data['voltage_l2-l3'] === 'number' &&
-    typeof data['voltage_l3-l1'] === 'number' &&
+    typeof data.voltage_l1_l2 === 'number' &&
+    typeof data.voltage_l2_l3 === 'number' &&
+    typeof data.voltage_l3_l1 === 'number' &&
     typeof data.voltage_ll === 'number';
 
   if (!hasValidData) {
     return (
-      <Paper elevation={3} sx={{ p: 2, height: 300 }}>
-        <Typography variant="subtitle1" gutterBottom>
+      <Paper elevation={3} sx={{ px: 2, height: 450 }}>
+       <Typography 
+  variant="h3" 
+  sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+>
           Line-to-line voltage per phase
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" pt={20}>
           Data not available.
         </Typography>
       </Paper>
     );
   }
 
-  const { ['voltage_l1-l2']: v12, ['voltage_l2-l3']: v23, ['voltage_l3-l1']: v31, voltage_ll } = data;
+  const { voltage_l1_l2, voltage_l2_l3, voltage_l3_l1, voltage_ll } = data;
 
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
-      <Typography variant="subtitle1" gutterBottom align="center">
+    <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
+      <Typography 
+  variant="h3" 
+  sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+>
         Line-to-Line Voltage
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
-          borderRadius={15}
+          borderRadius={10}
           grid={{ horizontal: true }}
-          height={450}
-          margin={{ left: 70, right: 20, top: 20, bottom: 20 }}
+          height={350}
+          margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[{
             data: ['L1-L2', 'L2-L3', 'L3-L1', 'Average'],
             scaleType: 'band',
             categoryGapRatio: 0.2,
             barGapRatio: -1,
+            label: 'Phases',
+            labelStyle: { textAnchor: 'middle'}
           }]}
           yAxis={[{
             label: 'Voltage (V)',
@@ -51,27 +59,27 @@ const VoltageLL = ({ data }) => {
           }]}
           series={[
             {
-              data: [v12, 0, 0, 0],
+              data: [voltage_l1_l2, 0, 0, 0],
               label: 'L1-L2',
-              color: '#8884d8',
+              color: chartColors.phase1,
               valueFormatter: (value) => `${value} V`
             },
             {
-              data: [0, v23, 0, 0],
+              data: [0, voltage_l2_l3, 0, 0],
               label: 'L2-L3',
-              color: '#82ca9d',
+              color: chartColors.phase2,
                 valueFormatter: (value) => `${value} V`
             },
             {
-              data: [0, 0, v31, 0],
+              data: [0, 0, voltage_l3_l1, 0],
               label: 'L3-L1',
-              color: '#ffc658',
+              color: chartColors.phase3,
                             valueFormatter: (value) => `${value} V`
             },
             {
               data: [0, 0, 0, voltage_ll],
               label: 'Average',
-              color: '#ccc',
+              color: chartColors.phaseTotal,
                             valueFormatter: (value) => `${value} V`
             },
           ]}

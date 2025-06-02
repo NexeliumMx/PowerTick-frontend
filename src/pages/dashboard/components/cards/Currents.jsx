@@ -1,6 +1,6 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
-
+import chartColors from '../../../../theme/chartColors';
 const Currents = ({ data }) => {
   const hasValidData =
     data &&
@@ -11,34 +11,44 @@ const Currents = ({ data }) => {
   console.log('Current meter data:', data);
   if (!hasValidData) {
     return (
-      <Paper elevation={3} sx={{ p: 2, height: 300 }}>
-        <Typography variant="subtitle1" gutterBottom>
+      <Paper elevation={3} sx={{ px: 2, height: 450 }}>
+        <Typography  variant="h3" 
+  sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+>
           Currents
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" pt={20}>
           Data not available.
         </Typography>
       </Paper>
     );
   }
 
-  const { current_l1, current_l2, current_l3 , timestamp_utc  } = data;
+  const { current_l1, current_l2, current_l3, timestamp } = data;
   const total = current_l1 + current_l2 + current_l3;
 
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
-      <Typography variant="subtitle1" gutterBottom align="center">
-        Currents
-      </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+    <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
+      <Typography 
+  variant="h3" 
+  sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+>
+  Currents
+</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
-        borderRadius={15}
+        borderRadius={10}
         grid={{horizontal:true}}
-         margin={{ left: 70, right: 20, top: 20, bottom: 20 }}
+         margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[
             {
-              data: ['L1', 'L2', 'L3', 'Total'],
+              data: ['Phase 1', 'Phase 2', 'Phase 3', 'Total'],
               scaleType: 'band',
+              label: 'Phases',
+              labelStyle: { textAnchor: 'middle'}, 
+              categoryGapRatio: 0.2, 
+              barGapRatio: -1,
+
             },
           ]}
           yAxis={[
@@ -47,28 +57,29 @@ const Currents = ({ data }) => {
               labelStyle: { transform: 'translateX(-20px)', writingMode: 'sideways-lr', textAnchor: 'middle'} // Axis separation
             },
           ]}
-          height={450}
+          height={350}
           series={[
             {
-              data: [current_l1, null, null, current_l1],
-              label: 'L1',
-              stack: 'total',
+              data: [current_l1, null, null, null],
+              label: 'Phase 1',
               valueFormatter: (value) => `${value} A`
             },
             {
-              data: [null, current_l2, null, current_l2],
-              label: 'L2',
-              stack: 'total',
+              data: [null, current_l2, null, null],
+              label: 'Phase 2',
               valueFormatter: (value) => `${value} A`
             },
             {
-              data: [null, null, current_l3, current_l3],
-              label: 'L3',
-              stack: 'total',
+              data: [null, null, current_l3, null],
+              label: 'Phase 3',
+              valueFormatter: (value) => `${value} A`
+            },
+            {data: [null, null, null, total],
+              label: 'Total',
               valueFormatter: (value) => `${value} A`
             },
           ]}
-          colors={['#8884d8', '#82ca9d', '#ffc658']}
+          colors={[chartColors.phase1, chartColors.phase2, chartColors.phase3, chartColors.phaseTotal]}
           tooltip={{
             trigger: 'item',
             render: (params) => {

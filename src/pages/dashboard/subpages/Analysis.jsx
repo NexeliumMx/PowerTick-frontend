@@ -1,30 +1,71 @@
+// MUI Imports
 import { Box } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Grid from "@mui/material/Grid2";
+
+// Context
+import { ModeContext } from "../../../context/AppModeContext";
+
+// Components
 import DemandProfileCard from "../components/cards/DemandProfileCard";
 import DemandHistoryCard from "../components/cards/DemandHistoryCard";
 import ConsumptionProfileCard from "../components/cards/ConsumptionProfileCard";
 import ConsumptionHistoryCard from "../components/cards/ConsumptionHistoryCard";
 
+// Hooks
+import { useMeasurementRange } from '../../../hooks/useMeasurementRange';
 
+// Date handling
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const Analysis = ({ powerMeter }) => {
+  const { state } = useContext(ModeContext);
+  const { data: measurementRange, isLoading: isRangeLoading, error: rangeError } = useMeasurementRange(powerMeter, state.mode);
+
+  // Default time filter state (latest available)
+  const [defaultTimeFilter, setDefaultTimeFilter] = useState({
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+    day: new Date().getDate(),
+    hour: new Date().getHours(),
+  });
+
+  useEffect(() => {
+    if (measurementRange && measurementRange.max_utc) {
+      const tz = dayjs.tz.guess();
+      const max = dayjs.utc(measurementRange.max_utc).tz(tz);
+      setDefaultTimeFilter({
+        year: max.year(),
+        month: max.month() + 1,
+        day: max.date(),
+        hour: max.hour(),
+      });
+    }
+  }, [measurementRange]);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
+      {/* Optionally show loading/error for measurement range */}
+      {isRangeLoading && <div>Loading measurement range...</div>}
+      {rangeError && <div>Error loading measurement range: {rangeError.message}</div>}
       <Grid container spacing={2}>
         <Grid size={6}>
-          <ConsumptionHistoryCard selectedPowerMeter={powerMeter} />
+          <ConsumptionHistoryCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} />
         </Grid>
         <Grid size={6}>
-          <DemandHistoryCard selectedPowerMeter={powerMeter} />
+          <DemandHistoryCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} />
+        </Grid>
+        {/* <Grid size={6}>
+          <ConsumptionProfileCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} />
         </Grid>
         <Grid size={6}>
-          <ConsumptionProfileCard selectedPowerMeter={powerMeter} />
-        </Grid>
-        <Grid size={6}>
-        <DemandProfileCard selectedPowerMeter={powerMeter} />
-        </Grid>
+          <DemandProfileCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} />
+        </Grid> */}
       </Grid>
     </Box>
   );

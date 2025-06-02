@@ -1,46 +1,63 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
-
+import chartColors from '../../../../theme/chartColors';
 const RealPower = ({ data }) => {
+  // Debug: log the incoming data and its type
+  console.log('RealPower received data:', data, 'Type:', typeof data, Array.isArray(data) ? 'Array' : 'Not array');
+
+  // Defensive: if data is an array, use the first element
+  const safeData = Array.isArray(data) ? data[0] : data;
+
   const hasValidData =
-    data &&
-    typeof data.watts_l1 === 'number' &&
-    typeof data.watts_l2 === 'number' &&
-    typeof data.watts_l3 === 'number';
+    safeData &&
+    typeof safeData.watts_l1 === 'number' &&
+    typeof safeData.watts_l2 === 'number' &&
+    typeof safeData.watts_l3 === 'number';
 
   console.log('Current demand data:', data);
 
   if (!hasValidData) {
     return (
-      <Paper elevation={3} sx={{ p: 2, height: 300 }}>
-        <Typography variant="subtitle1" gutterBottom>
+      <Paper elevation={3} sx={{ px: 2, height: 450 }}>
+        <Typography 
+        variant="h3" 
+        sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop:2 }}
+      >
           Real Power
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Data not available.
+        <Typography variant="body2" color="text.secondary" pt={20}>
+          Data not available.<br/>
+          <pre style={{ fontSize: 10, textAlign: 'left', whiteSpace: 'pre-wrap' }}>{JSON.stringify(data, null, 2)}</pre>
         </Typography>
       </Paper>
     );
   }
 
-  const { watts_l1, watts_l2, watts_l3, watts, timestamp_utc } = data;
+  const { watts_l1, watts_l2, watts_l3, watts, timestamp } = safeData;
 
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
-      <Typography variant="subtitle1" gutterBottom align="center">
+    <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
+      <Typography 
+  variant="h3" 
+  sx={{fontWeight:600 , textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+>
         Real Power
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
-          key={timestamp_utc}
-          borderRadius={15}
+          key={timestamp}
+          borderRadius={10}
           grid={{ horizontal: true }}
-          margin={{ left: 70, right: 20, top: 20, bottom: 20 }}
-          height={450}
+          margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
+          height={350}
           xAxis={[
             {
               data: ['L1', 'L2', 'L3', 'Total'],
               scaleType: 'band',
+              label: 'Phases',
+              labelStyle: { textAnchor: 'middle'},
+              categoryGapRatio: 0.2,
+              barGapRatio: -1,
             },
           ]}
           yAxis={[
@@ -55,26 +72,29 @@ const RealPower = ({ data }) => {
           ]}
           series={[
             {
-              data: [watts_l1, null, null, watts_l1],
+              data: [watts_l1, null, null, null],
               label: 'L1',
-              stack: 'total',
-              color: '#8884d8',
+              color: chartColors.phase1,
               valueFormatter: (value) => `${value} W`
             },
             {
-              data: [null, watts_l2, null, watts_l2],
+              data: [null, watts_l2, null, null],
               label: 'L2',
-              stack: 'total',
-              color: '#82ca9d',
+              color: chartColors.phase2,
               valueFormatter: (value) => `${value} W`
             },
             {
-              data: [null, null, watts_l3, watts_l3],
+              data: [null, null, watts_l3, null],
               label: 'L3',
-              stack: 'total',
-              color: '#ffc658',
+              color: chartColors.phase3,
               valueFormatter: (value) => `${value} W`
             },
+            {
+              data: [null, null, null, watts],
+              label: 'Total',
+              color: chartColors.phaseTotal,
+              valueFormatter: (value) => `${value} W`
+            }
           ]}
           tooltip={{
             trigger: 'item',

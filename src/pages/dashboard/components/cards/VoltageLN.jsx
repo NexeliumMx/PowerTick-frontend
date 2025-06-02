@@ -1,5 +1,6 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
+import chartColors from '../../../../theme/chartColors';
 
 const VoltageLN = ({ data }) => {
   const hasValidData =
@@ -11,11 +12,14 @@ const VoltageLN = ({ data }) => {
 
   if (!hasValidData) {
     return (
-      <Paper elevation={3} sx={{ p: 2, height: 300 }}>
-        <Typography variant="subtitle1" gutterBottom>
+      <Paper elevation={3} sx={{ px: 2, height: 450 }}>
+<Typography 
+  variant="h3" 
+  sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+>
           Line-to-Neutral Voltage
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" pt={20}>
           Data not available.
         </Typography>
       </Paper>
@@ -25,26 +29,32 @@ const VoltageLN = ({ data }) => {
   const { voltage_l1, voltage_l2, voltage_l3, voltage_ln } = data;
 
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
-      <Typography variant="subtitle1" gutterBottom align="center">
+    <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
+      <Typography 
+  variant="h3" 
+  sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+>
         Line-to-Neutral Voltage
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
           animation={{
             duration: 1000, // in milliseconds
             easing: 'ease-out', // options: 'linear', 'ease-in', 'ease-out', 'ease-in-out'
           }}
-          borderRadius={15}
+          borderRadius={10}
           grid={{ horizontal: true }}
-          height={450}
-          margin={{ left: 70, right: 20, top: 20, bottom: 20 }}
+          height={350}
+          margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[
             {
               data: ['L1', 'L2', 'L3', 'Average'],
               scaleType: 'band',
               categoryGapRatio: 0.2,
               barGapRatio: -1,
+              label: 'Phases',
+              labelStyle: { textAnchor: 'middle'}
+              
             },
           ]}
           yAxis={[
@@ -61,25 +71,25 @@ const VoltageLN = ({ data }) => {
             {
               data: [voltage_l1, 0, 0, 0],
               label: 'L1',
-              color: '#8884d8',
+              color: chartColors.phase1,
               valueFormatter: (value) => `${value} V`
             },
             {
               data: [0, voltage_l2, 0, 0],
               label: 'L2',
-              color: '#82ca9d',
+              color: chartColors.phase2,
               valueFormatter: (value) => `${value} V`
             },
             {
               data: [0, 0, voltage_l3, 0],
               label: 'L3',
-              color: '#ffc658',
+              color: chartColors.phase3,
               valueFormatter: (value) => `${value} V`
             },
             {
               data: [0, 0, 0, voltage_ln],
               label: 'Average',
-              color: '#ccc',
+              color: chartColors.phaseTotal,
               valueFormatter: (value) => `${value} V`
             },
           ]}

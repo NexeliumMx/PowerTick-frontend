@@ -1,6 +1,6 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
-
+import chartColors from '../../../../theme/chartColors';
 const ReactivePower = ({ data }) => {
   const hasValidData =
     data &&
@@ -11,11 +11,14 @@ const ReactivePower = ({ data }) => {
 
   if (!hasValidData) {
     return (
-      <Paper elevation={3} sx={{ p: 2, height: 300 }}>
-        <Typography variant="subtitle1" gutterBottom>
+      <Paper elevation={3} sx={{ px: 2, height: 450 }}>
+        <Typography 
+  variant="h3" 
+  sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2}}
+>
           Reactive Power
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" pt={20}>
           Data not available.
         </Typography>
       </Paper>
@@ -26,21 +29,26 @@ const ReactivePower = ({ data }) => {
   const totalVar = data['var'];
 
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
-      <Typography variant="subtitle1" gutterBottom align="center">
+    <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
+      <Typography 
+  variant="h3" 
+  sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2}}
+>
         Reactive Power
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
-          borderRadius={15}
+          borderRadius={10}
           grid={{ horizontal: true }}
-          margin={{ left: 70, right: 20, top: 20, bottom: 20 }}
-          height={450}
+          margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
+          height={350}
           xAxis={[{
             data: ['L1', 'L2', 'L3', 'Total'],
             scaleType: 'band',
             categoryGapRatio: 0.2,
             barGapRatio: -1,
+            label: 'Phases',
+            labelStyle: { textAnchor: 'middle'}
           }]}
           yAxis={[{
             label: 'Reactive Power (VAR)',
@@ -54,25 +62,25 @@ const ReactivePower = ({ data }) => {
             {
               data: [var_l1, null, null, null],
               label: 'L1',
-              color: '#8884d8',
+              color: chartColors.phase1,
               valueFormatter: (value) => `${value} VAR`
             },
             {
               data: [null, var_l2, null, null],
               label: 'L2',
-              color: '#82ca9d',
+              color: chartColors.phase2,
               valueFormatter: (value) => `${value} VAR`
             },
             {
               data: [null, null, var_l3, null],
               label: 'L3',
-              color: '#ffc658',
+              color: chartColors.phase3,
               valueFormatter: (value) => `${value} VAR`
             },
             {
               data: [null, null, null, totalVar],
               label: 'Total',
-              color: '#ccc',
+              color: chartColors.phaseTotal,
               valueFormatter: (value) => `${value} VAR`
             }
           ]}
