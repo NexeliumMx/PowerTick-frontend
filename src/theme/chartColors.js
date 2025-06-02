@@ -5,7 +5,7 @@ const chartColors = {
   avgRealPower: "#E74C3C",
   avgVar: "#3498DB",
   maxRealPower: "#E67E22",
-  maxVar: "#9B59B6	",
+  maxVar: "#9B59B6",
 
   //Measurements
   phase1: "#1ABC9C",

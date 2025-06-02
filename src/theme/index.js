@@ -2,170 +2,78 @@
 import { createContext, useState, useMemo } from "react";
 import { createTheme } from "@mui/material/styles";
 
-// color design tokens export
-export const tokens = (mode) => ({
-  ...(mode === "dark"
-    ? {
+export const tokens ={
         grey: {
-          100: "#e0e0e0",
-          200: "#c2c2c2",
-          300: "#a3a3a3",
-          400: "#858585",
-          500: "#666666",
-          600: "#525252",
-          700: "#3d3d3d",
-          800: "#292929",
-          900: "#141414",
+          100: "#ebf1f1", // Used for neutral.light in themeSettings (e.g. text/backgrounds)
+          200: "#dee3e3", // Used as an intermediate light grey
+          300: "#d3d8da", // Used as an intermediate light grey
         },
         primary: {
-          100: "#d0d1d5",
-          200: "#a1a4ab",
-          300: "#727681",
-          400: "#1F2A40",
-          500: "#141b2d",
-          600: "#101624",
-          700: "#0c101b",
-          800: "#080b12",
-          900: "#040509",
+          100: "#373838", // In dark mode this value isn’t mapped but could be used for accents
+          200: "#222323", // Mapped to theme.palette.primary.main (dark mode)
+          300: "#000000", // Used as darker variant; also repeated in 700, 800, 900 below
         },
-        greenAccent: {
-          100: "#dbf5ee",
-          200: "#b7ebde",
-          300: "#94e2cd",
-          400: "#70d8bd",
-          500: "#4cceac",
-          600: "#3da58a",
-          700: "#2e7c67",
-          800: "#1e5245",
-          900: "#0f2922",
+        yellowAccent: {
+          100: "#eaeb81", // Base value – available but not used specifically (only 600/700 are mapped)
+          200: "#dddf7b", // Available for finer accent control if needed
+          300: "#d5d777", // Available for finer accent control if needed
         },
         redAccent: {
-          100: "#f8dcdb",
-          200: "#f1b9b7",
-          300: "#e99592",
-          400: "#e2726e",
-          500: "#db4f4a",
-          600: "#af3f3b",
-          700: "#832f2c",
-          800: "#58201e",
-          900: "#2c100f",
+          100: "#f8dcdb", // Defined for dark mode but not referenced in themeSettings → Unused
+          200: "#f1b9b7", // Unused in theme
+          300: "#e99592", // Unused in theme
         },
         blueAccent: {
-          100: "#e1e2fe",
-          200: "#c3c6fd",
-          300: "#a4a9fc",
-          400: "#868dfb",
-          500: "#6870fa",
-          600: "#535ac8",
-          700: "#3e4396",
-          800: "#2a2d64",
-          900: "#151632",
+          100: "#e1e2fe", // Defined but not used except for one mapping
+          200: "#c3c6fd", // Defined but not used directly
+          300: "#a4a9fc", // Defined but not used directly
         },
       }
-    : {
-        grey: {
-          100: "#141414",
-          200: "#292929",
-          300: "#3d3d3d",
-          400: "#525252",
-          500: "#666666",
-          600: "#858585",
-          700: "#a3a3a3",
-          800: "#c2c2c2",
-          900: "#e0e0e0",
-        },
-        primary: {
-          100: "#040509",
-          200: "#080b12",
-          300: "#0c101b",
-          400: "#f2f0f0", // manually changed
-          500: "#141b2d",
-          600: "#1F2A40",
-          700: "#727681",
-          800: "#a1a4ab",
-          900: "#d0d1d5",
-        },
-        greenAccent: {
-          100: "#0f2922",
-          200: "#1e5245",
-          300: "#2e7c67",
-          400: "#3da58a",
-          500: "#4cceac",
-          600: "#70d8bd",
-          700: "#94e2cd",
-          800: "#b7ebde",
-          900: "#dbf5ee",
-        },
-        redAccent: {
-          100: "#2c100f",
-          200: "#58201e",
-          300: "#832f2c",
-          400: "#af3f3b",
-          500: "#db4f4a",
-          600: "#e2726e",
-          700: "#e99592",
-          800: "#f1b9b7",
-          900: "#f8dcdb",
-        },
-        blueAccent: {
-          100: "#151632",
-          200: "#2a2d64",
-          300: "#3e4396",
-          400: "#535ac8",
-          500: "#6870fa",
-          600: "#868dfb",
-          700: "#a4a9fc",
-          800: "#c3c6fd",
-          900: "#e1e2fe",
-        },
-      }),
-});
 
 // mui theme settings
 export const themeSettings = (mode) => {
-  const colors = tokens(mode);
-  return {
-    palette: {
-      mode: mode,
+  return{
+    palette:{    
+       mode: mode,
       ...(mode === "dark"
         ? {
             // palette values for dark mode
             primary: {
-              main: colors.primary[500],
+              main: tokens.primary[300],
             },
             secondary: {
-              main: colors.greenAccent[600],
-              main2: colors.greenAccent[700],
-              main3: colors.blueAccent[600]
+              main: tokens.grey[100],
+              main2: tokens.yellowAccent[200],
+              main3: tokens.yellowAccent[300]
             },
             neutral: {
-              dark: colors.grey[700],
-              main: colors.grey[500],
-              light: colors.grey[200],
+              dark: tokens.grey[300],
+              main: tokens.grey[200],
+              light:tokens.grey[100],
             },
             background: {
-              default: colors.primary[500],
-              paper: colors.primary[400],
+              default: tokens.primary[100],
+              paper: tokens.primary[200],
             },
           }
         : {
             // palette values for light mode
             primary: {
-              main: colors.primary[800],
+              main: tokens.primary[300],
             },
             secondary: {
-              main: colors.greenAccent[400],
-              main2: colors.greenAccent[500],
-              main3: colors.blueAccent[500]
+              main: tokens.primary[200],
+              main2: tokens.primary[100],
+              main3: tokens.primary[100]
             },
             neutral: {
-              dark: colors.grey[700],
-              main: colors.grey[500],
-              light: colors.grey[200],
+              dark: tokens.grey[300],
+              main: tokens.grey[200],
+              light: tokens.grey[100],
             },
             background: {
-              default: "#eef2f6",
-              paper: '#ffffff',
+              default: tokens.grey[100],
+              paper: tokens.grey[200],
             },
           }),
     },

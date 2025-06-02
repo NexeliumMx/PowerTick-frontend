@@ -119,7 +119,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
                 }}
                 />
                                 <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{paddingBottom: 8}} />
-                <CartesianGrid stroke="#f5f5f5" />
+                <CartesianGrid stroke= {theme.palette.divider} />
                 {/* Bars for realEnergy */}
                 <Bar dataKey="realEnergy" barSize={20} fill={chartColors.realEnergy} name="Real Energy (Wh)" />
                 {/* Lines for reactiveEnergy */}

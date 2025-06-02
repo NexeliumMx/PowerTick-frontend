@@ -20,7 +20,7 @@ import SearchIcon from "@mui/icons-material/Search";
 
 const Topbar = ({ handleDrawerToggle }) => {
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const colors = tokens;
   const colorMode = useContext(ColorModeContext);
   const { state, dispatch } = useContext(ModeContext);
 
@@ -49,7 +49,7 @@ const Topbar = ({ handleDrawerToggle }) => {
           sx={{
             width: isSmallScreen ? "0px" : "180px",
             height: "45px",
-            overflow: "hidden",
+            overflow: "visible",
             transition: "width 0.3s ease, opacity 0.3s ease",
             opacity: isSmallScreen ? 0 : 1,
             visibility: isSmallScreen ? "hidden" : "visible",
@@ -71,10 +71,10 @@ const Topbar = ({ handleDrawerToggle }) => {
             src="/assets/logo_powertick-02.svg"
             alt="Logo"
             style={{
-              width: "200%",
-              height: "200%",
+              width: "250%",
+              height: "250%",
               cursor: "pointer",
-              filter: "brightness(0) invert(1)", // Makes logo white
+              filter: theme.palette.mode=== "dark"? "brightness(0) invert(1)": "brightness(0)", // Makes logo white
             }}
           />
           </Box>
@@ -132,7 +132,7 @@ const Topbar = ({ handleDrawerToggle }) => {
           <Select
             value={state.mode}
             onChange={handleModeChange}
-            sx={{ color: colors.grey[100], marginRight: "16px" }}
+            sx={{ color: theme.palette.text.primary, marginRight: "16px" }}
           >
             <MenuItem value="DEMO_MODE">Demo Mode</MenuItem>
             <MenuItem value="LIVE_MODE">Live Mode</MenuItem>

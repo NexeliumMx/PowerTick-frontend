@@ -9,7 +9,7 @@ import { tokens } from "../../theme";
 
 const SidebarMenu = ({ collapsed }) => {
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const colors = tokens;
   const location = useLocation(); 
   
   const [selected, setSelected] = useState("Dashboard");
@@ -37,7 +37,7 @@ const SidebarMenu = ({ collapsed }) => {
   });
 
   return (
-    <Box sx={{ display: "flex", height: "100vh" }}>
+    <Box sx={{ display: "flex", height: "100%", minHeight:0 }}>
       <Sidebar
         collapsed={collapsed}
         backgroundColor={theme.palette.background.paper}
