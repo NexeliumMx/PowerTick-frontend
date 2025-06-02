@@ -6,13 +6,11 @@ import Analysis from "./subpages/Analysis";
 import Measurements from "./subpages/Measurements";
 import Header from "../../components/ui/Header";
 import { ModeContext } from "../../context/AppModeContext";
-import LoadingOverlay from "../../components/test/LoadingOverlay";
 
 //Hooks
 import { usePowermetersByUserAccess } from '../../hooks/usePowermetersByUserAccess';
 import { useMsal } from "@azure/msal-react";
 import { useLocation } from "react-router-dom";
-import { useRealTimeData } from '../../hooks/useRealTimeData';
 
 const Dashboard = () => {
   const { state } = useContext(ModeContext);
@@ -32,15 +30,12 @@ const Dashboard = () => {
     }
   }, [location.search, powerMeters]);
 
-  // Fetch real-time data for selected powermeter
-  const { data: realTimeData, isLoading: isRealTimeLoading } = useRealTimeData(user_id, selectedPowerMeter, state.mode);
-
   const renderPage = () => {
     switch (activePage) {
       case "Analysis":
         return <Analysis powerMeter={selectedPowerMeter} />;
       case "Measurements":
-        return <Measurements powerMeter={selectedPowerMeter} realTimeData={realTimeData} />;
+        return <Measurements powerMeter={selectedPowerMeter} />;
       case "Configuration":
         return <Configuration powerMeter={selectedPowerMeter} />;
       default:
@@ -60,9 +55,6 @@ const Dashboard = () => {
 
   return (
     <Box sx={{ position: "relative", minHeight: "100vh", padding: "20px", boxSizing: "border-box" }}>
-      {/* Loading Overlay */}
-      <LoadingOverlay loading={isRealTimeLoading} />
-
       {/* Header and Navigation */}
       <Box
         sx={{

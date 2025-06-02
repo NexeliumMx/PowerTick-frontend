@@ -18,6 +18,7 @@ export async function fetchPowermetersByUserAccess(user_id, mode = 'PRODUCTION')
   } else if (mode === 'DEV') {
     url += "&enviroment=dev";
   }
+  console.log(`[API CALL] fetchPowermetersByUserAccess: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
 
@@ -36,6 +37,7 @@ export async function fetchMeasurementRange(powermeter_id, mode = 'PRODUCTION') 
   } else if (mode === 'DEV') {
     url += "&enviroment=dev";
   }
+  console.log(`[API CALL] fetchMeasurementRange: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
 
@@ -54,6 +56,7 @@ export async function fetchRealTimeData(user_id, powermeter_id, mode = 'PRODUCTI
   } else if (mode === 'DEV') {
     url += "&enviroment=dev";
   }
+  console.log(`[API CALL] fetchRealTimeData: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
 
@@ -75,6 +78,7 @@ export async function fetchConsumptionHistory(user_id, powermeter_id, start_utc,
   } else if (mode === 'DEV') {
     url += "&enviroment=dev";
   }
+  console.log(`[API CALL] fetchConsumptionHistory: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
   if (!response.ok) {
@@ -91,6 +95,7 @@ export async function fetchDemandHistory(user_id, powermeter_id, start_utc, end_
   } else if (mode === 'DEV') {
     url += "&enviroment=dev";
   }
+  console.log(`[API CALL] fetchDemandHistory: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
   if (!response.ok) {
@@ -109,6 +114,7 @@ export async function fetchConsumptionProfile(user_id, serial_number, time_inter
   } else if (mode === 'DEV') {
     url += "&enviroment=dev";
   }
+  console.log(`[API CALL] fetchConsumptionProfile: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
 
@@ -127,6 +133,7 @@ export async function fetchDemandProfile(user_id, serial_number, time_interval, 
   } else if (mode === 'DEV') {
     url += "&enviroment=dev";
   }
+  console.log(`[API CALL] fetchDemandProfile: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
 
