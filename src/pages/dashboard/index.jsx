@@ -7,7 +7,6 @@ import Measurements from "./subpages/Measurements";
 import Header from "../../components/ui/Header";
 import { ModeContext } from "../../context/AppModeContext";
 import LoadingOverlay from "../../components/test/LoadingOverlay";
-import { fetchRealTimeData } from "../../services/api/httpRequests";
 
 //Hooks
 import { usePowermetersByUserAccess } from '../../hooks/usePowermetersByUserAccess';

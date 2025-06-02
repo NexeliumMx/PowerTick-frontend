@@ -8,8 +8,9 @@
  * All rights reserved.
  */
 
-// Fetch powermeters by user access
 // Accepts an optional 'mode' argument: 'DEMO', 'DEV', or 'PRODUCTION'
+
+// Fetch powermeters by user access
 export async function fetchPowermetersByUserAccess(user_id, mode = 'PRODUCTION') {
   let url = `https://power-tick-api-js.nexelium.mx/api/fetchPowermetersByUserAccess?user_id=${user_id}`;
   if (mode === 'DEMO') {
@@ -22,6 +23,24 @@ export async function fetchPowermetersByUserAccess(user_id, mode = 'PRODUCTION')
 
   if (!response.ok) {
     throw new Error('Failed to fetch powermeters by user access');
+  }
+
+  return resData;
+}
+
+// Fetch measurement range for a powermeter
+export async function fetchMeasurementRange(powermeter_id, mode = 'PRODUCTION') {
+  let url = `https://power-tick-api-js.nexelium.mx/api/measurementRange?powermeter_id=${powermeter_id}`;
+  if (mode === 'DEMO') {
+    url += "&enviroment=demo";
+  } else if (mode === 'DEV') {
+    url += "&enviroment=dev";
+  }
+  const response = await fetch(url);
+  const resData = await response.json();
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch measurement range');
   }
 
   return resData;
@@ -46,23 +65,12 @@ export async function fetchRealTimeData(user_id, powermeter_id, mode = 'PRODUCTI
 }
 
 // Fetch powermeter info
-export async function fetchPowermeterInfo(user_id, serial_number, mode = 'PRODUCTION') {
-  let url = `https://power-tick-api-js.nexelium.mx/api/fetchPowermeterInfo?user_id=${user_id}&serial_number=${serial_number}`;
-  if (mode === 'DEMO') {
-    url += "&enviroment=demo";
-  } else if (mode === 'DEV') {
-    url += "&enviroment=dev";
-  }
-  const response = await fetch(url);
-  const resData = await response.json();
+// add here...
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch powermeter info');
-  }
 
-  return resData;
-}
 
+
+// DEPRYCATED
 // Fetch consumption history
 export async function fetchConsumptionHistory(user_id, serial_number, time_interval, mode = 'PRODUCTION') {
   let url = `https://power-tick-api-js.nexelium.mx/api/demoConsumptionHistory?user_id=${user_id}&serial_number=${serial_number}&time_interval=${time_interval}`;
