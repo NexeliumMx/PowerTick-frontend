@@ -4,9 +4,9 @@ import chartColors from '../../../../theme/chartColors';
 const VoltageLL = ({ data }) => {
   const hasValidData =
     data &&
-    typeof data['voltage_l1-l2'] === 'number' &&
-    typeof data['voltage_l2-l3'] === 'number' &&
-    typeof data['voltage_l3-l1'] === 'number' &&
+    typeof data.voltage_l1_l2 === 'number' &&
+    typeof data.voltage_l2_l3 === 'number' &&
+    typeof data.voltage_l3_l1 === 'number' &&
     typeof data.voltage_ll === 'number';
 
   if (!hasValidData) {
@@ -25,7 +25,7 @@ const VoltageLL = ({ data }) => {
     );
   }
 
-  const { ['voltage_l1-l2']: v12, ['voltage_l2-l3']: v23, ['voltage_l3-l1']: v31, voltage_ll } = data;
+  const { voltage_l1_l2, voltage_l2_l3, voltage_l3_l1, voltage_ll } = data;
 
   return (
     <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
@@ -59,19 +59,19 @@ const VoltageLL = ({ data }) => {
           }]}
           series={[
             {
-              data: [v12, 0, 0, 0],
+              data: [voltage_l1_l2, 0, 0, 0],
               label: 'L1-L2',
               color: chartColors.phase1,
               valueFormatter: (value) => `${value} V`
             },
             {
-              data: [0, v23, 0, 0],
+              data: [0, voltage_l2_l3, 0, 0],
               label: 'L2-L3',
               color: chartColors.phase2,
                 valueFormatter: (value) => `${value} V`
             },
             {
-              data: [0, 0, v31, 0],
+              data: [0, 0, voltage_l3_l1, 0],
               label: 'L3-L1',
               color: chartColors.phase3,
                             valueFormatter: (value) => `${value} V`

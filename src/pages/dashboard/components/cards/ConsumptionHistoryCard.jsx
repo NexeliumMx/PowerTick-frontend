@@ -1,22 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import { useMsal } from "@azure/msal-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer, Label } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
-import { useConsumptionHistory } from '../../../../services/query/useConsumptionHistory';
+import { useConsumptionHistory } from '../../../../hooks/useConsumptionHistory';
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
 import { Select, MenuItem, FormControl, InputLabel, Divider } from "@mui/material";
 import chartColors from "../../../../theme/chartColors";
-const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter }) => {
   const theme = useTheme(); 
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid;
+  // Use defaultTimeFilter for initial state
   const [timeInterval, setTimeInterval] = useState("day");
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-  const [selectedDay, setSelectedDay] = useState(new Date().getDate());
-  const [selectedHour, setSelectedHour] = useState(new Date().getHours());
+  const [selectedYear, setSelectedYear] = useState(defaultTimeFilter?.year || new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(defaultTimeFilter?.month || new Date().getMonth() + 1);
+  const [selectedDay, setSelectedDay] = useState(defaultTimeFilter?.day || new Date().getDate());
+  const [selectedHour, setSelectedHour] = useState(defaultTimeFilter?.hour || new Date().getHours());
   // Use React Query hook for on-demand fetching and caching
   const { data: consumptionHistoryData, isLoading } = useConsumptionHistory(user_id, selectedPowerMeter, timeInterval);
 
@@ -27,9 +34,59 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
   };
   //Hacer que despliegue los meses y años disponibles
   const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
-  const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  // Use date library for month names (localized, maintainable)
+  const months = Array.from({ length: 12 }, (_, i) =>
+  dayjs().month(i).format('MMMM')
+);
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
   const hours = Array.from({ length: 24 }, (_, i) => i);
+
+  // Compute valid years, months, days, and hours based on measurementRange
+  let validYears = years;
+  let validMonths = months;
+  let validDays = days;
+  let validHours = hours;
+  if (measurementRange && measurementRange.min_utc && measurementRange.max_utc) {
+    const tz = dayjs.tz.guess();
+    const min = dayjs.utc(measurementRange.min_utc).tz(tz);
+    const max = dayjs.utc(measurementRange.max_utc).tz(tz);
+    // Years
+    validYears = [];
+    for (let y = min.year(); y <= max.year(); y++) validYears.push(y);
+    // Months
+    if (selectedYear === min.year() && selectedYear === max.year()) {
+      validMonths = months.slice(min.month(), max.month() + 1);
+    } else if (selectedYear === min.year()) {
+      validMonths = months.slice(min.month());
+    } else if (selectedYear === max.year()) {
+      validMonths = months.slice(0, max.month() + 1);
+    } else {
+      validMonths = months;
+    }
+    // Days
+    const daysInMonth = dayjs(`${selectedYear}-${selectedMonth}-01`).daysInMonth();
+    let startDay = 1, endDay = daysInMonth;
+    if (selectedYear === min.year() && selectedMonth === min.month() + 1) startDay = min.date();
+    if (selectedYear === max.year() && selectedMonth === max.month() + 1) endDay = max.date();
+    validDays = [];
+    for (let d = startDay; d <= endDay; d++) validDays.push(d);
+    // Hours
+    if (
+      selectedYear === min.year() && selectedMonth === min.month() + 1 && selectedDay === min.date() &&
+      selectedYear === max.year() && selectedMonth === max.month() + 1 && selectedDay === max.date()
+    ) {
+      validHours = [];
+      for (let h = min.hour(); h <= max.hour(); h++) validHours.push(h);
+    } else if (selectedYear === min.year() && selectedMonth === min.month() + 1 && selectedDay === min.date()) {
+      validHours = [];
+      for (let h = min.hour(); h < 24; h++) validHours.push(h);
+    } else if (selectedYear === max.year() && selectedMonth === max.month() + 1 && selectedDay === max.date()) {
+      validHours = [];
+      for (let h = 0; h <= max.hour(); h++) validHours.push(h);
+    } else {
+      validHours = hours;
+    }
+  }
 
   //X lable variable title
   const xAxisLabel = timeInterval === "year"
@@ -48,6 +105,16 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
     realEnergy: item.real_energy_wh,
     reactiveEnergy: item.reactive_energy_varh,
   }));
+
+  // Update time filter if defaultTimeFilter changes (e.g., when measurementRange loads)
+  useEffect(() => {
+    if (defaultTimeFilter) {
+      setSelectedYear(defaultTimeFilter.year);
+      setSelectedMonth(defaultTimeFilter.month);
+      setSelectedDay(defaultTimeFilter.day);
+      setSelectedHour(defaultTimeFilter.hour);
+    }
+  }, [defaultTimeFilter]);
 
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
@@ -84,7 +151,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
                                     style={{ fill: theme.palette.text.primary, fontWeight: 600 }}
                                   />
                                 </XAxis>
-                {/* Eje Izquierdo*/}
+                {/* Left Axis */}
                 <YAxis
                   yAxisId="left"
                   domain={['auto','auto']}
@@ -92,7 +159,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
                   stroke={theme.palette.text.primary}
                 >
                   <Label
-                    value="Energía activa (Wh)"
+                    value="Active Energy (Wh)"
                     angle={-90}
                     position="insideLeft"
                     offset={-10}
@@ -103,7 +170,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
                     }}
                   />
                 </YAxis>
-                {/* Eje Derecho*/}
+                {/* Right Axis */}
                 <YAxis
                     yAxisId="right"
                     orientation="right"
@@ -111,7 +178,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
                     stroke={theme.palette.text.primary}
                   >
                     <Label
-                      value="Energía reactiva (VArh)"
+                      value="Reactive Energy (VARh)"
                       angle={-90}
                       position="insideRight"
                       offset={-10}
@@ -122,8 +189,6 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
                       }}
                     />
                   </YAxis>
-
-
                 <Tooltip 
                 contentStyle={{
                   backgroundColor: theme.palette.background.paper,
@@ -135,7 +200,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
                 }}
                 />
                 <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{marginRight: 40, paddingBottom: 8}} />
-                <Line type="monotone" dataKey="realEnergy" stroke={chartColors.realEnergy} name="Real Energy (Wh)" dot={false} yAxisId="left" strokeWidth={3}/>
+                <Line type="monotone" dataKey="realEnergy" stroke={chartColors.realEnergy} name="Active Energy (Wh)" dot={false} yAxisId="left" strokeWidth={3}/>
                 <Line type="monotone" dataKey="reactiveEnergy" stroke={chartColors.reactiveEnergy} name="Reactive Energy (VARh)"  dot={false} yAxisId="right" strokeWidth={3}/>
               </LineChart>
             </ResponsiveContainer>
@@ -166,7 +231,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
             justifyContent: "center"
           }}>
     <Typography variant="h5" sx={{ mb: 2 }}>
-      Intervalo de análisis
+      Analysis Interval
     </Typography>
       <ToggleButtonGroup
           value={timeInterval}
@@ -190,7 +255,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
         justifyContent: "center"
          }}>
         <Typography variant="h5" sx={{ mb: 2 }}>
-          Filtro de tiempo
+          Time Filter
         </Typography> 
         <Box sx={{ 
           width: "100%", 
@@ -201,14 +266,14 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
         }}>
           {(timeInterval === "year" || timeInterval === "month" || timeInterval === "day" || timeInterval === "hour") && (
             <FormControl size="small" sx={{ minWidth: 90 }}>
-              <InputLabel id="year-label">Año</InputLabel>
+              <InputLabel id="year-label">Year</InputLabel>
               <Select
                 size="small"
                 value={selectedYear}
                 onChange={e => setSelectedYear(e.target.value)}
-                label="Año"
+                label="Year"
               >
-                {years.map(year => (
+                {validYears.map(year => (
                   <MenuItem key={year} value={year}>{year}</MenuItem>
                 ))}
               </Select>
@@ -216,14 +281,14 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
           )}
           {(timeInterval === "month" || timeInterval === "day" || timeInterval === "hour") && (
             <FormControl size="small" sx={{ minWidth: 90 }}>
-              <InputLabel id="month-label">Mes</InputLabel>
+              <InputLabel id="month-label">Month</InputLabel>
               <Select
                 size="small"
                 value={selectedMonth}
                 onChange={e => setSelectedMonth(e.target.value)}
-                label="Mes"
+                label="Month"
               >
-                {months.map((month, idx) => (
+                {validMonths.map((month, idx) => (
                   <MenuItem key={month} value={idx + 1}>{month}</MenuItem>
                 ))}
               </Select>
@@ -231,14 +296,14 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
           )}
           {(timeInterval === "day" || timeInterval === "hour") && (
             <FormControl size="small" sx={{ minWidth: 90 }}>
-              <InputLabel id="day-label">Día</InputLabel>
+              <InputLabel id="day-label">Day</InputLabel>
               <Select
                 size="small"
                 value={selectedDay}
                 onChange={e => setSelectedDay(e.target.value)}
-                label="Día"
+                label="Day"
               >
-                {days.map(day => (
+                {validDays.map(day => (
                   <MenuItem key={day} value={day}>{day}</MenuItem>
                 ))}
               </Select>
@@ -246,14 +311,14 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter }) => {
           )}
           {timeInterval === "hour" && (
             <FormControl size="small" sx={{ minWidth: 90 }}>
-              <InputLabel id="hour-label">Hora</InputLabel>
+              <InputLabel id="hour-label">Hour</InputLabel>
               <Select
                 size="small"
                 value={selectedHour}
                 onChange={e => setSelectedHour(e.target.value)}
-                label="Hora"
+                label="Hour"
               >
-                {hours.map(hour => (
+                {validHours.map(hour => (
                   <MenuItem key={hour} value={hour}>
                     {hour.toString().padStart(2, '0')}:00
                   </MenuItem>

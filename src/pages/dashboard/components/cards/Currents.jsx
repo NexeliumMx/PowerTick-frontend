@@ -24,7 +24,7 @@ const Currents = ({ data }) => {
     );
   }
 
-  const { current_l1, current_l2, current_l3 , timestamp_utc  } = data;
+  const { current_l1, current_l2, current_l3, timestamp } = data;
   const total = current_l1 + current_l2 + current_l3;
 
   return (

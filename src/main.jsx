@@ -39,7 +39,7 @@ import { MsalProvider } from "@azure/msal-react";
 import { msalInstance } from "./services/auth/msalConfig.js";
 
 // React Query imports
-import ReactQueryProvider from "./services/query/ReactQueryProvider";
+import ReactQueryProvider from "./services/reactQuery/ReactQueryProvider.jsx";
 
 function MainApp() {
   const [theme, colorMode] = useMode();

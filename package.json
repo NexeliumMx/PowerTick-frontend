@@ -32,6 +32,7 @@
     "@tanstack/react-query-devtools": "^5.77.2",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
+    "dayjs": "^1.11.13",
     "formik": "^2.4.6",
     "lucide-react": "^0.447.0",
     "luxon": "^3.5.0",

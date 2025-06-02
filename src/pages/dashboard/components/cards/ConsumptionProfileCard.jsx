@@ -1,22 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import { useMsal } from "@azure/msal-react";
 import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer, Label } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
-import { useConsumptionProfile } from '../../../../services/query/useConsumptionProfile';
+import { useConsumptionProfile } from '../../../../hooks/useConsumptionProfile';
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
 import { Select, MenuItem, FormControl, InputLabel, Divider } from "@mui/material";
 import chartColors from "../../../../theme/chartColors";
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
-const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
+const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter }) => {
   const theme = useTheme(); 
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid;
+  // Use defaultTimeFilter for initial state
   const [timeInterval, setTimeInterval] = useState("day");
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-  const [selectedDay, setSelectedDay] = useState(new Date().getDate());
+  const [selectedYear, setSelectedYear] = useState(defaultTimeFilter?.year || new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(defaultTimeFilter?.month || new Date().getMonth() + 1);
+  const [selectedDay, setSelectedDay] = useState(defaultTimeFilter?.day || new Date().getDate());
+
+  // Update time filter if defaultTimeFilter changes
+  useEffect(() => {
+    if (defaultTimeFilter) {
+      setSelectedYear(defaultTimeFilter.year);
+      setSelectedMonth(defaultTimeFilter.month);
+      setSelectedDay(defaultTimeFilter.day);
+    }
+  }, [defaultTimeFilter]);
   
   // Use React Query hook for on-demand fetching and caching
   const { data: consumptionProfileData, isLoading } = useConsumptionProfile(user_id, selectedPowerMeter, timeInterval);
@@ -26,39 +41,58 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
       setTimeInterval(newTimeInterval);
     }
   };
-
-  //Hacer que despliegue los meses y años disponibles
+  // Generate years, months, days arrays
   const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
-  const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  const months = Array.from({ length: 12 }, (_, i) => ({ label: dayjs().month(i).format('MMMM'), value: i + 1 }));
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
-  //X lable variable title
+  // Compute valid years, months, days based on measurementRange
+  let validYears = years;
+  let validMonths = months;
+  let validDays = days;
+  if (measurementRange && measurementRange.min_utc && measurementRange.max_utc) {
+    const tz = dayjs.tz.guess();
+    const min = dayjs.utc(measurementRange.min_utc).tz(tz);
+    const max = dayjs.utc(measurementRange.max_utc).tz(tz);
+    // Years
+    validYears = [];
+    for (let y = min.year(); y <= max.year(); y++) validYears.push(y);
+    // Months
+    if (selectedYear === min.year() && selectedYear === max.year()) {
+      validMonths = months.slice(min.month(), max.month() + 1);
+    } else if (selectedYear === min.year()) {
+      validMonths = months.slice(min.month());
+    } else if (selectedYear === max.year()) {
+      validMonths = months.slice(0, max.month() + 1);
+    } else {
+      validMonths = months;
+    }
+    // Days
+    const daysInMonth = dayjs(`${selectedYear}-${selectedMonth}-01`).daysInMonth();
+    let startDay = 1, endDay = daysInMonth;
+    if (selectedYear === min.year() && selectedMonth === min.month() + 1) startDay = min.date();
+    if (selectedYear === max.year() && selectedMonth === max.month() + 1) endDay = max.date();
+    validDays = [];
+    for (let d = startDay; d <= endDay; d++) validDays.push(d);
+  }
+
+  // X axis label
   const xAxisLabel = timeInterval === "year"
-  ? "Mes"
-  : timeInterval === "month"
-  ? "Día"
-  : timeInterval === "day"
-  ? "Hora"
-  : timeInterval === "hour"
-  ? "Minutos"
-      : "Tiempo";
+    ? "Month"
+    : timeInterval === "month"
+    ? "Day"
+    : timeInterval === "day"
+    ? "Hour"
+    : timeInterval === "hour"
+    ? "Minutes"
+    : "Time";
 
   // Transform data for Recharts
-  const chartData = consumptionProfileData?.map((item) => {
-    let name = '';
-    if (timeInterval === 'day') {
-      name = formatDashboardTimestamp(item.consumption_profile_hour_range_utc, 'day');
-    } else if (timeInterval === 'month') {
-      name = formatDashboardTimestamp(item.consumption_profile_day_range_tz, 'month');
-    } else if (timeInterval === 'year') {
-      name = formatDashboardTimestamp(item.consumption_profile_month_range_tz, 'year');
-    }
-    return {
-      name,
-      realEnergy: item.real_energy_wh,
-      reactiveEnergy: item.reactive_energy_varh,
-    };
-  });
+  const chartData = consumptionProfileData?.map((item) => ({
+    name: formatDashboardTimestamp(item.timestamp_utc),
+    realEnergy: item.real_energy_wh,
+    reactiveEnergy: item.reactive_energy_varh,
+  }));
 
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
@@ -100,7 +134,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
                   stroke={theme.palette.text.primary}
                   tick={{ fill: theme.palette.text.primary }}>
                     <Label
-                    value="Energía (Wh|VArh)"
+                    value="Energy (Wh|VArh)"
                     angle={-90}
                     position="insideLeft"
                     style={{ textAnchor: 'middle', fill: theme.palette.text.primary, fontWeight: 600 }}
@@ -127,7 +161,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
               </ComposedChart>
             </ResponsiveContainer>
           ) : (
-            <Typography variant="body1">Datos no disponibles</Typography>
+            <Typography variant="body1">Data not available</Typography>
           )}
         </Box>
       </CardContent>
@@ -153,7 +187,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
             justifyContent: "center"
           }}>
             <Typography variant="h5" sx={{ mb: 2 }}>
-                      Intervalo de análisis
+                      Analysis Interval
             </Typography>        
         <ToggleButtonGroup
           value={timeInterval}
@@ -180,7 +214,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
         justifyContent: "center"
          }}>
         <Typography variant="h5" sx={{ mb: 2 }}>
-          Filtro de tiempo
+          Time Filter
         </Typography> 
         <Box sx={{ 
         width: "100%", 
@@ -191,14 +225,14 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
          }}>
         {(timeInterval === "year" || timeInterval === "month" || timeInterval === "day") && (
           <FormControl size="small" sx={{ minWidth: 90 }}>
-          <InputLabel id="year-label">Año</InputLabel>
+          <InputLabel id="year-label">Year</InputLabel>
           <Select
             size="small"
             value={selectedYear}
             onChange={e => setSelectedYear(e.target.value)}
-            label="Año"
+            label="Year"
           >
-            {years.map(year => (
+            {validYears.map(year => (
               <MenuItem key={year} value={year}>{year}</MenuItem>
             ))}
           </Select>
@@ -206,29 +240,29 @@ const ConsumptionProfileCard = ({ selectedPowerMeter }) => {
         )}
         {(timeInterval === "month" || timeInterval === "day") && (
         <FormControl size="small" sx={{ minWidth: 90 }}>
-        <InputLabel id="month-label">Mes</InputLabel>
+        <InputLabel id="month-label">Month</InputLabel>
           <Select
             size="small"
             value={selectedMonth}
             onChange={e => setSelectedMonth(e.target.value)}
             label="Month"
           >
-            {months.map(month => (
-              <MenuItem key={month} value={month}>{month}</MenuItem>
+            {validMonths.map((month) => (
+              <MenuItem key={month.value} value={month.value}>{month.label}</MenuItem>
             ))}
           </Select>
           </FormControl>
         )}
         {timeInterval === "day" && (
         <FormControl size="small" sx={{ minWidth: 90 }}>
-        <InputLabel id="day-label">Día</InputLabel>
+        <InputLabel id="day-label">Day</InputLabel>
           <Select
             size="small"
             value={selectedDay}
             onChange={e => setSelectedDay(e.target.value)}
             label="Day"
           >
-            {days.map(day => (
+            {validDays.map(day => (
               <MenuItem key={day} value={day}>{day}</MenuItem>
             ))}
           </Select>
