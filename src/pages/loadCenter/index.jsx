@@ -154,7 +154,7 @@ const LoadCenter = () => {
                         <Button 
                           variant="contained" 
                           size="small"
-                          onClick={() => navigate(`/dashboard?serial_number=${item.serial_number}`)}
+                          onClick={() => navigate(`/dashboard?powermeter_id=${item.powermeter_id}`)}
                         >
                           Go to dashboard
                         </Button>

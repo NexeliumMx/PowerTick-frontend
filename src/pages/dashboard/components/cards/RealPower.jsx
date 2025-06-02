@@ -2,11 +2,17 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
 import chartColors from '../../../../theme/chartColors';
 const RealPower = ({ data }) => {
+  // Debug: log the incoming data and its type
+  console.log('RealPower received data:', data, 'Type:', typeof data, Array.isArray(data) ? 'Array' : 'Not array');
+
+  // Defensive: if data is an array, use the first element
+  const safeData = Array.isArray(data) ? data[0] : data;
+
   const hasValidData =
-    data &&
-    typeof data.watts_l1 === 'number' &&
-    typeof data.watts_l2 === 'number' &&
-    typeof data.watts_l3 === 'number';
+    safeData &&
+    typeof safeData.watts_l1 === 'number' &&
+    typeof safeData.watts_l2 === 'number' &&
+    typeof safeData.watts_l3 === 'number';
 
   console.log('Current demand data:', data);
 
@@ -20,13 +26,14 @@ const RealPower = ({ data }) => {
           Real Power
         </Typography>
         <Typography variant="body2" color="text.secondary" pt={20}>
-          Data not available.
+          Data not available.<br/>
+          <pre style={{ fontSize: 10, textAlign: 'left', whiteSpace: 'pre-wrap' }}>{JSON.stringify(data, null, 2)}</pre>
         </Typography>
       </Paper>
     );
   }
 
-  const { watts_l1, watts_l2, watts_l3, watts, timestamp } = data;
+  const { watts_l1, watts_l2, watts_l3, watts, timestamp } = safeData;
 
   return (
     <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
