@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography, Divider } from "@mui/material";
+import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import { useMsal } from "@azure/msal-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer, Label } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import { useConsumptionHistory } from '../../../../hooks/useConsumptionHistory';
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
-import TimeFilterHistory from './TimeFilterHistory';
+import { Select, MenuItem, FormControl, InputLabel, Divider } from "@mui/material";
 import chartColors from "../../../../theme/chartColors";
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -77,6 +77,92 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
       setTimeInterval(newTimeInterval);
     }
   };
+  //Hacer que despliegue los meses y años disponibles
+  const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
+  // Use date library for month names (localized, maintainable)
+  const months = Array.from({ length: 12 }, (_, i) =>
+  dayjs().month(i).format('MMMM')
+);
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
+  // Generate hour options: 'Last Hour' + 00:00-23:00
+  const now = dayjs();
+  const isToday =
+    selectedYear === now.year() &&
+    selectedMonth === now.month() + 1 &&
+    selectedDay === now.date();
+
+  let hours = [];
+  if (isToday) {
+    // Only show hours up to the current hour, in descending order
+    hours = [
+      { value: LAST_HOUR_VALUE, label: 'Last Hour' },
+      ...Array.from({ length: now.hour() + 1 }, (_, i) => {
+        const hour = now.hour() - i;
+        return {
+          value: hour,
+          label: `${String(hour).padStart(2, '0')}:00`,
+        };
+      })
+    ];
+  } else {
+    // For previous days, show 00:00-23:00, but do NOT show 'Last Hour'
+    hours = Array.from({ length: 24 }, (_, i) => ({
+      value: i,
+      label: `${String(i).padStart(2, '0')}:00`,
+    }));
+    // If 'Last Hour' is selected but not available, reset to 0
+    if (selectedHour === LAST_HOUR_VALUE) {
+      setSelectedHour(0);
+    }
+  }
+
+  // Compute valid years, months, days, and hours based on measurementRange
+  let validYears = years;
+  let validMonths = months;
+  let validDays = days;
+  let validHours = hours;
+  if (measurementRange && measurementRange.min_utc && measurementRange.max_utc) {
+    const tz = dayjs.tz.guess();
+    const min = dayjs.utc(measurementRange.min_utc).tz(tz);
+    const max = dayjs.utc(measurementRange.max_utc).tz(tz);
+    // Years
+    validYears = [];
+    for (let y = min.year(); y <= max.year(); y++) validYears.push(y);
+    // Months
+    if (selectedYear === min.year() && selectedYear === max.year()) {
+      validMonths = months.slice(min.month(), max.month() + 1);
+    } else if (selectedYear === min.year()) {
+      validMonths = months.slice(min.month());
+    } else if (selectedYear === max.year()) {
+      validMonths = months.slice(0, max.month() + 1);
+    } else {
+      validMonths = months;
+    }
+    // Days
+    const daysInMonth = dayjs(`${selectedYear}-${selectedMonth}-01`).daysInMonth();
+    let startDay = 1, endDay = daysInMonth;
+    if (selectedYear === min.year() && selectedMonth === min.month() + 1) startDay = min.date();
+    if (selectedYear === max.year() && selectedMonth === max.month() + 1) endDay = max.date();
+    validDays = [];
+    for (let d = startDay; d <= endDay; d++) validDays.push(d);
+    // Hours
+    if (
+      selectedYear === min.year() && selectedMonth === min.month() + 1 && selectedDay === min.date() &&
+      selectedYear === max.year() && selectedMonth === max.month() + 1 && selectedDay === max.date()
+    ) {
+      validHours = [];
+      for (let h = min.hour(); h <= max.hour(); h++) validHours.push(h);
+    } else if (selectedYear === min.year() && selectedMonth === min.month() + 1 && selectedDay === min.date()) {
+      validHours = [];
+      for (let h = min.hour(); h < 24; h++) validHours.push(h);
+    } else if (selectedYear === max.year() && selectedMonth === max.month() + 1 && selectedDay === max.date()) {
+      validHours = [];
+      for (let h = 0; h <= max.hour(); h++) validHours.push(h);
+    } else {
+      validHours = hours;
+    }
+  }
+
   //X lable variable title
   const xAxisLabel = timeInterval === "year"
   ? "Mes"
@@ -217,29 +303,120 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
         sx={{ mb: 1, borderColor: 'primary.main', borderBottomWidth: 3 }}
       />
       <CardActions 
-        sx={{
+      sx={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "space-between",
           alignItems: "center",
           mt: 0,
           mb: 2,
           px: 2,
         }}
       >
-        <TimeFilterHistory
-          timeInterval={timeInterval}
-          setTimeInterval={setTimeInterval}
-          selectedYear={selectedYear}
-          setSelectedYear={setSelectedYear}
-          selectedMonth={selectedMonth}
-          setSelectedMonth={setSelectedMonth}
-          selectedDay={selectedDay}
-          setSelectedDay={setSelectedDay}
-          selectedHour={selectedHour}
-          setSelectedHour={setSelectedHour}
-          measurementRange={measurementRange}
-          defaultTimeFilter={defaultTimeFilter}
-        />
+          <Box sx={{
+            width: "40%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+    <Typography variant="h5" sx={{ mb: 2 }}>
+      Analysis Interval
+    </Typography>
+      <ToggleButtonGroup
+          value={timeInterval}
+          exclusive
+          onChange={handleTimeIntervalChange}
+          aria-label="Time Interval"
+        >
+          <ToggleButton value="day" aria-label="Daily">
+            Daily
+          </ToggleButton>
+          <ToggleButton value="hour" aria-label="Hourly">
+            Hourly
+          </ToggleButton>
+        </ToggleButtonGroup>
+        </Box>
+        <Box sx={{
+        width: "60%", 
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center", 
+        justifyContent: "center"
+         }}>
+        <Typography variant="h5" sx={{ mb: 2 }}>
+          Time Filter
+        </Typography> 
+        <Box sx={{ 
+          width: "100%", 
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "center",
+          gap: 1
+        }}>
+          {(timeInterval === "year" || timeInterval === "month" || timeInterval === "day" || timeInterval === "hour") && (
+            <FormControl size="small" sx={{ minWidth: 90 }}>
+              <InputLabel id="year-label">Year</InputLabel>
+              <Select
+                size="small"
+                value={selectedYear}
+                onChange={e => setSelectedYear(e.target.value)}
+                label="Year"
+              >
+                {validYears.map(year => (
+                  <MenuItem key={year} value={year}>{year}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+          {(timeInterval === "month" || timeInterval === "day" || timeInterval === "hour") && (
+            <FormControl size="small" sx={{ minWidth: 90 }}>
+              <InputLabel id="month-label">Month</InputLabel>
+              <Select
+                size="small"
+                value={selectedMonth}
+                onChange={e => setSelectedMonth(e.target.value)}
+                label="Month"
+              >
+                {validMonths.map((month, idx) => (
+                  <MenuItem key={month} value={idx + 1}>{month}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+          {(timeInterval === "day" || timeInterval === "hour") && (
+            <FormControl size="small" sx={{ minWidth: 90 }}>
+              <InputLabel id="day-label">Day</InputLabel>
+              <Select
+                size="small"
+                value={selectedDay}
+                onChange={e => setSelectedDay(e.target.value)}
+                label="Day"
+              >
+                {validDays.map(day => (
+                  <MenuItem key={day} value={day}>{day}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+          {timeInterval === "hour" && (
+            <FormControl size="small" sx={{ minWidth: 90 }}>
+              <InputLabel id="hour-label">Hour</InputLabel>
+              <Select
+                size="small"
+                value={selectedHour}
+                onChange={e => setSelectedHour(e.target.value)}
+                label="Hour"
+              >
+                {hours.map(hour => (
+                  <MenuItem key={hour.value} value={hour.value}>
+                    {hour.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+        </Box>
+      </Box>
       </CardActions>
     </Card>
   );

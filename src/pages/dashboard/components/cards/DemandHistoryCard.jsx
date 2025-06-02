@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import { useMsal } from "@azure/msal-react";
@@ -11,6 +11,7 @@ import chartColors from "../../../../theme/chartColors";
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { ModeContext } from '../../../../context/AppModeContext';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -20,7 +21,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
   const theme = useTheme(); 
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid;
-  // Use defaultTimeFilter for initial state
+  const { state: appModeState } = useContext(ModeContext);
   const [timeInterval, setTimeInterval] = useState("day");
   const [selectedYear, setSelectedYear] = useState(defaultTimeFilter?.year || new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(defaultTimeFilter?.month || new Date().getMonth() + 1);
@@ -28,51 +29,71 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
   // Default hour: 'last_hour' if timeInterval is 'hour', otherwise defaultTimeFilter.hour
   const [selectedHour, setSelectedHour] = useState(timeInterval === 'hour' ? LAST_HOUR_VALUE : (defaultTimeFilter?.hour || new Date().getHours()));
 
-  // Update time filter if defaultTimeFilter changes
-  useEffect(() => {
-    if (defaultTimeFilter) {
-      setSelectedYear(defaultTimeFilter.year);
-      setSelectedMonth(defaultTimeFilter.month);
-      setSelectedDay(defaultTimeFilter.day);
-      setSelectedHour(timeInterval === 'hour' ? LAST_HOUR_VALUE : defaultTimeFilter.hour);
-    }
-  }, [defaultTimeFilter, timeInterval]);
-
   // Compute start_utc and end_utc based on timeInterval and time filter
   const tz = dayjs.tz.guess();
   let start_utc = null;
   let end_utc = null;
-  const now = dayjs();
-  const isToday =
-    selectedYear === now.year() &&
-    selectedMonth === now.month() + 1 &&
-    selectedDay === now.date();
   if (timeInterval === "hour") {
     if (selectedHour === LAST_HOUR_VALUE) {
+      // Last hour: now - 1 hour to now
+      const now = dayjs();
       const start = now.subtract(1, 'hour');
       start_utc = start.utc().format();
       end_utc = now.utc().format();
     } else {
+      // For hour: range is from selected hour to selected hour + 1 (local time)
       const start = dayjs.tz(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}T${String(selectedHour).padStart(2, '0')}:00:00`, tz);
       let end;
       if (selectedHour < 23) {
         end = start.add(1, 'hour');
       } else {
+        // If 23:00, end at 23:59:59
         end = start.endOf('hour');
       }
       start_utc = start.utc().format();
       end_utc = end.utc().format();
     }
   } else if (timeInterval === "day") {
+    // For day: range is from 00:00 to now (local time)
+    const now = dayjs();
+    const isToday = now.year() === selectedYear && (now.month() + 1) === selectedMonth && now.date() === selectedDay;
     const start = dayjs.tz(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}T00:00:00`, tz);
     const end = isToday ? now : start.endOf('day');
     start_utc = start.utc().format();
     end_utc = end.utc().format();
   }
 
-  // Generate hour options: 'Last Hour' + 00:00-23:00 (as { value, label } objects)
+  // Use hook
+  const { data: demandHistoryData, isLoading } = useDemandHistory(
+    user_id,
+    selectedPowerMeter,
+    start_utc,
+    end_utc,
+    appModeState?.mode || 'PRODUCTION'
+  );
+
+  const handleTimeIntervalChange = (event, newTimeInterval) => {
+    if (newTimeInterval) {
+      setTimeInterval(newTimeInterval);
+    }
+  };
+  //Hacer que despliegue los meses y años disponibles
+  const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
+  // Use date library for month names (localized, maintainable)
+  const months = Array.from({ length: 12 }, (_, i) =>
+    dayjs().month(i).format('MMMM')
+  );
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
+  // Generate hour options: 'Last Hour' + 00:00-23:00
+  const now = dayjs();
+  const isToday =
+    selectedYear === now.year() &&
+    selectedMonth === now.month() + 1 &&
+    selectedDay === now.date();
+
   let hours = [];
   if (isToday) {
+    // Only show hours up to the current hour, in descending order
     hours = [
       { value: LAST_HOUR_VALUE, label: 'Last Hour' },
       ...Array.from({ length: now.hour() + 1 }, (_, i) => {
@@ -84,6 +105,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
       })
     ];
   } else {
+    // For previous days, show 00:00-23:00, but do NOT show 'Last Hour'
     hours = Array.from({ length: 24 }, (_, i) => ({
       value: i,
       label: `${String(i).padStart(2, '0')}:00`,
@@ -93,11 +115,6 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
       setSelectedHour(0);
     }
   }
-
-  // Time filter arrays (copied from ConsumptionHistoryCard)
-  const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
-  const months = Array.from({ length: 12 }, (_, i) => dayjs().month(i).format('MMMM'));
-  const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   // Compute valid years, months, days, and hours based on measurementRange
   let validYears = years;
@@ -128,53 +145,25 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     if (selectedYear === max.year() && selectedMonth === max.month() + 1) endDay = max.date();
     validDays = [];
     for (let d = startDay; d <= endDay; d++) validDays.push(d);
-    // Hours (always as { value, label })
+    // Hours
     if (
       selectedYear === min.year() && selectedMonth === min.month() + 1 && selectedDay === min.date() &&
       selectedYear === max.year() && selectedMonth === max.month() + 1 && selectedDay === max.date()
     ) {
       validHours = [];
-      for (let h = min.hour(); h <= max.hour(); h++) {
-        validHours.push({ value: h, label: `${String(h).padStart(2, '0')}:00` });
-      }
+      for (let h = min.hour(); h <= max.hour(); h++) validHours.push(h);
     } else if (selectedYear === min.year() && selectedMonth === min.month() + 1 && selectedDay === min.date()) {
       validHours = [];
-      for (let h = min.hour(); h < 24; h++) {
-        validHours.push({ value: h, label: `${String(h).padStart(2, '0')}:00` });
-      }
+      for (let h = min.hour(); h < 24; h++) validHours.push(h);
     } else if (selectedYear === max.year() && selectedMonth === max.month() + 1 && selectedDay === max.date()) {
       validHours = [];
-      for (let h = 0; h <= max.hour(); h++) {
-        validHours.push({ value: h, label: `${String(h).padStart(2, '0')}:00` });
-      }
+      for (let h = 0; h <= max.hour(); h++) validHours.push(h);
     } else {
       validHours = hours;
     }
-    // If selectedHour is not in validHours, reset to first available
-    if (timeInterval === 'hour' && !validHours.some(h => h.value === selectedHour)) {
-      setSelectedHour(validHours.length > 0 ? validHours[0].value : '');
-    }
   }
 
-  // Use new hook for demand history
-  const { data: demandHistoryData, isLoading } = useDemandHistory(
-    user_id,
-    selectedPowerMeter,
-    start_utc,
-    end_utc,
-    // Use app mode if available, fallback to PRODUCTION
-    (typeof appModeState !== 'undefined' && appModeState.mode) ? appModeState.mode : 'PRODUCTION'
-  );
-
-  // Transform data for Recharts (show local time)
-  const chartData = demandHistoryData?.map((item) => ({
-    name: dayjs.utc(item.utc_time).tz(tz).format('HH:mm'), // x-axis label in local time
-    timestamp_local: dayjs.utc(item.utc_time).tz(tz).format('YYYY-MM-DD HH:mm'), // for tooltip
-    realPower: item.real_power_w,
-    reactivePower: item.reactive_power_var,
-  }));
-
-  // X label variable title (copied from ConsumptionHistoryCard)
+  // X label variable title
   const xAxisLabel = timeInterval === "year"
     ? "Mes"
     : timeInterval === "month"
@@ -185,12 +174,46 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     ? "Minutos"
     : "Tiempo";
 
-  // Add handleTimeIntervalChange (copied from ConsumptionHistoryCard)
-  const handleTimeIntervalChange = (event, newTimeInterval) => {
-    if (newTimeInterval) {
-      setTimeInterval(newTimeInterval);
+  // Transform data for Recharts (show local time)
+  const chartData = demandHistoryData?.map((item) => ({
+    name: dayjs.utc(item.utc_time).tz(tz).format('HH:mm'), // x-axis label in local time
+    timestamp_local: dayjs.utc(item.utc_time).tz(tz).format('YYYY-MM-DD HH:mm'), // for tooltip
+    realPower: item.real_power_w,
+    reactivePower: item.reactive_power_var,
+  }));
+
+  // Custom tooltip to show local time
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      return (
+        <Box sx={{ backgroundColor: theme.palette.background.paper, border: `1px solid ${theme.palette.divider}`, p: 1 }}>
+          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+            {payload[0].payload.timestamp_local}
+          </Typography>
+          <Typography variant="body2">Real Power (W): {payload[0].payload.realPower}</Typography>
+          <Typography variant="body2">Reactive Power (VAR): {payload[0].payload.reactivePower}</Typography>
+        </Box>
+      );
     }
+    return null;
   };
+
+  // Update time filter if defaultTimeFilter changes (e.g., when measurementRange loads)
+  useEffect(() => {
+    if (defaultTimeFilter) {
+      setSelectedYear(defaultTimeFilter.year);
+      setSelectedMonth(defaultTimeFilter.month);
+      setSelectedDay(defaultTimeFilter.day);
+      setSelectedHour(defaultTimeFilter.hour);
+    }
+  }, [defaultTimeFilter]);
+
+  // On mount or when timeInterval changes to 'hour', set default to 'Last Hour'
+  useEffect(() => {
+    if (timeInterval === 'hour') {
+      setSelectedHour(LAST_HOUR_VALUE);
+    }
+  }, [timeInterval]);
 
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
@@ -200,11 +223,10 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
           variant: 'h3',
           sx: {
             textAlign: 'left',
-            paddingLeft: 2, 
+            paddingLeft: 2,
             alignSelf: 'flex-start',
-            paddingTop: '2px', 
-            fontWeight:600 , 
-            paddingBottom: 0
+            fontWeight:600 ,
+            paddingTop: '2px'
           }
         }}
       />
@@ -217,9 +239,10 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
               <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
-                  dataKey="name" 
+                  dataKey="name"
                   stroke={theme.palette.text.primary}
                   tick={{ fill: theme.palette.text.primary }}
+                  tickFormatter={v => v}
                 >
                   <Label
                     value={xAxisLabel}
@@ -229,29 +252,45 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
                   />
                 </XAxis>
                 <YAxis
+                  yAxisId="left"
+                  domain={['auto','auto']}
+                  tick={{ fill: theme.palette.text.primary }}
                   stroke={theme.palette.text.primary}
-                  tick={{ fill: theme.palette.text.primary }}>
-                   <Label
-                    value="Power (W|VAR)"
+                >
+                  <Label
+                    value="Real Power (W)"
                     angle={-90}
                     position="insideLeft"
-                    style={{ textAnchor: 'middle', fill: theme.palette.text.primary, fontWeight: 600 }}
-                    offset={10}
+                    offset={-10}
+                    style={{
+                      textAnchor: 'middle',
+                      fill: theme.palette.text.primary,
+                      fontWeight: 600,
+                    }}
                   />
                 </YAxis>
-                <Tooltip 
-                contentStyle={{
-                  backgroundColor: theme.palette.background.paper,
-                  border: `1px solid ${theme.palette.divider}`,
-                  color: theme.palette.text.primary,
-                }}
-                labelStyle={{
-                  color: theme.palette.text.secondary,
-                }}
-                 />
-                <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{paddingBottom: 8}} />
-                <Line type="monotone" dataKey="realPower" stroke={chartColors.realEnergy} name="Real Power (W)" dot={false} strokeWidth={3}/>
-                <Line type="monotone" dataKey="reactivePower" stroke={chartColors.reactiveEnergy} name="Reactive Power (VAR)" dot={false} strokeWidth={3}/>
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  tick={{ fill: theme.palette.text.primary }}
+                  stroke={theme.palette.text.primary}
+                >
+                  <Label
+                    value="Reactive Power (VAR)"
+                    angle={-90}
+                    position="insideRight"
+                    offset={-10}
+                    style={{
+                      textAnchor: 'middle',
+                      fill: theme.palette.text.primary,
+                      fontWeight: 600,
+                    }}
+                  />
+                </YAxis>
+                <Tooltip content={<CustomTooltip />} />
+                <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{marginRight: 40, paddingBottom: 8}} />
+                <Line type="monotone" dataKey="realPower" stroke={chartColors.realEnergy} name="Real Power (W)" dot={false} yAxisId="left" strokeWidth={3}/>
+                <Line type="monotone" dataKey="reactivePower" stroke={chartColors.reactiveEnergy} name="Reactive Power (VAR)"  dot={false} yAxisId="right" strokeWidth={3}/>
               </LineChart>
             </ResponsiveContainer>
           ) : (
@@ -263,8 +302,8 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
         variant="middle"
         sx={{ mb: 1, borderColor: 'primary.main', borderBottomWidth: 3 }}
       />
-      <CardActions
-        sx={{
+      <CardActions 
+      sx={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -272,18 +311,18 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
           mb: 2,
           px: 2,
         }}
-      > 
-        <Box sx={{
-    width: "40%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
-  }}>
+      >
+          <Box sx={{
+            width: "40%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
     <Typography variant="h5" sx={{ mb: 2 }}>
       Analysis Interval
-    </Typography>       
-    <ToggleButtonGroup
+    </Typography>
+      <ToggleButtonGroup
           value={timeInterval}
           exclusive
           onChange={handleTimeIntervalChange}
@@ -323,7 +362,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
                 onChange={e => setSelectedYear(e.target.value)}
                 label="Year"
               >
-                {years.map(year => (
+                {validYears.map(year => (
                   <MenuItem key={year} value={year}>{year}</MenuItem>
                 ))}
               </Select>
@@ -338,7 +377,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
                 onChange={e => setSelectedMonth(e.target.value)}
                 label="Month"
               >
-                {months.map((month, idx) => (
+                {validMonths.map((month, idx) => (
                   <MenuItem key={month} value={idx + 1}>{month}</MenuItem>
                 ))}
               </Select>
@@ -353,7 +392,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
                 onChange={e => setSelectedDay(e.target.value)}
                 label="Day"
               >
-                {days.map(day => (
+                {validDays.map(day => (
                   <MenuItem key={day} value={day}>{day}</MenuItem>
                 ))}
               </Select>
@@ -368,7 +407,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
                 onChange={e => setSelectedHour(e.target.value)}
                 label="Hour"
               >
-                {validHours.map(hour => (
+                {hours.map(hour => (
                   <MenuItem key={hour.value} value={hour.value}>
                     {hour.label}
                   </MenuItem>
