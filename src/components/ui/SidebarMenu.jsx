@@ -4,7 +4,7 @@ import { Box, useTheme, Typography } from "@mui/material";
 import { Link, useLocation } from "react-router-dom"; 
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import ElectricMeterOutlinedIcon from '@mui/icons-material/ElectricMeterOutlined';
-import ScienceIcon from '@mui/icons-material/Science';
+import EventNote from "@mui/icons-material/EventNote";
 import { tokens } from "../../theme";
 
 const SidebarMenu = ({ collapsed }) => {
@@ -74,13 +74,13 @@ const SidebarMenu = ({ collapsed }) => {
 
           {/* Downloads */}
           <MenuItem
-            icon={<ScienceIcon sx={{ fontSize: 26 }}/>} 
-            active={selected === "Downloads"}
+            icon={<EventNote sx={{ fontSize: 26 }}/>} 
+            active={selected === "Monthly Reports"}
             component={<Link to="/downloads" />}
-            rootStyles={getMenuItemStyles(selected === "Downloads")}
+            rootStyles={getMenuItemStyles(selected === "Monthly Reports")}
           >
             <Typography variant="h5" fontWeight={600}>
-            Downloads
+            Monthly Reports
             </Typography>
           </MenuItem>
         </Menu>
