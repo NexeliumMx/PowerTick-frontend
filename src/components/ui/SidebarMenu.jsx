@@ -62,13 +62,25 @@ const SidebarMenu = ({ collapsed }) => {
 
           {/* Dashboard */}
           <MenuItem
-            icon={<DashboardOutlinedIcon sx={{ fontSize: 26 }}/>}
+            icon={<DashboardOutlinedIcon sx={{ fontSize: 26 }}/>} 
             active={selected === "Dashboard"}
             component={<Link to="/dashboard" />}
             rootStyles={getMenuItemStyles(selected === "Dashboard")}
           >
             <Typography variant="h5" fontWeight={600}>
             Dashboard
+            </Typography>
+          </MenuItem>
+
+          {/* Downloads */}
+          <MenuItem
+            icon={<ScienceIcon sx={{ fontSize: 26 }}/>} 
+            active={selected === "Downloads"}
+            component={<Link to="/downloads" />}
+            rootStyles={getMenuItemStyles(selected === "Downloads")}
+          >
+            <Typography variant="h5" fontWeight={600}>
+            Downloads
             </Typography>
           </MenuItem>
         </Menu>

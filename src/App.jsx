@@ -27,6 +27,7 @@ import MainLayout from "./layout/MainLayout";
 import LoadCenter from "./pages/loadCenter";
 import Dashboard from "./pages/dashboard";
 import UserManual from "./pages/user-manual";
+import Downloads from "./pages/downloads";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // Test
@@ -46,6 +47,7 @@ function App() {
           <Route path="/load-center" element={<LoadCenter />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/user-manual" element={<UserManual />} />
+          <Route path="/downloads" element={<Downloads />} />
         </Route>
       </Route>
 
