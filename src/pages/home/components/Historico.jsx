@@ -13,15 +13,16 @@ const HistoricoInfoCard = () => (
           y aumenta la trazabilidad de tus operaciones para identificar oportunidades
           de optimización y ahorro.
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+        <Typography component="div" variant="body2" color="text.secondary" sx={{ mt: 2 }}>
           Funcionalidades clave:
+        
           <ul>
             <li>Análisis gráfico de datos históricos y perfil de demanda, consumo y distorsión armónico</li>
             <li>Filtro de tiempo dinámico para análizar tus datos en el intervalo de tiempo que desees</li>
             <li>Reportaje mensual de los datos por medidor y descarga de datos en 
                 formatos compatibles con tu herramientas de hojas de cálculo </li>
           </ul>
-        </Typography>
+            </Typography>
       </CardContent>
     </Card>
   </Box>

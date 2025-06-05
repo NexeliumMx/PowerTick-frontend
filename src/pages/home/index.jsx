@@ -4,19 +4,23 @@ import { useMsal } from "@azure/msal-react";
 import { useEffect, useRef, useState } from "react";
 import SignBar from "./components/SignBar";
 import HeroSection from "./components/HeroSection";
-import TiempoRealInfoCard from "./components/TiempoReal";
-import HistoricoInfoCard from "./components/Historico";
-import MedidorInfoCard from "./components/Medidor";
-import HardwareInfoCard from "./components/Hardware";
-import MonitoreoDistanciaInfoCard from "./components/MonitoreoDistancia";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
+import ExtraInfoFooter from "./components/ExtraInfoFooter";
+import ContactSection from "./components/ContactSection";
+// Import each showcase card component
+import ShowcaseTiempoReal from "./showcase/ShowcaseTiempoReal";
+import ShowcaseHistorico from "./showcase/ShowcaseHistorico";
+import ShowcaseMedidor from "./showcase/ShowcaseMedidor";
+import ShowcaseHardware from "./showcase/ShowcaseHardware";
+import ShowcaseMonitoreo from "./showcase/ShowcaseMonitoreo";
 
-const cards = [
-  { component: <TiempoRealInfoCard />, key: "tiempo" },
-  { component: <HistoricoInfoCard />, key: "historico" },
-  { component: <MedidorInfoCard />, key: "medidor" },
-  { component: <HardwareInfoCard />, key: "hardware" },
-  { component: <MonitoreoDistanciaInfoCard />, key: "monitoreo" },
+// Array of showcase card components (order matters)
+const showcaseCards = [
+  { key: "tiempo", component: <ShowcaseTiempoReal /> },
+  { key: "historico", component: <ShowcaseHistorico /> },
+  { key: "medidor", component: <ShowcaseMedidor /> },
+  { key: "hardware", component: <ShowcaseHardware /> },
+  { key: "monitoreo", component: <ShowcaseMonitoreo /> },
 ];
 
 export default function Home() {
@@ -25,7 +29,8 @@ export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef(null);
   const scrollTimeout = useRef(null);
-
+  const [showcaseActive, setShowcaseActive] = useState(false);
+  const showcaseLockedRef = useRef(false);
 
   useEffect(() => {
     if (accounts.length > 0) {
@@ -33,72 +38,95 @@ export default function Home() {
     }
   }, [accounts, navigate]);
 
- useEffect(() => {
-  const handleWheel = (e) => {
-    if (!containerRef.current) return;
-    const container = containerRef.current;
+  // Scroll lock logic
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      // Only lock when the top is very close to the top of the viewport
+      if (rect.top >= -50 && rect.top <= 2 && rect.bottom > window.innerHeight / 2) {
+        setShowcaseActive(true);
+        document.body.style.overflow = "hidden";
+        if (!showcaseLockedRef.current) {
+          window.scrollTo({ top: window.scrollY + rect.top, behavior: "auto" });
+          showcaseLockedRef.current = true;
+        }
+      } else {
+        setShowcaseActive(false);
+        document.body.style.overflow = "";
+        showcaseLockedRef.current = false;
+      }
+    };
 
-    // Only act if hovering the container
-    if (!container.matches(':hover')) return;
+    window.addEventListener("scroll", handleScroll, { passive: false });
+    // Initial check
+    handleScroll();
 
-    const delta = e.deltaY;
-    const isScrollingDown = delta > 0;
-    const isScrollingUp = delta < 0;
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.body.style.overflow = "";
+      showcaseLockedRef.current = false;
+    };
+  }, []);
 
-    // Check if container is fully at the top of the viewport
-    const rect = container.getBoundingClientRect();
-    const fullyVisible = Math.abs(rect.top) < 2; // allow a small threshold
+  // Handle wheel for card transitions only when showcase is active
+  useEffect(() => {
+    if (!showcaseActive) return;
 
-    // Only allow scroll down to next card if cards are fully visible (at top)
-    if (isScrollingDown && !fullyVisible) {
-      // Let the page scroll until cards are at the top
-      return;
-    }
+    const handleWheel = (e) => {
+      console.log("Scroll Event Triggered");
+      console.log("Delta:", e.deltaY, "Active Index:", activeIndex);
 
-    // Prevent scroll for all other conditions except scrolling up on first card
-    const allowScrollUpToExit = isScrollingUp && activeIndex === 0;
-    if (!allowScrollUpToExit) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
 
-    // Don't scroll if throttled
-    if (scrollTimeout.current) return;
 
-    // Scroll logic
-    if (isScrollingDown && activeIndex < cards.length - 1) {
-      setActiveIndex((prev) => Math.min(prev + 1, cards.length - 1));
-    } else if (isScrollingUp && activeIndex > 0) {
-      setActiveIndex((prev) => Math.max(prev - 1, 0));
-    }
+      const delta = e.deltaY;
+      const isScrollingDown = delta > 0;
+      const isScrollingUp = delta < 0;
 
-    // Throttle next scroll
-    scrollTimeout.current = setTimeout(() => {
-      scrollTimeout.current = null;
-    }, 500);
-  };
+      const allowScrollUpToExit = isScrollingUp && activeIndex === 0;
+      const allowScrollDownToExit = isScrollingDown && activeIndex === showcaseCards.length - 1;
 
-  window.addEventListener('wheel', handleWheel, { passive: false, capture: true });
+      if (!allowScrollUpToExit && !allowScrollDownToExit) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
 
-  return () => {
-    window.removeEventListener('wheel', handleWheel, { capture: true });
-    if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-    scrollTimeout.current = null;
-  };
-}, [activeIndex, cards.length]);
+      if (scrollTimeout.current) return;
+
+      if (isScrollingDown && activeIndex < showcaseCards.length - 1) {
+        setActiveIndex((prev) => Math.min(prev + 1, showcaseCards.length - 1));
+      } else if (isScrollingUp && activeIndex > 0) {
+        setActiveIndex((prev) => Math.max(prev - 1, 0));
+      } else if (allowScrollUpToExit || allowScrollDownToExit) {
+        document.body.style.overflow = "";
+        setShowcaseActive(false);
+        showcaseLockedRef.current = false;
+      }
+
+      scrollTimeout.current = setTimeout(() => {
+        scrollTimeout.current = null;
+      }, 500);
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+    };
+  }, [activeIndex, showcaseActive]);
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "background.default" }}>
       <SignBar />
       {/* Hero section takes the whole screen */}
-      <Box sx={{ width: "100vw", height: "100vh" }}>
+      <Box sx={{ width: "100%", height: "100vh" }}>
         <HeroSection />
       </Box>
-      {/* Cards take the whole screen, one at a time, after hero */}
+      {/* Showcase section with animated, customizable cards */}
       <Box
         ref={containerRef}
         sx={{
-          width: "100vw",
+          width: "100%",
           height: "100vh",
           display: { xs: "none", md: "flex" },
           alignItems: "center",
@@ -109,16 +137,11 @@ export default function Home() {
         }}
       >
         <AnimatePresence mode="wait">
-          <motion.div
-            key={cards[activeIndex].key}
-            initial={{ opacity: 0, x: 80 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -80 }}
-            transition={{ duration: 0.5 }}
-            style={{ width: "100%", position: "absolute" }}
-          >
-            {cards[activeIndex].component}
-          </motion.div>
+          {showcaseCards.map((c, idx) =>
+            idx === activeIndex ? (
+              <c.component.type key={c.key} />
+            ) : null
+          )}
         </AnimatePresence>
       </Box>
       {/* Fallback for mobile: show cards stacked below hero */}
@@ -135,12 +158,15 @@ export default function Home() {
           mt: { xs: 2, md: 4 },
         }}
       >
-        {cards.map((c) => (
-          <Box key={c.key} sx={{ width: "100%",  mb: 2 }}>
-            {c.component}
+        {showcaseCards.map((c) => (
+          <Box key={c.key} sx={{ width: "100%", mb: 2 }}>
+            <c.component.type />
           </Box>
         ))}
       </Box>
+      {/* Contact section after the showcase */}
+      <ContactSection />
+      <ExtraInfoFooter />
     </Box>
   );
 }

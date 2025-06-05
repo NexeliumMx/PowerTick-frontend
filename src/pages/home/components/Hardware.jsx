@@ -12,15 +12,16 @@ const HardwareInfoCard = () => (
           Sus componentes cumplen con los más altos estándares de calidad y seguridad eléctrica para garantizar el funcionamiento del sistema y
           la seguridad de tu instalación eléctrica.
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+        <Typography component="div" variant="body2" color="text.secondary" sx={{ mt: 2 }}>
           Tecnología avanzada para tu instalación:
+ 
           <ul>
             <li>Instalación rápida y sencilla en tableros eléctricos existentes</li>
             <li>Módulo de alimentación autónomo; no necesita de enchufes externos ni genera cables innecesarios.</li>
             <li>Soporte para actualizaciones y reparaciones remotas de firmware</li>
             <li>Acatando estándares internacionales de seguridad de hardware</li>
           </ul>
-        </Typography>
+               </Typography>
       </CardContent>
     </Card>
   </Box>

@@ -1,3 +1,5 @@
+
+
 const chartColors = {
   //Analysis
   realEnergy: "#E74C3C",
@@ -8,10 +10,14 @@ const chartColors = {
   maxVar: "#9B59B6",
 
   //Measurements
-  phase1: "#1ABC9C",
-  phase2: "#F1C40F",
-  phase3: "#2ECC71",
-  phaseTotal: "#1ABC9C",
+  phase1: "#eaeb81",
+  phase2: "#dddf7b",
+  phase3: "#eaeb81",
+  phaseTotal: "#d5d777",
+
+  //Measurements showcase
+  front: "#eaeb81",
+  back: "#dddf7b",
 
   //Powerfactor colors
   powerFactorGood: "#4caf50",
