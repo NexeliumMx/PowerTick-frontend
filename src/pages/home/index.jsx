@@ -13,6 +13,8 @@ import ShowcaseHistorico from "./showcase/ShowcaseHistorico";
 import ShowcaseMedidor from "./showcase/ShowcaseMedidor";
 import ShowcaseHardware from "./showcase/ShowcaseHardware";
 import ShowcaseMonitoreo from "./showcase/ShowcaseMonitoreo";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 // Array of showcase card components (order matters)
 const showcaseCards = [
@@ -43,6 +45,8 @@ export default function Home() {
     const handleScroll = () => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
+      console.log("Showcase rect.top:", rect.top, "rect.bottom:", rect.bottom, "windowInner",window.innerHeight); // <-- Logging here
+
       // Only lock when the top is very close to the top of the viewport
       if (rect.top >= -50 && rect.top <= 2 && rect.bottom > window.innerHeight / 2) {
         setShowcaseActive(true);
@@ -127,7 +131,7 @@ export default function Home() {
         ref={containerRef}
         sx={{
           width: "100%",
-          height: {md:"100vh", xs:"auto"},
+          height: { md: "100vh", xs: "auto" },
           display: { xs: "none", md: "flex" },
           alignItems: "center",
           justifyContent: "center",
@@ -136,6 +140,46 @@ export default function Home() {
           backgroundColor: "background.paper",
         }}
       >
+        {/* Left Arrow */}
+        <Box
+          sx={{
+            position: "absolute",
+            left: 24,
+            top: "50%",
+            transform: "translateY(-50%)",
+            zIndex: 10,
+            display: activeIndex > 0 ? "flex" : "none",
+            bgcolor: "background.paper",
+            borderRadius: "50%",
+            boxShadow: 2,
+            cursor: "pointer",
+            p: 1,
+            "&:hover": { bgcolor: "grey.100" },
+          }}
+          onClick={() => setActiveIndex((prev) => Math.max(prev - 1, 0))}
+        >
+          <ArrowBackIosNewIcon />
+        </Box>
+        {/* Right Arrow */}
+        <Box
+          sx={{
+            position: "absolute",
+            right: 24,
+            top: "50%",
+            transform: "translateY(-50%)",
+            zIndex: 10,
+            display: activeIndex < showcaseCards.length - 1 ? "flex" : "none",
+            bgcolor: "background.paper",
+            borderRadius: "50%",
+            boxShadow: 2,
+            cursor: "pointer",
+            p: 1,
+            "&:hover": { bgcolor: "grey.100" },
+          }}
+          onClick={() => setActiveIndex((prev) => Math.min(prev + 1, showcaseCards.length - 1))}
+        >
+          <ArrowForwardIosIcon />
+        </Box>
         <AnimatePresence mode="wait">
           {showcaseCards.map((c, idx) =>
             idx === activeIndex ? (
@@ -143,28 +187,40 @@ export default function Home() {
             ) : null
           )}
         </AnimatePresence>
+        {/* Dots Indicator */}
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 32,
+            left: 0,
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 10,
+            gap: 1.5,
+          }}
+        >
+          {showcaseCards.map((c, idx) => (
+            <Box
+              key={c.key}
+              onClick={() => setActiveIndex(idx)}
+              sx={{
+                width: 7,
+                height: 7, 
+                borderRadius: "50%",
+                backgroundColor: idx === activeIndex ? "primary.main" : "grey.400",
+                border: idx === activeIndex ? "2px solid" : "1px solid",
+                borderColor: idx === activeIndex ? "primary.main" : "grey.300",
+                mx: 0.5,
+                cursor: "pointer",
+                transition: "background 0.2s, border 0.2s",
+              }}
+            />
+          ))}
+        </Box>
       </Box>
-      {/* Fallback for mobile: show cards stacked below hero */}
-      <Box
-        sx={{
-          display: { xs: "flex", md: "none" },
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: 3,
-          mt: { xs: 2, md: 4 },
-          gap: 3, // Add gap for consistent spacing
-        }}
-      >
-        {showcaseCards.map((c, idx) => (
-          <Box key={c.key} sx={{ width: "100%" }}>
-            <c.component.type />
-          </Box>
-        ))}
-      </Box>
+
       {/* Contact section after the showcase */}
       <ContactSection />
       <ExtraInfoFooter />

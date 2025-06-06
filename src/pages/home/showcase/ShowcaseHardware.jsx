@@ -14,7 +14,7 @@ export default function ShowcaseHardware() {
       style={{ width: "100%", position: "absolute", display: "flex", flexDirection: "column", height: "100%" }}
     >
       {/* Info card on top */}
-      <Box sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", mt: 20 }}>
+      <Box sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", mt: 10 }}>
         <HardwareInfoCard />
       </Box>
       {/* Image and info below */}

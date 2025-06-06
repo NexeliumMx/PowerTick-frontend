@@ -84,6 +84,7 @@ export default function ShowcaseTiempoReal() {
             height: 250,
             position: "relative",
             mb: 4,
+            mr:25
           }}
         >
           {/* Gauge - positioned absolutely, in front */}
@@ -207,7 +208,7 @@ export default function ShowcaseTiempoReal() {
             }}
           >
             <Box sx={{ perspective: 300, width: "100%", height: "100%" }}>
-              <Box sx={{ transform: "rotateY(-35deg)", transformOrigin: "center" }}>
+              <Box sx={{ transform: "rotateY(-30deg)", transformOrigin: "center" }}>
                 <BarChart
                   height={180}
                   borderRadius={10}
