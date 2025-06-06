@@ -127,7 +127,7 @@ export default function Home() {
         ref={containerRef}
         sx={{
           width: "100%",
-          height: "100vh",
+          height: {md:"100vh", xs:"auto"},
           display: { xs: "none", md: "flex" },
           alignItems: "center",
           justifyContent: "center",
@@ -156,10 +156,11 @@ export default function Home() {
           margin: "0 auto",
           padding: 3,
           mt: { xs: 2, md: 4 },
+          gap: 3, // Add gap for consistent spacing
         }}
       >
-        {showcaseCards.map((c) => (
-          <Box key={c.key} sx={{ width: "100%", mb: 2 }}>
+        {showcaseCards.map((c, idx) => (
+          <Box key={c.key} sx={{ width: "100%" }}>
             <c.component.type />
           </Box>
         ))}

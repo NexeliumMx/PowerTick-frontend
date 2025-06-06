@@ -1,30 +1,37 @@
-import { Card, CardContent, Typography, Box } from "@mui/material";
+import {Typography, Box } from "@mui/material";
 
 const HistoricoInfoCard = () => (
-  <Box sx={{ maxWidth: 500, height:"100hv", margin: "32px auto" }}>
-    <Card elevation={4}>
-      <CardContent>
-        <Typography variant="h5" component="div" gutterBottom>
-          Análisis Histórico
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Analiza el comportamiento histórico de tus variables eléctricas,
-          clave para la identificación de tendencias, patrones de consumo 
-          y aumenta la trazabilidad de tus operaciones para identificar oportunidades
-          de optimización y ahorro.
-        </Typography>
-        <Typography component="div" variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-          Funcionalidades clave:
-        
-          <ul>
-            <li>Análisis gráfico de datos históricos y perfil de demanda, consumo y distorsión armónico</li>
-            <li>Filtro de tiempo dinámico para análizar tus datos en el intervalo de tiempo que desees</li>
-            <li>Reportaje mensual de los datos por medidor y descarga de datos en 
-                formatos compatibles con tu herramientas de hojas de cálculo </li>
-          </ul>
-            </Typography>
-      </CardContent>
-    </Card>
+  <Box sx={{ height: "100%", alignContent: "center", marginRight: 10 }}>
+      <Typography
+        variant="h3"
+        component="div"
+        gutterBottom
+        sx={{ fontWeight: 'bold', mt: 4, mb: 2, lineHeight: 1.3 }}
+      >
+        Análisis Histórico
+      </Typography>
+      <Typography
+        variant="body1"
+        color="text.secondary"
+        sx={{ mb: 2, lineHeight: 1.7, maxWidth: 600 }}
+      >
+        Analiza el comportamiento histórico de tus variables eléctricas,
+        permitiéndote visualizar tendencias y patrones de consumo para optimizar y ahorrar en tus operaciones.
+        Con esta plataforma, identifica oportunidades de mejora y asegura la trazabilidad de tus datos eléctricos.
+      </Typography>
+      <Typography
+        component="div"
+        variant="body1"
+        color="text.secondary"
+        sx={{ mt: 2, lineHeight: 1.7 }}
+      >
+        Funcionalidades clave:
+        <ul style={{ marginTop: 8, marginBottom: 0, lineHeight: 2 }}>
+          <li>Análisis gráfico de datos históricos y perfil de demanda, consumo y distorsión armónica</li>
+          <li>Filtro de tiempo dinámico para analizar tus datos en el intervalo de tiempo que desees</li>
+          <li>Reportes mensuales por medidor y descarga de datos en formatos compatibles con hojas de cálculo</li>
+        </ul>
+      </Typography>
   </Box>
 );
 

@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Box} from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import TiempoRealInfoCard from "../components/TiempoReal";
 import chartColors from "../../../theme/chartColors";
 
 // Color logic for gauge
-const getColorByFP = (value) => {
-  if (value >= 0.95) return chartColors.powerFactorGood;
-  if (value >= 0.90) return chartColors.powerFactorModerate;
-  return chartColors.powerFactorPoor;
-};
+//const getColorByFP = (value) => {
+//  if (value >= 0.95) return chartColors.powerFactorGood;
+//  if (value >= 0.90) return chartColors.powerFactorModerate;
+//  return chartColors.powerFactorPoor;
+//};
 
 export default function ShowcaseTiempoReal() {
   // State for real-time values
@@ -52,10 +52,10 @@ export default function ShowcaseTiempoReal() {
     return () => clearInterval(interval);
   }, []);
 
-  const total = barValues.reduce((a, b) => a + b, 0);
+  //const total = barValues.reduce((a, b) => a + b, 0);
   const avg = +(barValues.reduce((a, b) => a + b, 0) / barValues.length).toFixed(2);
   const avg2 = +(barValues2.reduce((a, b) => a + b, 0) / barValues2.length).toFixed(2);
-  const gaugeColor = getColorByFP(potenciaActual);
+  //const gaugeColor = getColorByFP(potenciaActual);
 
   return (
     <Box

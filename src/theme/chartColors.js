@@ -17,7 +17,8 @@ const chartColors = {
 
   //Measurements showcase
   front: "#eaeb81",
-  back: "#dddf7b",
+  back: "#d5d777",
+  middle: "#dddf7b",
 
   //Powerfactor colors
   powerFactorGood: "#4caf50",
