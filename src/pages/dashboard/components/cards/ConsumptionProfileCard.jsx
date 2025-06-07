@@ -5,12 +5,13 @@ import { useMsal } from "@azure/msal-react";
 import { Card, CardHeader, CardContent, CardActions, Box, Typography, Divider } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
-import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, ResponsiveContainer, Label } from "recharts";
+import { BarChart } from '@mui/x-charts/BarChart';
 import { useConsumptionProfile } from '../../../../hooks/useConsumptionProfile';
 import TimeFilterProfile from '../ui/TimeFilterProfile';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { formatHourLocal, formatDayLocal, formatMonthLocal } from '../ui/TimestampFormatter';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -117,13 +118,27 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
     xDataKey = 'hour_start_utc';
   }
 
-  // Transform data for Recharts (show raw timestamp as requested)
-  const chartData = consumptionProfileData?.map((item) => ({
-    ...item,
-    name: item[xDataKey],
-    wh: item.wh,
-    varh: item.varh,
-  }));
+  // Value formatters for chart
+  const whFormatter = (value) => value != null ? `${value} Wh` : '';
+  const varhFormatter = (value) => value != null ? `${value} VArh` : '';
+
+  // Transform data for MUI X BarChart (show formatted local time for x-axis)
+  const chartData = consumptionProfileData?.map((item) => {
+    let formattedName = item[xDataKey];
+    if (apiTimeInterval === 'hour') {
+      formattedName = formatHourLocal(item[xDataKey]);
+    } else if (apiTimeInterval === 'day') {
+      formattedName = formatDayLocal(item[xDataKey]);
+    } else if (apiTimeInterval === 'month') {
+      formattedName = formatMonthLocal(item[xDataKey]);
+    }
+    return {
+      ...item,
+      name: formattedName,
+      wh: item.wh,
+      varh: item.varh,
+    };
+  });
 
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
@@ -146,49 +161,17 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : consumptionProfileData ? (
-            <ResponsiveContainer width="100%" height={350}>
-              <ComposedChart data={chartData}>
-                <XAxis 
-                  dataKey="name" 
-                  stroke={theme.palette.text.primary}
-                  tick={{ fill: theme.palette.text.primary }}
-                >
-                  <Label
-                    value={xAxisLabel}
-                    offset={-5}
-                    position="insideBottom"
-                    style={{ fill: theme.palette.text.primary, fontWeight: 600 }}
-                  />
-                </XAxis>
-                <YAxis
-                  stroke={theme.palette.text.primary}
-                  tick={{ fill: theme.palette.text.primary }}>
-                    <Label
-                    value="Energy (Wh|VArh)"
-                    angle={-90}
-                    position="insideLeft"
-                    style={{ textAnchor: 'middle', fill: theme.palette.text.primary, fontWeight: 600 }}
-                    offset={10}
-                  />
-                </YAxis>
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: theme.palette.background.paper,
-                    border: `1px solid ${theme.palette.divider}`,
-                    color: theme.palette.text.primary,
-                  }}
-                  labelStyle={{
-                    color: theme.palette.text.secondary,
-                  }}
-                />
-                <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{paddingBottom: 8}} />
-                <CartesianGrid stroke= {theme.palette.divider} />
-                {/* Bars for wh */}
-                <Bar dataKey="wh" barSize={20} fill={theme.palette.primary.main} name="Wh" />
-                {/* Bars for varh */}
-                <Bar dataKey="varh" barSize={20} fill={theme.palette.secondary.main} name="VARh" />
-              </ComposedChart>
-            </ResponsiveContainer>
+            <BarChart
+              dataset={chartData}
+              series={[
+                { dataKey: 'wh', label: 'Wh', valueFormatter: whFormatter },
+                { dataKey: 'varh', label: 'VARh', valueFormatter: varhFormatter },
+              ]}
+              xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band', tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 }, minStep: 20, interval: 0 }]}
+              height={350}
+              margin={{ left: 40, bottom: 60 }}
+              sx={{ background: 'transparent' }}
+            />
           ) : (
             <Typography variant="body1">Data not available</Typography>
           )}

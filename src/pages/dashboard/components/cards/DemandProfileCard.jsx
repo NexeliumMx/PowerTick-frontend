@@ -3,13 +3,14 @@ import { Card, CardHeader, CardContent, CardActions, Box, Typography, Divider } 
 import { useTheme } from '@mui/material/styles';
 import { useDemandProfile } from '../../../../hooks/useDemandProfile';
 import { useMsal } from "@azure/msal-react";
-import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, ResponsiveContainer, Label } from "recharts";
+import { BarChart } from '@mui/x-charts/BarChart';
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import TimeFilterProfile from '../ui/TimeFilterProfile';
 import { ModeContext } from '../../../../context/AppModeContext';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { formatHourLocal, formatDayLocal, formatMonthLocal } from '../ui/TimestampFormatter';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -116,15 +117,29 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     xDataKey = 'hour_start_utc';
   }
 
-  // Transform data for Recharts (show raw timestamp as requested)
-  const chartData = demandProfileData?.map((item) => ({
-    ...item,
-    name: item[xDataKey],
-    w_max: item.w_max,
-    w_avg: item.w_avg,
-    var_max: item.var_max,
-    var_avg: item.var_avg,
-  }));
+  // Transform data for MUI X BarChart (show formatted local time for x-axis)
+  const chartData = demandProfileData?.map((item) => {
+    let formattedName = item[xDataKey];
+    if (apiTimeInterval === 'hour') {
+      formattedName = formatHourLocal(item[xDataKey]);
+    } else if (apiTimeInterval === 'day') {
+      formattedName = formatDayLocal(item[xDataKey]);
+    } else if (apiTimeInterval === 'month') {
+      formattedName = formatMonthLocal(item[xDataKey]);
+    }
+    return {
+      ...item,
+      name: formattedName,
+      w_max: item.w_max,
+      w_avg: item.w_avg,
+      var_max: item.var_max,
+      var_avg: item.var_avg,
+    };
+  });
+
+  // Value formatters for chart
+  const wFormatter = (value) => value != null ? `${value} W` : '';
+  const varFormatter = (value) => value != null ? `${value} VAr` : '';
 
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
@@ -147,51 +162,17 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : demandProfileData ? (
-            <ResponsiveContainer width="100%" height={350}>
-              <ComposedChart data={chartData}>
-                <XAxis 
-                  dataKey="name" 
-                  stroke={theme.palette.text.primary}
-                  tick={{ fill: theme.palette.text.primary }}
-                >
-                  <Label
-                    value={xAxisLabel}
-                    offset={-5}
-                    position="insideBottom"
-                    style={{ fill: theme.palette.text.primary, fontWeight: 600 }}
-                  />
-                </XAxis>
-                <YAxis
-                  stroke={theme.palette.text.primary}
-                  tick={{ fill: theme.palette.text.primary }}>
-                    <Label
-                    value="Power (W|VAR)"
-                    angle={-90}
-                    position="insideLeft"
-                    style={{ textAnchor: 'middle', fill: theme.palette.text.primary, fontWeight: 600 }}
-                    offset={10}
-                  />
-                </YAxis>
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: theme.palette.background.paper,
-                    border: `1px solid ${theme.palette.divider}`,
-                    color: theme.palette.text.primary,
-                  }}
-                  labelStyle={{
-                    color: theme.palette.text.secondary,
-                  }}
-                />
-                <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{paddingBottom: 8}} />
-                <CartesianGrid stroke= {theme.palette.divider} />
-                {/* Bars for w_avg and var_avg */}
-                <Bar dataKey="w_avg" barSize={20} fill={theme.palette.primary.main} name="W Avg" />
-                <Bar dataKey="var_avg" barSize={20} fill={theme.palette.secondary.main} name="VAR Avg" />
-                {/* Bars for w_max and var_max */}
-                <Bar dataKey="w_max" barSize={20} fill={theme.palette.success.main} name="W Max" />
-                <Bar dataKey="var_max" barSize={20} fill={theme.palette.warning.main} name="VAR Max" />
-              </ComposedChart>
-            </ResponsiveContainer>
+            <BarChart
+              dataset={chartData}
+              series={[
+                { dataKey: 'w_max', stack: 'w', label: 'W Max', valueFormatter: wFormatter },
+                { dataKey: 'w_avg', stack: 'w', label: 'W Avg', valueFormatter: wFormatter },
+                { dataKey: 'var_max', stack: 'var', label: 'VAR Max', valueFormatter: varFormatter },
+                { dataKey: 'var_avg', stack: 'var', label: 'VAR Avg', valueFormatter: varFormatter },
+              ]}
+              xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band' }]}
+              height={350}
+            />
           ) : (
             <Typography variant="body1">Data not available</Typography>
           )}
