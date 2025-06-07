@@ -60,12 +60,12 @@ const Analysis = ({ powerMeter }) => {
         <Grid size={6}>
           <DemandHistoryCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} />
         </Grid>
-        {/* <Grid size={6}>
+        <Grid size={6}>
           <ConsumptionProfileCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} />
         </Grid>
         <Grid size={6}>
           <DemandProfileCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} />
-        </Grid> */}
+        </Grid>
       </Grid>
     </Box>
   );

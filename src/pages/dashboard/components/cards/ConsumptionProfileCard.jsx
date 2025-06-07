@@ -1,18 +1,37 @@
-import React, { useState, useEffect } from "react";
+// React imports
+import { useState, useEffect, useContext } from "react";
+
+// Context imports
+import { ModeContext } from '../../../../context/AppModeContext';
+
+// MSAL imports
+import { useMsal } from "@azure/msal-react";
+
+//MUI imports
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
-import { useMsal } from "@azure/msal-react";
-import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer, Label } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
-import { useConsumptionProfile } from '../../../../hooks/useConsumptionProfile';
-import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
 import { Select, MenuItem, FormControl, InputLabel, Divider } from "@mui/material";
+
+//Recharts imports
+import { ComposedChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar, Line, ResponsiveContainer, Label } from "recharts";
+
+// Hooks imports
+import { useConsumptionProfile } from '../../../../hooks/useConsumptionProfile';
+
+// Theme imports
 import chartColors from "../../../../theme/chartColors";
+
+// Components imports
+import TimeFilterDemand from '../ui/TimeFilterDemand';
+
+// Date handling
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
+
 
 const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter }) => {
   const theme = useTheme(); 
@@ -179,97 +198,19 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
           px: 2,
         }}
       >
-          <Box sx={{
-            width: "50%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-            <Typography variant="h5" sx={{ mb: 2 }}>
-                      Analysis Interval
-            </Typography>        
-        <ToggleButtonGroup
-          value={timeInterval}
-          exclusive
-          onChange={handleTimeIntervalChange}
-          aria-label="Time Interval"
-        >
-          <ToggleButton value="year" aria-label="Yearly">
-            Yearly
-          </ToggleButton>
-          <ToggleButton value="month" aria-label="Monthly">
-            Monthly
-          </ToggleButton>
-          <ToggleButton value="day" aria-label="Daily">
-            Daily
-          </ToggleButton>
-        </ToggleButtonGroup>
-        </Box>
-        <Box sx={{
-        width: "50%", 
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center", 
-        justifyContent: "center"
-         }}>
-        <Typography variant="h5" sx={{ mb: 2 }}>
-          Time Filter
-        </Typography> 
-        <Box sx={{ 
-        width: "100%", 
-        display: "flex",
-        alignItems: "flex-end",
-        justifyContent: "center",
-        gap: 2
-         }}>
-        {(timeInterval === "year" || timeInterval === "month" || timeInterval === "day") && (
-          <FormControl size="small" sx={{ minWidth: 90 }}>
-          <InputLabel id="year-label">Year</InputLabel>
-          <Select
-            size="small"
-            value={selectedYear}
-            onChange={e => setSelectedYear(e.target.value)}
-            label="Year"
-          >
-            {validYears.map(year => (
-              <MenuItem key={year} value={year}>{year}</MenuItem>
-            ))}
-          </Select>
-          </FormControl>
-        )}
-        {(timeInterval === "month" || timeInterval === "day") && (
-        <FormControl size="small" sx={{ minWidth: 90 }}>
-        <InputLabel id="month-label">Month</InputLabel>
-          <Select
-            size="small"
-            value={selectedMonth}
-            onChange={e => setSelectedMonth(e.target.value)}
-            label="Month"
-          >
-            {validMonths.map((month) => (
-              <MenuItem key={month.value} value={month.value}>{month.label}</MenuItem>
-            ))}
-          </Select>
-          </FormControl>
-        )}
-        {timeInterval === "day" && (
-        <FormControl size="small" sx={{ minWidth: 90 }}>
-        <InputLabel id="day-label">Day</InputLabel>
-          <Select
-            size="small"
-            value={selectedDay}
-            onChange={e => setSelectedDay(e.target.value)}
-            label="Day"
-          >
-            {validDays.map(day => (
-              <MenuItem key={day} value={day}>{day}</MenuItem>
-            ))}
-          </Select>
-          </FormControl>
-        )}
-      </Box>
-      </Box>
+        <TimeFilterDemand
+          timeInterval={timeInterval}
+          setTimeInterval={setTimeInterval}
+          selectedYear={selectedYear}
+          setSelectedYear={setSelectedYear}
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+          selectedDay={selectedDay}
+          setSelectedDay={setSelectedDay}
+          validYears={validYears}
+          validMonths={validMonths}
+          validDays={validDays}
+        />
       </CardActions>
     </Card>
   );
