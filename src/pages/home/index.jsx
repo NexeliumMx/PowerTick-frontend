@@ -7,7 +7,7 @@ import HeroSection from "./components/HeroSection";
 import { AnimatePresence } from "framer-motion";
 import ExtraInfoFooter from "./components/ExtraInfoFooter";
 import ContactSection from "./components/ContactSection";
-// Import each showcase card component
+import PricePlanSection from "./components/PricePlan"; 
 import ShowcaseTiempoReal from "./showcase/ShowcaseTiempoReal";
 import ShowcaseHistorico from "./showcase/ShowcaseHistorico";
 import ShowcaseMedidor from "./showcase/ShowcaseMedidor";
@@ -120,10 +120,10 @@ export default function Home() {
   }, [activeIndex, showcaseActive]);
 
   return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "background.default" }}>
+    <Box sx={{ minHeight: "100%", backgroundColor: "background.default" }}>
       <SignBar />
       {/* Hero section takes the whole screen */}
-      <Box sx={{ width: "100%", height: "100vh" }}>
+      <Box sx={{ width: "100%", height: "100%" }}>
         <HeroSection />
       </Box>
       {/* Showcase section with animated, customizable cards */}
@@ -220,6 +220,9 @@ export default function Home() {
           ))}
         </Box>
       </Box>
+
+      {/* Price Plan section */}
+      <PricePlanSection />
 
       {/* Contact section after the showcase */}
       <ContactSection />

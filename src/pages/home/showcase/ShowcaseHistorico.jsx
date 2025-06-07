@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Box } from "@mui/material";
 import HistoricoInfoCard from "../components/Historico";
-import { ResponsiveContainer, LineChart, Line, XAxis, CartesianGrid } from "recharts";
+import { ResponsiveContainer, LineChart, Line, XAxis, CartesianGrid, YAxis } from "recharts";
 import chartColors from "../../../theme/chartColors";
 import { useTheme } from "@mui/material/styles";
 
@@ -17,35 +17,39 @@ export default function ShowcaseHistorico() {
   const [chartData, setChartData] = useState(initialData);
   const lastStepRef = useRef({ value1: 1, value2: 1 });
   const stepRef = useRef(0);
+  const maxValue = 120;
 
   useEffect(() => {
     const interval = setInterval(() => {
       setChartData(prev => {
         const nextIdx = stepRef.current;
-        // If not filled, fill next point
+
+        // Unified getStep for both phases
+        function getStep(lastDir, lastValue) {
+          if (lastValue < 10) {
+            // Always rising if value is less than 10
+            return Math.abs(Math.random() * 5 + 2);
+          }
+          if (lastValue > maxValue) {
+            // Always falling if value is greater than maxValue
+            return -Math.abs(Math.random() * 5 + 2);
+          }
+          // More frequent direction changes for more peaks
+          const sameDir = Math.random() < 0.7; // 50% chance to flip
+          const dir = sameDir ? lastDir : -lastDir;
+          return dir * (Math.random() * 5 + 2);
+        }
+
         if (nextIdx < 24) {
           const lastIdx = nextIdx === 0 ? 0 : nextIdx - 1;
           const last = prev[lastIdx] || { value1: 0, value2: 0 };
 
-          function getStep(lastDir, lastValue) {
-            if (lastValue < 10) {
-              // Always rising if value is less than 10
-              return Math.abs(Math.random() * 5 + 1);
-            }
-            if (lastValue > 100) {
-              // Always falling if value is greater than 100
-              return -Math.abs(Math.random() * 5 + 1);
-            }
-            const sameDir = Math.random() < 0.8;
-            const dir = sameDir ? lastDir : -lastDir;
-            return dir * (Math.random() * 5 + 1);
-          }
           const step1 = getStep(lastStepRef.current.value1, last.value1 ?? 0);
           const step2 = getStep(lastStepRef.current.value2, last.value2 ?? 0);
           lastStepRef.current.value1 = Math.sign(step1) || 1;
           lastStepRef.current.value2 = Math.sign(step2) || 1;
-          const newValue1 = Math.max(0, (last.value1 ?? 0) + step1);
-          const newValue2 = Math.max(0, (last.value2 ?? 0) + step2);
+          const newValue1 = Math.max(0, Math.min(maxValue, (last.value1 ?? 0) + step1));
+          const newValue2 = Math.max(0, Math.min(maxValue, (last.value2 ?? 0) + step2));
 
           const newData = prev.map((d, i) =>
             i === nextIdx
@@ -59,26 +63,15 @@ export default function ShowcaseHistorico() {
           stepRef.current += 1;
           return newData;
         } else {
-          // Once filled, shift left and add new value at the end
+          // Sliding window: shift left and add new value at the end
           const last = prev[prev.length - 1] || { value1: 0, value2: 0 };
 
-          function getStep(lastDir, lastValue) {
-            if (lastValue < 10) {
-              return Math.abs(Math.random() * 5 + 1);
-            }
-            if (lastValue > 100) {
-              return -Math.abs(Math.random() * 5 + 1);
-            }
-            const sameDir = Math.random() < 0.8;
-            const dir = sameDir ? lastDir : -lastDir;
-            return dir * (Math.random() * 5 + 1);
-          }
           const step1 = getStep(lastStepRef.current.value1, last.value1 ?? 0);
           const step2 = getStep(lastStepRef.current.value2, last.value2 ?? 0);
           lastStepRef.current.value1 = Math.sign(step1) || 1;
           lastStepRef.current.value2 = Math.sign(step2) || 1;
-          const newValue1 = Math.max(0, (last.value1 ?? 0) + step1);
-          const newValue2 = Math.max(0, (last.value2 ?? 0) + step2);
+          const newValue1 = Math.max(0, Math.min(maxValue, (last.value1 ?? 0) + step1));
+          const newValue2 = Math.max(0, Math.min(maxValue, (last.value2 ?? 0) + step2));
 
           const newData = [
             ...prev.slice(1),
@@ -91,7 +84,7 @@ export default function ShowcaseHistorico() {
           return newData;
         }
       });
-    }, 200);
+    }, 80);
     return () => clearInterval(interval);
   }, []);
 
@@ -121,8 +114,15 @@ export default function ShowcaseHistorico() {
                 tick={{ fill: theme.palette.background.default }}
               />
               <CartesianGrid stroke={theme.palette.background.default} />
+              {/* Add a fixed Y axis */}
+              <YAxis
+                domain={[0, maxValue+10]}
+                allowDataOverflow={false}
+                stroke={theme.palette.background.default}
+                tick={{ fill: theme.palette.background.default }}
+              />
               <Line
-                type="monotone"
+                type="natural"
                 dataKey="value1"
                 stroke={chartColors.front}
                 name="Serie 1"
@@ -132,7 +132,7 @@ export default function ShowcaseHistorico() {
                 connectNulls={false}
               />
               <Line
-                type="monotone"
+                type="natural"
                 dataKey="value2"
                 stroke={chartColors.back}
                 name="Serie 2"

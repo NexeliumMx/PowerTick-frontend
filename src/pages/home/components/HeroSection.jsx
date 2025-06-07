@@ -1,29 +1,50 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import heroVideo from "../showcaseMedia/heroVideo.mp4";
 
 const HeroSection = () => (
   <Box
     sx={{
       width: "100%",
-      minHeight: "100vh",
+      height: "90vh", // Changed from minHeight to height
+      position: "relative",
       display: "flex",
       flexDirection: { xs: "column", md: "row" },
       alignItems: "center",
       justifyContent: "space-between",
-      background: (theme) =>
-        theme.palette.mode === "dark"
-          ? "linear-gradient(90deg, #232526 0%, #414345 100%)"
-          : "linear-gradient(90deg, #f8fafc 0%, #e0e7ef 100%)",
-      borderRadius: 3,
+      overflow: "hidden",
       boxShadow: 3,
       px: { xs: 2, md: 8 },
-      mb: 4,
+      // mb: 4, // Remove margin-bottom to avoid extra space
     }}
+    id="hero-section"
   >
-    <Box sx={{ flex: 1 }}>
-      <Typography variant="h2" sx={{ fontWeight: 800, mb: 2 }}>
+    {/* Video background */}
+    <Box
+      component="video"
+      src={heroVideo}
+      autoPlay
+      loop
+      muted
+      playsInline
+      sx={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        zIndex: 0,
+        opacity: 0.45,
+        pointerEvents: "none",
+      }}
+    />
+    {/* Content */}
+    <Box sx={{ flex: 1, zIndex: 1 }}>
+      <Typography variant="h2" sx={{ fontWeight: 800, mb: 2, color: "primary.main" }}>
         PowerTick: Control total de tu energía
       </Typography>
-      <Typography variant="h5" sx={{ color: "text.secondary", mb: 4 }}>
+      <Typography variant="h5" sx={{ color: "primary.main", mb: 4 }}>
         Monitorea, analiza y optimiza tu consumo eléctrico en tiempo real y desde cualquier lugar.
       </Typography>
     </Box>
@@ -33,8 +54,39 @@ const HeroSection = () => (
         display: { xs: "none", md: "flex" },
         alignItems: "center",
         justifyContent: "center",
+        zIndex: 1,
       }}
     >
+      {/* Puedes agregar aquí contenido visual adicional si lo deseas */}
+    </Box>
+    {/* Arrow button */}
+    <Box
+      sx={{
+        position: "absolute",
+        left: 0,
+        right: 0,
+        bottom: 32,
+        display: "flex",
+        justifyContent: "center",
+        zIndex: 2,
+      }}
+    >
+      <Button
+        variant="contained"
+        color="primary"
+        endIcon={<KeyboardArrowDownIcon />}
+        sx={{
+          borderRadius: 99,
+          px: 3,
+          py: 1.5,
+          fontWeight: "bold",
+          fontSize: 18,
+          boxShadow: 3,
+        }}
+        href="#showcase-section"
+      >
+        Conoce más
+      </Button>
     </Box>
   </Box>
 );
