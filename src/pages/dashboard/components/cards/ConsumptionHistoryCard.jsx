@@ -1,21 +1,39 @@
-import React, { useState, useEffect, useContext } from "react";
+// React imports
+import { useState, useEffect, useContext } from "react";
+
+// Context imports
+import { ModeContext } from '../../../../context/AppModeContext';
+
+// MSAL imports
+import { useMsal } from "@azure/msal-react";
+
+//MUI imports
 import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
-import { useMsal } from "@azure/msal-react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer, Label } from "recharts";
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
-import { useConsumptionHistory } from '../../../../hooks/useConsumptionHistory';
-import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
 import { Select, MenuItem, FormControl, InputLabel, Divider } from "@mui/material";
+
+//Recharts imports
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer, Label } from "recharts";
+
+// Hooks imports
+import { useConsumptionHistory } from '../../../../hooks/useConsumptionHistory';
+
+// Theme imports
 import chartColors from "../../../../theme/chartColors";
+
+// Components imports
+import TimeFilterHistory, { LAST_HOUR_VALUE } from '../ui/TimeFilterHistory';
+
+// Date handling
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { ModeContext } from '../../../../context/AppModeContext';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const LAST_HOUR_VALUE = 'last_hour';
+// Deprycated
+import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
 
 const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter }) => {
   const theme = useTheme(); 
@@ -312,111 +330,23 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
           px: 2,
         }}
       >
-          <Box sx={{
-            width: "40%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-    <Typography variant="h5" sx={{ mb: 2 }}>
-      Analysis Interval
-    </Typography>
-      <ToggleButtonGroup
-          value={timeInterval}
-          exclusive
-          onChange={handleTimeIntervalChange}
-          aria-label="Time Interval"
-        >
-          <ToggleButton value="day" aria-label="Daily">
-            Daily
-          </ToggleButton>
-          <ToggleButton value="hour" aria-label="Hourly">
-            Hourly
-          </ToggleButton>
-        </ToggleButtonGroup>
-        </Box>
-        <Box sx={{
-        width: "60%", 
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center", 
-        justifyContent: "center"
-         }}>
-        <Typography variant="h5" sx={{ mb: 2 }}>
-          Time Filter
-        </Typography> 
-        <Box sx={{ 
-          width: "100%", 
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "center",
-          gap: 1
-        }}>
-          {(timeInterval === "year" || timeInterval === "month" || timeInterval === "day" || timeInterval === "hour") && (
-            <FormControl size="small" sx={{ minWidth: 90 }}>
-              <InputLabel id="year-label">Year</InputLabel>
-              <Select
-                size="small"
-                value={selectedYear}
-                onChange={e => setSelectedYear(e.target.value)}
-                label="Year"
-              >
-                {validYears.map(year => (
-                  <MenuItem key={year} value={year}>{year}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
-          {(timeInterval === "month" || timeInterval === "day" || timeInterval === "hour") && (
-            <FormControl size="small" sx={{ minWidth: 90 }}>
-              <InputLabel id="month-label">Month</InputLabel>
-              <Select
-                size="small"
-                value={selectedMonth}
-                onChange={e => setSelectedMonth(e.target.value)}
-                label="Month"
-              >
-                {validMonths.map((month, idx) => (
-                  <MenuItem key={month} value={idx + 1}>{month}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
-          {(timeInterval === "day" || timeInterval === "hour") && (
-            <FormControl size="small" sx={{ minWidth: 90 }}>
-              <InputLabel id="day-label">Day</InputLabel>
-              <Select
-                size="small"
-                value={selectedDay}
-                onChange={e => setSelectedDay(e.target.value)}
-                label="Day"
-              >
-                {validDays.map(day => (
-                  <MenuItem key={day} value={day}>{day}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
-          {timeInterval === "hour" && (
-            <FormControl size="small" sx={{ minWidth: 90 }}>
-              <InputLabel id="hour-label">Hour</InputLabel>
-              <Select
-                size="small"
-                value={selectedHour}
-                onChange={e => setSelectedHour(e.target.value)}
-                label="Hour"
-              >
-                {hours.map(hour => (
-                  <MenuItem key={hour.value} value={hour.value}>
-                    {hour.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
-        </Box>
-      </Box>
+        <TimeFilterHistory
+          timeInterval={timeInterval}
+          setTimeInterval={setTimeInterval}
+          selectedYear={selectedYear}
+          setSelectedYear={setSelectedYear}
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+          selectedDay={selectedDay}
+          setSelectedDay={setSelectedDay}
+          selectedHour={selectedHour}
+          setSelectedHour={setSelectedHour}
+          validYears={validYears}
+          validMonths={validMonths}
+          validDays={validDays}
+          validHours={validHours}
+          hours={hours}
+        />
       </CardActions>
     </Card>
   );

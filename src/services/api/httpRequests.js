@@ -104,11 +104,9 @@ export async function fetchDemandHistory(user_id, powermeter_id, start_utc, end_
   return resData;
 }
 
-
-// DEPRYCATED
 // Fetch consumption profile
-export async function fetchConsumptionProfile(user_id, serial_number, time_interval, mode = 'PRODUCTION') {
-  let url = `https://power-tick-api-js.nexelium.mx/api/demoConsumptionProfile?user_id=${user_id}&serial_number=${serial_number}&time_interval=${time_interval}`;
+export async function fetchConsumptionProfile(user_id, powermeter_id, time_interval, start_utc, end_utc, mode = 'PRODUCTION') {
+  let url = `https://power-tick-api-js.nexelium.mx/api/consumptionProfile?user_id=${user_id}&powermeter_id=${powermeter_id}&time_interval=${time_interval}&start_utc=${start_utc}&end_utc=${end_utc}`;
   if (mode === 'DEMO') {
     url += "&enviroment=demo";
   } else if (mode === 'DEV') {
@@ -117,17 +115,15 @@ export async function fetchConsumptionProfile(user_id, serial_number, time_inter
   console.log(`[API CALL] fetchConsumptionProfile: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
-
   if (!response.ok) {
     throw new Error('Failed to fetch consumption profile');
   }
-
   return resData;
 }
 
 // Fetch demand profile
-export async function fetchDemandProfile(user_id, serial_number, time_interval, mode = 'PRODUCTION') {
-  let url = `https://power-tick-api-js.nexelium.mx/api/demoDemandProfile?user_id=${user_id}&serial_number=${serial_number}&time_interval=${time_interval}`;
+export async function fetchDemandProfile(user_id, powermeter_id, time_interval, start_utc, end_utc, mode = 'PRODUCTION') {
+  let url = `https://power-tick-api-js.nexelium.mx/api/demandProfile?user_id=${user_id}&powermeter_id=${powermeter_id}&time_interval=${time_interval}&start_utc=${start_utc}&end_utc=${end_utc}`;
   if (mode === 'DEMO') {
     url += "&enviroment=demo";
   } else if (mode === 'DEV') {
@@ -136,10 +132,8 @@ export async function fetchDemandProfile(user_id, serial_number, time_interval, 
   console.log(`[API CALL] fetchDemandProfile: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
-
   if (!response.ok) {
     throw new Error('Failed to fetch demand profile');
   }
-
   return resData;
 }
