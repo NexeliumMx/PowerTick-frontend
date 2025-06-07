@@ -1,13 +1,19 @@
+// MUi imports
 import { Box, Typography, Card, CardActions, Button, Grid2, CardContent, Stack, CircularProgress, Divider } from "@mui/material";
-import Header from "../../components/ui/Header";
-import { useMsal } from "@azure/msal-react";
-import { useEffect, useState, useContext } from "react";
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 
+// Components
+import Header from "../../components/ui/Header";
+
+// Import chart colors
 import chartColors from "../../theme/chartColors";
+
+// Context imports
 import { ModeContext } from "../../context/AppModeContext";
 
 //Hooks
+import { useMsal } from "@azure/msal-react";
+import { useContext } from "react";
 import { usePowermetersByUserAccess } from '../../hooks/usePowermetersByUserAccess';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from "@mui/material/styles";
@@ -48,32 +54,44 @@ const LoadCenter = () => {
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid;
   const { state } = useContext(ModeContext); // get mode from context
-  const { data: powermetersData, isLoading, error } = usePowermetersByUserAccess(user_id, state.mode);
+  // Only call the hook if user_id and state.mode are defined
+  const hookEnabled = !!user_id && !!state.mode;
+  const { data: powermetersData, isLoading, error } = usePowermetersByUserAccess(user_id, state.mode, { enabled: hookEnabled });
   const navigate = useNavigate();
   const theme = useTheme();
   // Group powermeters by installation
   const installations = powermetersData ? groupByInstallation(powermetersData) : {};
 
+  // Debug log for hook state
+  console.log('[LoadCenter] user_id:', user_id, 'mode:', state.mode, 'isLoading:', isLoading, 'error:', error, 'powermetersData:', powermetersData);
+
   return (
-    
     <Box sx={{ minHeight: "100vh", padding: "20px", boxSizing: "border-box" }}>
       <Box
-    sx={{
-      display: "flex",
-      justifyContent:"flex-start",
-      flexDirection:"column",
-      pt: 2,
-    }}
-  >
+        sx={{
+          display: "flex",
+          justifyContent:"flex-start",
+          flexDirection:"column",
+          pt: 2,
+        }}
+      >
         <Header
           title="LOAD CENTERS"
           subtitle="Overview and Management of Energy Distribution and Consumption"
         />
-        </Box>
+      </Box>
       <Box>
-        {isLoading || !powermetersData ? (
+        {error ? (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            <Typography color="error">Error loading powermeters: {error.message || String(error)}</Typography>
+          </Box>
+        ) : isLoading || !powermetersData ? (
           <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
             <CircularProgress color="secondary" />
+          </Box>
+        ) : Array.isArray(powermetersData) && powermetersData.length === 0 ? (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            <Typography>No powermeters found.</Typography>
           </Box>
         ) : (
           Object.entries(installations).map(([installationId, { installation_alias, meters }]) => (

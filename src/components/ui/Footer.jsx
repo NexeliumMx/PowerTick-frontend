@@ -13,7 +13,7 @@ export function handleDescarga() {
 
 function Footer() {
   const theme = useTheme(); // Usar el tema de MUI
-  const colors = tokens(theme.palette.mode); // Obtener tokens basados en el modo de la paleta (oscuro o claro)
+  const colors = tokens; // Obtener tokens basados en el modo de la paleta (oscuro o claro)
   const colorMode = useContext(ColorModeContext); // Para cambiar entre modos si es necesario
 
   return (

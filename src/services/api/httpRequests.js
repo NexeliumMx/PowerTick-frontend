@@ -18,6 +18,7 @@ export async function fetchPowermetersByUserAccess(user_id, mode = 'PRODUCTION')
   } else if (mode === 'DEV') {
     url += "&enviroment=dev";
   }
+  console.log(`[API CALL] fetchPowermetersByUserAccess: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
 
@@ -36,6 +37,7 @@ export async function fetchMeasurementRange(powermeter_id, mode = 'PRODUCTION') 
   } else if (mode === 'DEV') {
     url += "&enviroment=dev";
   }
+  console.log(`[API CALL] fetchMeasurementRange: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
 
@@ -54,6 +56,7 @@ export async function fetchRealTimeData(user_id, powermeter_id, mode = 'PRODUCTI
   } else if (mode === 'DEV') {
     url += "&enviroment=dev";
   }
+  console.log(`[API CALL] fetchRealTimeData: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
 
@@ -75,6 +78,7 @@ export async function fetchConsumptionHistory(user_id, powermeter_id, start_utc,
   } else if (mode === 'DEV') {
     url += "&enviroment=dev";
   }
+  console.log(`[API CALL] fetchConsumptionHistory: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
   if (!response.ok) {
@@ -91,6 +95,7 @@ export async function fetchDemandHistory(user_id, powermeter_id, start_utc, end_
   } else if (mode === 'DEV') {
     url += "&enviroment=dev";
   }
+  console.log(`[API CALL] fetchDemandHistory: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
   if (!response.ok) {
@@ -99,40 +104,36 @@ export async function fetchDemandHistory(user_id, powermeter_id, start_utc, end_
   return resData;
 }
 
-
-// DEPRYCATED
 // Fetch consumption profile
-export async function fetchConsumptionProfile(user_id, serial_number, time_interval, mode = 'PRODUCTION') {
-  let url = `https://power-tick-api-js.nexelium.mx/api/demoConsumptionProfile?user_id=${user_id}&serial_number=${serial_number}&time_interval=${time_interval}`;
+export async function fetchConsumptionProfile(user_id, powermeter_id, time_interval, start_utc, end_utc, mode = 'PRODUCTION') {
+  let url = `https://power-tick-api-js.nexelium.mx/api/consumptionProfile?user_id=${user_id}&powermeter_id=${powermeter_id}&time_interval=${time_interval}&start_utc=${start_utc}&end_utc=${end_utc}`;
   if (mode === 'DEMO') {
     url += "&enviroment=demo";
   } else if (mode === 'DEV') {
     url += "&enviroment=dev";
   }
+  console.log(`[API CALL] fetchConsumptionProfile: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
-
   if (!response.ok) {
     throw new Error('Failed to fetch consumption profile');
   }
-
   return resData;
 }
 
 // Fetch demand profile
-export async function fetchDemandProfile(user_id, serial_number, time_interval, mode = 'PRODUCTION') {
-  let url = `https://power-tick-api-js.nexelium.mx/api/demoDemandProfile?user_id=${user_id}&serial_number=${serial_number}&time_interval=${time_interval}`;
+export async function fetchDemandProfile(user_id, powermeter_id, time_interval, start_utc, end_utc, mode = 'PRODUCTION') {
+  let url = `https://power-tick-api-js.nexelium.mx/api/demandProfile?user_id=${user_id}&powermeter_id=${powermeter_id}&time_interval=${time_interval}&start_utc=${start_utc}&end_utc=${end_utc}`;
   if (mode === 'DEMO') {
     url += "&enviroment=demo";
   } else if (mode === 'DEV') {
     url += "&enviroment=dev";
   }
+  console.log(`[API CALL] fetchDemandProfile: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
-
   if (!response.ok) {
     throw new Error('Failed to fetch demand profile');
   }
-
   return resData;
 }

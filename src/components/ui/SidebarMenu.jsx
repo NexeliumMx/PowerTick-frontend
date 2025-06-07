@@ -4,12 +4,12 @@ import { Box, useTheme, Typography } from "@mui/material";
 import { Link, useLocation } from "react-router-dom"; 
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import ElectricMeterOutlinedIcon from '@mui/icons-material/ElectricMeterOutlined';
-import ScienceIcon from '@mui/icons-material/Science';
+import EventNote from "@mui/icons-material/EventNote";
 import { tokens } from "../../theme";
 
 const SidebarMenu = ({ collapsed }) => {
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const colors = tokens;
   const location = useLocation(); 
   
   const [selected, setSelected] = useState("Dashboard");
@@ -37,7 +37,7 @@ const SidebarMenu = ({ collapsed }) => {
   });
 
   return (
-    <Box sx={{ display: "flex", height: "100vh" }}>
+    <Box sx={{ display: "flex", height: "100%", minHeight:0 }}>
       <Sidebar
         collapsed={collapsed}
         backgroundColor={theme.palette.background.paper}
@@ -62,13 +62,25 @@ const SidebarMenu = ({ collapsed }) => {
 
           {/* Dashboard */}
           <MenuItem
-            icon={<DashboardOutlinedIcon sx={{ fontSize: 26 }}/>}
+            icon={<DashboardOutlinedIcon sx={{ fontSize: 26 }}/>} 
             active={selected === "Dashboard"}
             component={<Link to="/dashboard" />}
             rootStyles={getMenuItemStyles(selected === "Dashboard")}
           >
             <Typography variant="h5" fontWeight={600}>
             Dashboard
+            </Typography>
+          </MenuItem>
+
+          {/* Downloads */}
+          <MenuItem
+            icon={<EventNote sx={{ fontSize: 26 }}/>} 
+            active={selected === "Monthly Reports"}
+            component={<Link to="/downloads" />}
+            rootStyles={getMenuItemStyles(selected === "Monthly Reports")}
+          >
+            <Typography variant="h5" fontWeight={600}>
+            Monthly Reports
             </Typography>
           </MenuItem>
         </Menu>

@@ -11,12 +11,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchPowermetersByUserAccess } from '../services/api/httpRequests';
 
-export function usePowermetersByUserAccess(user_id, mode = 'PRODUCTION') {
+export function usePowermetersByUserAccess(user_id, mode = 'PRODUCTION', options = {}) {
   return useQuery({
     queryKey: ['powermeters', user_id, mode], // include mode in the key
     queryFn: () => fetchPowermetersByUserAccess(user_id, mode),
-    enabled: !!user_id, // Only run if user_id is available
+    enabled: !!user_id && !!mode && (options.enabled === undefined ? true : options.enabled), // Only run if user_id and mode are available
     staleTime: 1000 * 60 * 5, // 5 minutes
     cacheTime: 1000 * 60 * 10, // 10 minutes
+    ...options,
   });
 }

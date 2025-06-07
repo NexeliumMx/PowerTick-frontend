@@ -10,12 +10,13 @@ import { fetchDemandHistory } from '../services/api/httpRequests';
  * @param {string} mode - DEMO, DEV, PRODUCTION
  * @returns {object} React Query result
  */
-export function useDemandHistory(user_id, powermeter_id, start_utc, end_utc, mode = 'PRODUCTION') {
+export function useDemandHistory(user_id, powermeter_id, start_utc, end_utc, mode = 'PRODUCTION', options = {}) {
   return useQuery({
     queryKey: ['demandHistory', user_id, powermeter_id, start_utc, end_utc, mode],
     queryFn: () => fetchDemandHistory(user_id, powermeter_id, start_utc, end_utc, mode),
-    enabled: !!user_id && !!powermeter_id && !!start_utc && !!end_utc,
+    enabled: !!user_id && !!powermeter_id && !!start_utc && !!end_utc && (options.enabled === undefined ? true : options.enabled),
     staleTime: 1000 * 60 * 5, // 5 minutes
     cacheTime: 1000 * 60 * 10, // 10 minutes
+    ...options,
   });
 }
