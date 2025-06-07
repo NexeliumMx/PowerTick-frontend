@@ -23,7 +23,7 @@ import { useConsumptionProfile } from '../../../../hooks/useConsumptionProfile';
 import chartColors from "../../../../theme/chartColors";
 
 // Components imports
-import TimeFilterDemand from '../ui/TimeFilterDemand';
+import TimeFilterProfile from '../ui/TimeFilterProfile';
 
 // Date handling
 import dayjs from 'dayjs';
@@ -198,7 +198,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
           px: 2,
         }}
       >
-        <TimeFilterDemand
+        <TimeFilterProfile
           timeInterval={timeInterval}
           setTimeInterval={setTimeInterval}
           selectedYear={selectedYear}

@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import dayjs from 'dayjs';
 
 /**
- * TimeFilterDemand component for selecting interval and date filters.
+ * TimeFilterProfile component for selecting interval and date filters.
  * Props:
  * - timeInterval, setTimeInterval
  * - selectedYear, setSelectedYear
@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
  * - selectedDay, setSelectedDay
  * - validYears, validMonths, validDays
  */
-const TimeFilterDemand = ({
+const TimeFilterProfile = ({
   timeInterval, setTimeInterval,
   selectedYear, setSelectedYear,
   selectedMonth, setSelectedMonth,
@@ -92,4 +92,4 @@ const TimeFilterDemand = ({
   );
 };
 
-export default TimeFilterDemand;
+export default TimeFilterProfile;
