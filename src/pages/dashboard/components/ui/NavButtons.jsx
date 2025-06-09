@@ -4,11 +4,11 @@ import { Activity, Gauge, Settings } from 'lucide-react';
 
 const NavButtons = ({ setActivePage }) => {
   const theme = useTheme();
-  const [activeButton, setActiveButton] = useState('Analysis'); // Updated to 'Analysis'
+  const [activeButton, setActiveButton] = useState('Measurements'); // Set default to 'Measurements'
 
   const buttons = [
-    { id: 'Analysis', label: 'Analysis', icon: <Activity /> }, // Updated 'Consumption' to 'Analysis'
     { id: 'Measurements', label: 'Measurements', icon: <Gauge /> },
+    { id: 'Analysis', label: 'Analysis', icon: <Activity /> },
     { id: 'Configuration', label: 'Meter Info.', icon: <Settings /> },
   ];
 

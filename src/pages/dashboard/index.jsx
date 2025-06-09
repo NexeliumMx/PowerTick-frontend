@@ -18,7 +18,7 @@ const Dashboard = () => {
   const user_id = accounts && accounts[0]?.idTokenClaims?.oid;
   const { data: powerMeters = [], isLoading: isPowerMetersLoading, error: powerMetersError } = usePowermetersByUserAccess(user_id, state.mode);
   const [selectedPowerMeter, setSelectedPowerMeter] = useState("");
-  const [activePage, setActivePage] = useState("Analysis");
+  const [activePage, setActivePage] = useState("Measurements");
   const location = useLocation();
 
   // Set selectedPowerMeter from query param if present
