@@ -1,7 +1,9 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import chartColors from '../../../../theme/chartColors';
-const ReactivePower = ({ data }) => {
+const ReactivePower = ({ data, title }) => {
+  const { t } = useTranslation();
   const hasValidData =
     data &&
     typeof data.var_l1 === 'number' &&
@@ -16,10 +18,10 @@ const ReactivePower = ({ data }) => {
   variant="h3" 
   sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2}}
 >
-          Reactive Power
+          {title || t('measurements.reactivePower')}
         </Typography>
         <Typography variant="body2" color="text.secondary" pt={20}>
-          Data not available.
+          {t('dashboard.dataNotAvailable')}
         </Typography>
       </Paper>
     );
@@ -34,7 +36,7 @@ const ReactivePower = ({ data }) => {
   variant="h3" 
   sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2}}
 >
-        Reactive Power
+        {title || t('measurements.reactivePower')}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart

@@ -1,0 +1,49 @@
+{
+  "loadCenter": {
+    "title": "CENTROS DE CARGA",
+    "subtitle": "Resumen y gestión de la distribución y el consumo de energía",
+    "errorLoading": "Error al cargar medidores: {{error}}",
+    "noPowermeters": "No se encontraron medidores.",
+    "powerFactor": "Factor de Potencia",
+    "demand": "Demanda",
+    "goToDashboard": "Ir al panel",
+    "noAlias": "Sin alias"
+  },
+  "dashboard": {
+    "title": "TABLERO",
+    "subtitle": "Monitoreo integral de métricas energéticas y desempeño histórico",
+    "selectPowerMeter": "Seleccionar medidor",
+    "dataNotAvailable": "Datos no disponibles.",
+    "measurements": "Mediciones",
+    "analysis": "Análisis",
+    "configuration": "Info. del Medidor",
+    "loadingMeasurementRange": "Cargando rango de medición...",
+    "errorLoadingMeasurementRange": "Error al cargar el rango de medición: {{error}}"
+  },
+  "measurements": {
+    "realPower": "Potencia Activa",
+    "reactivePower": "Potencia Reactiva",
+    "currents": "Corrientes",
+    "powerFactor": "Factor de Potencia",
+    "powerFactorRange": "Factor de Potencia (0 a 1)",
+    "voltageLN": "Voltaje LN",
+    "voltageLL": "Voltaje LL",
+    "thdCurrent": "THD Corriente",
+    "thdVoltageLN": "THD Voltaje LN",
+    "thdVoltageLL": "THD Voltaje LL",
+    "energyImported": "Energía Importada",
+    "energyExported": "Energía Exportada",
+    "phases": "Fases",
+    "total": "Total",
+    "power": "Potencia",
+    "watts": "Watts (W)",
+    "apparentPower": "Potencia Aparente (VA)",
+    "reactivePowerLabel": "Potencia Reactiva (var)"
+  },
+  "Analysis": {
+    "consumptionHistory": "Historial de Consumo",
+    "demandHistory": "Historial de Demanda",
+    "consumptionProfile": "Perfil de Consumo",
+    "demandProfile": "Perfil de Demanda"
+  }
+}

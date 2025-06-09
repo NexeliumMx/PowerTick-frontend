@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { Button, useTheme, Box } from '@mui/material';
 import { Activity, Gauge, Settings } from 'lucide-react'; 
+import { useTranslation } from 'react-i18next';
 
 const NavButtons = ({ setActivePage }) => {
   const theme = useTheme();
-  const [activeButton, setActiveButton] = useState('Analysis'); // Updated to 'Analysis'
+  const { t } = useTranslation();
+  const [activeButton, setActiveButton] = useState('Measurements');
 
   const buttons = [
-    { id: 'Analysis', label: 'Analysis', icon: <Activity /> }, // Updated 'Consumption' to 'Analysis'
-    { id: 'Measurements', label: 'Measurements', icon: <Gauge /> },
-    { id: 'Configuration', label: 'Meter Info.', icon: <Settings /> },
+    { id: 'Measurements', label: t('dashboard.measurements', 'Measurements'), icon: <Gauge /> },
+    { id: 'Analysis', label: t('dashboard.analysis', 'Analysis'), icon: <Activity /> },
+    { id: 'Configuration', label: t('dashboard.configuration', 'Meter Info.'), icon: <Settings /> },
   ];
 
   const handleButtonClick = (buttonId) => {
@@ -17,6 +19,7 @@ const NavButtons = ({ setActivePage }) => {
     setActivePage(buttonId);
   };
 
+  // Render
   return (
     <Box
       sx={{
@@ -25,6 +28,7 @@ const NavButtons = ({ setActivePage }) => {
         backgroundColor: theme.palette.background.paper,
         padding: '0.5rem',
         borderRadius: '30px',
+        alignItems: 'center',
       }}
     >
       {buttons.map((button) => (

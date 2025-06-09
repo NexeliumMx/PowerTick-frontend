@@ -11,15 +11,18 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { formatHourLocal, formatDayLocal, formatMonthLocal } from '../ui/TimestampFormatter';
+import { useTranslation } from 'react-i18next';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter }) => {
+const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter, t: tProp }) => {
   const theme = useTheme();
   const { accounts } = useMsal();
   const { state: appModeState } = useContext(ModeContext);
   const user_id = accounts[0]?.idTokenClaims?.oid;
   const mode = appModeState?.mode || 'PRODUCTION';
+  const { t: tHook } = useTranslation();
+  const t = tProp || tHook;
 
   // Time filter state
   const [timeInterval, setTimeInterval] = useState("day");
@@ -107,14 +110,17 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
   let xAxisLabel = '';
   let xDataKey = '';
   if (apiTimeInterval === 'month') {
-    xAxisLabel = 'Month';
-    xDataKey = 'month_start_local';
+    xAxisLabel = t('dashboard.day', 'Día');
+    xDataKey = 'day';
+  } else if (apiTimeInterval === 'year') {
+    xAxisLabel = t('dashboard.month', 'Mes');
+    xDataKey = 'month';
   } else if (apiTimeInterval === 'day') {
-    xAxisLabel = 'Day';
-    xDataKey = 'day_start_utc';
-  } else if (apiTimeInterval === 'hour') {
-    xAxisLabel = 'Hour';
-    xDataKey = 'hour_start_utc';
+    xAxisLabel = t('dashboard.hour', 'Hora');
+    xDataKey = 'hour';
+  } else {
+    xAxisLabel = t('dashboard.time', 'Tiempo');
+    xDataKey = 'time';
   }
 
   // Transform data for MUI X BarChart (show formatted local time for x-axis)
@@ -141,10 +147,13 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
   const wFormatter = (value) => value != null ? `${value} W` : '';
   const varFormatter = (value) => value != null ? `${value} VAr` : '';
 
+  // Use t('Analysis.demandProfile') for the card title
+  const cardTitle = t('Analysis.demandProfile');
+
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
       <CardHeader
-        title="Demand Profile"
+        title={cardTitle}
         titleTypographyProps={{
           variant: 'h3',
           sx: {

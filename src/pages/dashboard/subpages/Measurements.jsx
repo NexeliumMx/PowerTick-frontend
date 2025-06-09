@@ -1,17 +1,32 @@
-import { Box, Typography, Paper } from "@mui/material";
+// MUI Components
 import Grid2 from "@mui/material/Grid2";
+import { Box } from "@mui/material";
+
+// Context
+import { ModeContext } from "../../../context/AppModeContext";
+
+// Hooks
+import { useMsal } from "@azure/msal-react";
+import { useRealTimeData } from "../../../hooks/useRealTimeData";
+import { useContext } from "react";
+import { useTranslation } from 'react-i18next';
+
+// Components for measurements
 import Currents from "../components/cards/Currents";
 import VoltageLN from "../components/cards/VoltageLN";
 import VoltageLL from "../components/cards/VoltageLL";
 import RealPower from "../components/cards/RealPower";
 import ReactivePower from "../components/cards/ReactivePower";
 import PowerFactor from "../components/cards/PowerFactor";
-import { useMsal } from "@azure/msal-react";
-import { useRealTimeData } from "../../../hooks/useRealTimeData";
-import { useContext } from "react";
-import { ModeContext } from "../../../context/AppModeContext";
+import THDCurrent from "../components/cards/THDCurrent";
+import THDVoltageLN from "../components/cards/THDVoltageLN";
+import THDVoltageLL from "../components/cards/THDVoltageLL";
+import EnergyExported from "../components/cards/EnergyExported";
+import EnergyImported from "../components/cards/EnergyImported";
+import Power from "../components/cards/Power";
 
 export default function Measurements({ powerMeter }) {
+  const { t } = useTranslation();
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid;
   const { state } = useContext(ModeContext); // Get current mode from context
@@ -22,22 +37,40 @@ export default function Measurements({ powerMeter }) {
     <Box>
       <Grid2 container spacing={2}>
         <Grid2 size={{ xs: 12, lg: 6 }}>
-          <RealPower data={parsedData} />
+          <RealPower data={parsedData} title={t('measurements.realPower')} />
         </Grid2>
         <Grid2 size={{ xs: 12, lg: 6 }}>
-          <ReactivePower data={parsedData} />
+          <ReactivePower data={parsedData} title={t('measurements.reactivePower')} />
         </Grid2>
         <Grid2 size={{ xs: 12, lg: 6 }}>
-          <Currents data={parsedData} />
+          <Currents data={parsedData} title={t('measurements.currents')} />
         </Grid2>
         <Grid2 size={{ xs: 12, lg: 6 }}>
-          <PowerFactor data={parsedData} />
+          <PowerFactor data={parsedData} title={t('measurements.powerFactorRange')} />
         </Grid2>
         <Grid2 size={{ xs: 12, lg: 6 }}>
-          <VoltageLN data={parsedData} />
+          <VoltageLN data={parsedData} title={t('measurements.voltageLN')} />
         </Grid2>
         <Grid2 size={{ xs: 12, lg: 6 }}>
-          <VoltageLL data={parsedData} />
+          <VoltageLL data={parsedData} title={t('measurements.voltageLL')} />
+        </Grid2>
+        <Grid2 size={{ xs: 12, lg: 6 }}>
+          <THDCurrent data={parsedData} title={t('measurements.thdCurrent')} />
+        </Grid2>
+        <Grid2 size={{ xs: 12, lg: 6 }}>
+          <THDVoltageLN data={parsedData} title={t('measurements.thdVoltageLN')} />
+        </Grid2>
+        <Grid2 size={{ xs: 12, lg: 6 }}>
+          <THDVoltageLL data={parsedData} title={t('measurements.thdVoltageLL')} />
+        </Grid2>
+        <Grid2 size={{ xs: 12, lg: 6 }}>
+          <EnergyImported data={parsedData} title={t('measurements.energyImported')} />
+        </Grid2>
+        <Grid2 size={{ xs: 12, lg: 6 }}>
+          <EnergyExported data={parsedData} title={t('measurements.energyExported')} />
+        </Grid2>
+        <Grid2 size={{ xs: 12, lg: 6 }}>
+          <Power data={parsedData} title={t('measurements.realPower')} />
         </Grid2>
       </Grid2>
     </Box>

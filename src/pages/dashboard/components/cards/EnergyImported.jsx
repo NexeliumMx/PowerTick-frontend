@@ -2,21 +2,34 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import chartColors from '../../../../theme/chartColors';
-const VoltageLL = ({ data, title }) => {
+
+const EnergyImported = ({ data, title }) => {
   const { t } = useTranslation();
 
+  // Use 0 if value is null or undefined
+  const kwh_imported_total = data?.kwh_imported_total ?? 0;
+  const kwh_imported_l1 = data?.kwh_imported_l1 ?? 0;
+  const kwh_imported_l2 = data?.kwh_imported_l2 ?? 0;
+  const kwh_imported_l3 = data?.kwh_imported_l3 ?? 0;
+  const varh_imported_q1 = data?.varh_imported_q1 ?? 0;
+  const varh_imported_q1_l1 = data?.varh_imported_q1_l1 ?? 0;
+  const varh_imported_q1_l2 = data?.varh_imported_q1_l2 ?? 0;
+  const varh_imported_q1_l3 = data?.varh_imported_q1_l3 ?? 0;
+  const varh_imported_q2 = data?.varh_imported_q2 ?? 0;
+  const varh_imported_q2_l1 = data?.varh_imported_q2_l1 ?? 0;
+  const varh_imported_q2_l2 = data?.varh_imported_q2_l2 ?? 0;
+  const varh_imported_q2_l3 = data?.varh_imported_q2_l3 ?? 0;
   const hasValidData =
-    data &&
-    typeof data.voltage_l1_l2 === 'number' &&
-    typeof data.voltage_l2_l3 === 'number' &&
-    typeof data.voltage_l3_l1 === 'number' &&
-    typeof data.voltage_ll === 'number';
+    typeof kwh_imported_total === 'number' &&
+    typeof kwh_imported_l1 === 'number' &&
+    typeof kwh_imported_l2 === 'number' &&
+    typeof kwh_imported_l3 === 'number';
 
   if (!hasValidData) {
     return (
       <Paper elevation={3} sx={{ px: 2, height: 450 }}>
         <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
-          {title || t('measurements.voltageLL')}
+          {title || t('measurements.energyImported')}
         </Typography>
         <Typography variant="body2" color="text.secondary" pt={20}>
           {t('dashboard.dataNotAvailable')}
@@ -25,15 +38,10 @@ const VoltageLL = ({ data, title }) => {
     );
   }
 
-  const { voltage_l1_l2, voltage_l2_l3, voltage_l3_l1, voltage_ll } = data;
-
   return (
     <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
-      <Typography 
-        variant="h3" 
-        sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
-      >
-        {title || t('measurements.voltageLL')}
+      <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
+        {title || t('measurements.energyImported')}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
@@ -42,15 +50,13 @@ const VoltageLL = ({ data, title }) => {
           height={350}
           margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[{
-            data: ['L1-L2', 'L2-L3', 'L3-L1', 'Average'],
+            data: ['L1', 'L2', 'L3', 'Total'],
             scaleType: 'band',
-            categoryGapRatio: 0.2,
-            barGapRatio: -1,
             label: 'Phases',
             labelStyle: { textAnchor: 'middle'}
           }]}
           yAxis={[{
-            label: 'Voltage (V)',
+            label: 'kWh / varh',
             labelStyle: {
               transform: 'translateX(-20px)',
               writingMode: 'sideways-lr',
@@ -59,31 +65,24 @@ const VoltageLL = ({ data, title }) => {
           }]}
           series={[
             {
-              data: [voltage_l1_l2, 0, 0, 0],
-              label: 'L1-L2',
+              data: [kwh_imported_l1, kwh_imported_l2, kwh_imported_l3, kwh_imported_total],
+              label: 'kWh Imported',
               color: chartColors.phase1,
-              valueFormatter: (value) => `${value} V`
+              valueFormatter: (value) => `${value} kWh`
             },
             {
-              data: [0, voltage_l2_l3, 0, 0],
-              label: 'L2-L3',
+              data: [varh_imported_q1_l1, varh_imported_q1_l2, varh_imported_q1_l3, varh_imported_q1],
+              label: 'varh Imported Q1',
               color: chartColors.phase2,
-                valueFormatter: (value) => `${value} V`
+              valueFormatter: (value) => `${value} varh`
             },
             {
-              data: [0, 0, voltage_l3_l1, 0],
-              label: 'L3-L1',
+              data: [varh_imported_q2_l1, varh_imported_q2_l2, varh_imported_q2_l3, varh_imported_q2],
+              label: 'varh Imported Q2',
               color: chartColors.phase3,
-                            valueFormatter: (value) => `${value} V`
-            },
-            {
-              data: [0, 0, 0, voltage_ll],
-              label: 'Average',
-              color: chartColors.phaseTotal,
-                            valueFormatter: (value) => `${value} V`
+              valueFormatter: (value) => `${value} varh`
             },
           ]}
-        
           tooltip={{
             trigger: 'item',
             render: (params) => {
@@ -92,7 +91,7 @@ const VoltageLL = ({ data, title }) => {
                 return (
                   <Box sx={{ p: 1 }}>
                     <Typography variant="body2">
-                      <strong>{item.seriesLabel}:</strong> {item.value} V
+                      <strong>{item.seriesLabel} {['L1','L2','L3','Total'][item.dataIndex]}:</strong> {item.value} {item.seriesLabel.includes('kWh') ? 'kWh' : 'varh'}
                     </Typography>
                   </Box>
                 );
@@ -106,4 +105,4 @@ const VoltageLL = ({ data, title }) => {
   );
 };
 
-export default VoltageLL;
+export default EnergyImported;

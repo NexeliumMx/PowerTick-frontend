@@ -2,21 +2,26 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import chartColors from '../../../../theme/chartColors';
-const VoltageLL = ({ data, title }) => {
+
+const THDVoltageLN = ({ data, title }) => {
   const { t } = useTranslation();
 
+  // Use 0 if value is null or undefined
+  const thd_voltage_ln = data?.thd_voltage_ln ?? 0;
+  const thd_voltage_l1 = data?.thd_voltage_l1 ?? 0;
+  const thd_voltage_l2 = data?.thd_voltage_l2 ?? 0;
+  const thd_voltage_l3 = data?.thd_voltage_l3 ?? 0;
   const hasValidData =
-    data &&
-    typeof data.voltage_l1_l2 === 'number' &&
-    typeof data.voltage_l2_l3 === 'number' &&
-    typeof data.voltage_l3_l1 === 'number' &&
-    typeof data.voltage_ll === 'number';
+    typeof thd_voltage_ln === 'number' &&
+    typeof thd_voltage_l1 === 'number' &&
+    typeof thd_voltage_l2 === 'number' &&
+    typeof thd_voltage_l3 === 'number';
 
   if (!hasValidData) {
     return (
       <Paper elevation={3} sx={{ px: 2, height: 450 }}>
         <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
-          {title || t('measurements.voltageLL')}
+          {title || t('measurements.thdVoltageLN')}
         </Typography>
         <Typography variant="body2" color="text.secondary" pt={20}>
           {t('dashboard.dataNotAvailable')}
@@ -25,15 +30,10 @@ const VoltageLL = ({ data, title }) => {
     );
   }
 
-  const { voltage_l1_l2, voltage_l2_l3, voltage_l3_l1, voltage_ll } = data;
-
   return (
     <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
-      <Typography 
-        variant="h3" 
-        sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
-      >
-        {title || t('measurements.voltageLL')}
+      <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
+        {title || t('measurements.thdVoltageLN')}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
@@ -42,15 +42,13 @@ const VoltageLL = ({ data, title }) => {
           height={350}
           margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[{
-            data: ['L1-L2', 'L2-L3', 'L3-L1', 'Average'],
+            data: ['LN', 'L1', 'L2', 'L3'],
             scaleType: 'band',
-            categoryGapRatio: 0.2,
-            barGapRatio: -1,
             label: 'Phases',
             labelStyle: { textAnchor: 'middle'}
           }]}
           yAxis={[{
-            label: 'Voltage (V)',
+            label: 'THD (%)',
             labelStyle: {
               transform: 'translateX(-20px)',
               writingMode: 'sideways-lr',
@@ -59,31 +57,12 @@ const VoltageLL = ({ data, title }) => {
           }]}
           series={[
             {
-              data: [voltage_l1_l2, 0, 0, 0],
-              label: 'L1-L2',
-              color: chartColors.phase1,
-              valueFormatter: (value) => `${value} V`
-            },
-            {
-              data: [0, voltage_l2_l3, 0, 0],
-              label: 'L2-L3',
-              color: chartColors.phase2,
-                valueFormatter: (value) => `${value} V`
-            },
-            {
-              data: [0, 0, voltage_l3_l1, 0],
-              label: 'L3-L1',
-              color: chartColors.phase3,
-                            valueFormatter: (value) => `${value} V`
-            },
-            {
-              data: [0, 0, 0, voltage_ll],
-              label: 'Average',
+              data: [thd_voltage_ln, thd_voltage_l1, thd_voltage_l2, thd_voltage_l3],
+              label: 'THD Voltage LN',
               color: chartColors.phaseTotal,
-                            valueFormatter: (value) => `${value} V`
+              valueFormatter: (value) => `${value} %`
             },
           ]}
-        
           tooltip={{
             trigger: 'item',
             render: (params) => {
@@ -92,7 +71,7 @@ const VoltageLL = ({ data, title }) => {
                 return (
                   <Box sx={{ p: 1 }}>
                     <Typography variant="body2">
-                      <strong>{item.seriesLabel}:</strong> {item.value} V
+                      <strong>{item.seriesLabel} {['LN','L1','L2','L3'][item.dataIndex]}:</strong> {item.value} %
                     </Typography>
                   </Box>
                 );
@@ -106,4 +85,4 @@ const VoltageLL = ({ data, title }) => {
   );
 };
 
-export default VoltageLL;
+export default THDVoltageLN;

@@ -34,8 +34,12 @@ dayjs.extend(timezone);
 
 // Deprycated
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
+import { useTranslation } from 'react-i18next';
 
-const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter }) => {
+const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter, t: tProp }) => {
+  const { t: tHook } = useTranslation();
+  const t = tProp || tHook;
+
   const theme = useTheme(); 
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid;
@@ -183,14 +187,14 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
 
   // X label variable title
   const xAxisLabel = timeInterval === "year"
-    ? "Mes"
+    ? t('dashboard.month', 'Mes')
     : timeInterval === "month"
-    ? "Día"
+    ? t('dashboard.day', 'Día')
     : timeInterval === "day"
-    ? "Hora"
+    ? t('dashboard.hour', 'Hora')
     : timeInterval === "hour"
-    ? "Minutos"
-    : "Tiempo";
+    ? t('dashboard.minutes', 'Minutos')
+    : t('dashboard.time', 'Tiempo');
 
   // Transform data for Recharts (show local time)
   const chartData = demandHistoryData?.map((item) => ({
@@ -233,10 +237,13 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     }
   }, [timeInterval]);
 
+  // Use t('Analysis.demandHistory') for the card title
+  const cardTitle = t('Analysis.demandHistory');
+
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
       <CardHeader
-        title="Demand History"
+        title={cardTitle}
         titleTypographyProps={{
           variant: 'h3',
           sx: {

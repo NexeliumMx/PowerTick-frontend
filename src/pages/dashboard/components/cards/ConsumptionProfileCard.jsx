@@ -12,10 +12,13 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { formatHourLocal, formatDayLocal, formatMonthLocal } from '../ui/TimestampFormatter';
+import { useTranslation } from 'react-i18next';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter }) => {
+const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter, t: tProp }) => {
+  const { t: tHook } = useTranslation();
+  const t = tProp || tHook;
   const theme = useTheme();
   const { accounts } = useMsal();
   const { state: appModeState } = useContext(ModeContext);
@@ -108,14 +111,17 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
   let xAxisLabel = '';
   let xDataKey = '';
   if (apiTimeInterval === 'month') {
-    xAxisLabel = 'Month';
-    xDataKey = 'month_start_local';
+    xAxisLabel = t('dashboard.day', 'Día');
+    xDataKey = 'day';
+  } else if (apiTimeInterval === 'year') {
+    xAxisLabel = t('dashboard.month', 'Mes');
+    xDataKey = 'month';
   } else if (apiTimeInterval === 'day') {
-    xAxisLabel = 'Day';
-    xDataKey = 'day_start_utc';
-  } else if (apiTimeInterval === 'hour') {
-    xAxisLabel = 'Hour';
-    xDataKey = 'hour_start_utc';
+    xAxisLabel = t('dashboard.hour', 'Hora');
+    xDataKey = 'hour';
+  } else {
+    xAxisLabel = t('dashboard.time', 'Tiempo');
+    xDataKey = 'time';
   }
 
   // Value formatters for chart
@@ -140,10 +146,13 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
     };
   });
 
+  // Use t('Analysis.consumptionProfile') for the card title
+  const cardTitle = t('Analysis.consumptionProfile');
+
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
       <CardHeader
-        title="Consumption Profile"
+        title={cardTitle}
         titleTypographyProps={{
           variant: 'h3',
           sx: {
