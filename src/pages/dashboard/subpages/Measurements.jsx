@@ -10,6 +10,12 @@ import { useMsal } from "@azure/msal-react";
 import { useRealTimeData } from "../../../hooks/useRealTimeData";
 import { useContext } from "react";
 import { ModeContext } from "../../../context/AppModeContext";
+import THDCurrent from "../components/cards/THDCurrent";
+import THDVoltageLN from "../components/cards/THDVoltageLN";
+import THDVoltageLL from "../components/cards/THDVoltageLL";
+import EnergyExported from "../components/cards/EnergyExported";
+import EnergyImported from "../components/cards/EnergyImported";
+import Power from "../components/cards/Power";
 
 export default function Measurements({ powerMeter }) {
   const { accounts } = useMsal();
@@ -38,6 +44,24 @@ export default function Measurements({ powerMeter }) {
         </Grid2>
         <Grid2 size={{ xs: 12, lg: 6 }}>
           <VoltageLL data={parsedData} />
+        </Grid2>
+        <Grid2 size={{ xs: 12, lg: 6 }}>
+          <THDCurrent data={parsedData} />
+        </Grid2>
+        <Grid2 size={{ xs: 12, lg: 6 }}>
+          <THDVoltageLN data={parsedData} />
+        </Grid2>
+        <Grid2 size={{ xs: 12, lg: 6 }}>
+          <THDVoltageLL data={parsedData} />
+        </Grid2>
+        <Grid2 size={{ xs: 12, lg: 6 }}>
+          <EnergyImported data={parsedData} />
+        </Grid2>
+        <Grid2 size={{ xs: 12, lg: 6 }}>
+          <EnergyExported data={parsedData} />
+        </Grid2>
+        <Grid2 size={{ xs: 12, lg: 6 }}>
+          <Power data={parsedData} />
         </Grid2>
       </Grid2>
     </Box>
