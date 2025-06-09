@@ -17,12 +17,16 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
+import { Icon } from '@iconify/react';
+import { useTranslation } from 'react-i18next';
+import LanguageIcon from '@mui/icons-material/Language';
 
 const Topbar = ({ handleDrawerToggle }) => {
   const theme = useTheme();
   const colors = tokens;
   const colorMode = useContext(ColorModeContext);
   const { state, dispatch } = useContext(ModeContext);
+  const { i18n, t } = useTranslation();
 
   // Detect small screens (sm and xs)
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -31,6 +35,15 @@ const Topbar = ({ handleDrawerToggle }) => {
     const selectedMode = event.target.value;
     dispatch({ type: `SET_${selectedMode}` });
   };
+
+  const handleLanguageToggle = () => {
+    const newLang = i18n.language === 'en' ? 'es' : 'en';
+    i18n.changeLanguage(newLang);
+    // Force rerender to update UI after language change
+    window.location.reload();
+  };
+
+  const getFlagCode = (lang) => lang === 'es' ? 'MX' : 'US';
 
   return (
     <Box
@@ -146,6 +159,10 @@ const Topbar = ({ handleDrawerToggle }) => {
           ) : (
             <LightModeOutlinedIcon />
           )}
+        </IconButton>
+
+        <IconButton onClick={handleLanguageToggle} title={t('button.spanish')}>
+          <Icon icon={getFlagCode(i18n.language) === 'MX' ? "twemoji:flag-for-mexico" : "twemoji:flag-for-united-states"} width="32" height="32" style={{ marginRight: 4 }} />
         </IconButton>
 
         <IconButton>

@@ -1,8 +1,11 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import chartColors from '../../../../theme/chartColors';
 
-const THDVoltageLL = ({ data }) => {
+const THDVoltageLL = ({ data, title }) => {
+  const { t } = useTranslation();
+
   // Use 0 if value is null or undefined
   const thd_voltage_ll = data?.thd_voltage_ll ?? 0;
   const thd_voltage_l1_l2 = data?.thd_voltage_l1_l2 ?? 0;
@@ -18,10 +21,10 @@ const THDVoltageLL = ({ data }) => {
     return (
       <Paper elevation={3} sx={{ px: 2, height: 450 }}>
         <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
-          THD Voltage LL
+          {title || t('measurements.thdVoltageLL')}
         </Typography>
         <Typography variant="body2" color="text.secondary" pt={20}>
-          Data not available.
+          {t('dashboard.dataNotAvailable')}
         </Typography>
       </Paper>
     );
@@ -30,7 +33,7 @@ const THDVoltageLL = ({ data }) => {
   return (
     <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
       <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
-        THD Voltage LL
+        {title || t('measurements.thdVoltageLL')}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart

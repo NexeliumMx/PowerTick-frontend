@@ -1,8 +1,11 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import chartColors from '../../../../theme/chartColors';
 
-const Power = ({ data }) => {
+const Power = ({ data, title }) => {
+  const { t } = useTranslation();
+
   // Use 0 if value is null or undefined
   const watts = data?.watts ?? 0;
   const watts_l1 = data?.watts_l1 ?? 0;
@@ -26,10 +29,10 @@ const Power = ({ data }) => {
     return (
       <Paper elevation={3} sx={{ px: 2, height: 450 }}>
         <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
-          Power
+          {title || t('measurements.realPower')}
         </Typography>
         <Typography variant="body2" color="text.secondary" pt={20}>
-          Data not available.
+          {t('dashboard.dataNotAvailable')}
         </Typography>
       </Paper>
     );
@@ -38,7 +41,7 @@ const Power = ({ data }) => {
   return (
     <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
       <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
-        Power
+        {title || t('measurements.realPower')}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
@@ -47,13 +50,13 @@ const Power = ({ data }) => {
           height={350}
           margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[{
-            data: ['L1', 'L2', 'L3', 'Total'],
+            data: ['L1', 'L2', 'L3', t('measurements.total')],
             scaleType: 'band',
-            label: 'Phases',
+            label: t('measurements.phases'),
             labelStyle: { textAnchor: 'middle'}
           }]}
           yAxis={[{
-            label: 'Power',
+            label: t('measurements.power'),
             labelStyle: {
               transform: 'translateX(-20px)',
               writingMode: 'sideways-lr',
@@ -63,19 +66,19 @@ const Power = ({ data }) => {
           series={[
             {
               data: [watts_l1, watts_l2, watts_l3, watts],
-              label: 'Watts (W)',
+              label: t('measurements.watts'),
               color: chartColors.phase1,
               valueFormatter: (value) => `${value} W`
             },
             {
               data: [va_l1, va_l2, va_l3, va],
-              label: 'Apparent Power (VA)',
+              label: t('measurements.apparentPower'),
               color: chartColors.phase2,
               valueFormatter: (value) => `${value} VA`
             },
             {
               data: [var_l1, var_l2, var_l3, var_],
-              label: 'Reactive Power (var)',
+              label: t('measurements.reactivePower'),
               color: chartColors.phase3,
               valueFormatter: (value) => `${value} var`
             },
@@ -91,7 +94,7 @@ const Power = ({ data }) => {
                 return (
                   <Box sx={{ p: 1 }}>
                     <Typography variant="body2">
-                      <strong>{item.seriesLabel} {['L1','L2','L3','Total'][item.dataIndex]}:</strong> {item.value} {unit}
+                      <strong>{item.seriesLabel} {['L1','L2','L3',t('measurements.total')][item.dataIndex]}:</strong> {item.value} {unit}
                     </Typography>
                   </Box>
                 );

@@ -1,7 +1,10 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import chartColors from '../../../../theme/chartColors';
-const VoltageLL = ({ data }) => {
+const VoltageLL = ({ data, title }) => {
+  const { t } = useTranslation();
+
   const hasValidData =
     data &&
     typeof data.voltage_l1_l2 === 'number' &&
@@ -12,14 +15,11 @@ const VoltageLL = ({ data }) => {
   if (!hasValidData) {
     return (
       <Paper elevation={3} sx={{ px: 2, height: 450 }}>
-       <Typography 
-  variant="h3" 
-  sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
->
-          Line-to-line voltage per phase
+        <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
+          {title || t('measurements.voltageLL')}
         </Typography>
         <Typography variant="body2" color="text.secondary" pt={20}>
-          Data not available.
+          {t('dashboard.dataNotAvailable')}
         </Typography>
       </Paper>
     );
@@ -30,10 +30,10 @@ const VoltageLL = ({ data }) => {
   return (
     <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
       <Typography 
-  variant="h3" 
-  sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
->
-        Line-to-Line Voltage
+        variant="h3" 
+        sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+      >
+        {title || t('measurements.voltageLL')}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart

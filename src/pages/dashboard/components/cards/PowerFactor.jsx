@@ -1,6 +1,7 @@
 import { Paper, Typography, Box } from '@mui/material';
 import Grid2 from '@mui/material/Grid2';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
+import { useTranslation } from 'react-i18next';
 
 const getColorByFP = (value) => {
   if (value >= 0.95) return '#4caf50';     // Green
@@ -8,7 +9,9 @@ const getColorByFP = (value) => {
   return '#f44336';                        // Red
 };
 
-const PowerFactor = ({ data }) => {
+const PowerFactor = ({ data, title }) => {
+  const { t } = useTranslation();
+
   const hasValidData =
     data &&
     typeof data.pf_l1 === 'number' &&
@@ -20,13 +23,13 @@ const PowerFactor = ({ data }) => {
     return (
       <Paper elevation={3} sx={{ px: 2, height: 450 }}>
         <Typography 
-  variant="h3" 
-  sx={{fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
->
-          Power Factor
+          variant="h3" 
+          sx={{fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+        >
+          {title || t('measurements.powerFactorRange')}
         </Typography>
         <Typography variant="body2" color="text.secondary" align="center" pt={20}>
-          Data not available.
+          {t('dashboard.dataNotAvailable')}
         </Typography>
       </Paper>
     );
@@ -42,15 +45,15 @@ const PowerFactor = ({ data }) => {
   return (
     <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
       <Typography 
- variant="h3" 
-  sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
->
-        Power Factor (0 to 1)
+        variant="h3" 
+        sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+      >
+        {title || t('measurements.powerFactorRange')}
       </Typography>
       <Grid2 container spacing={2} 
-      justifyContent="center" 
-      alignItems="center"
-      sx={{ flex:1, minHeight: 0 }}
+        justifyContent="center" 
+        alignItems="center"
+        sx={{ flex:1, minHeight: 0 }}
       >
         {gauges.map(({ label, value }) => {
           const color = getColorByFP(value);

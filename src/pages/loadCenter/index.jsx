@@ -17,6 +17,7 @@ import { useContext } from "react";
 import { usePowermetersByUserAccess } from '../../hooks/usePowermetersByUserAccess';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from 'react-i18next';
 
 
 // Helper to group powermeters by installation_id
@@ -51,6 +52,7 @@ const demand_kw = 1000;
 const capacity_kw = 900;
 
 const LoadCenter = () => {
+  const { t } = useTranslation();
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid;
   const { state } = useContext(ModeContext); // get mode from context
@@ -70,20 +72,20 @@ const LoadCenter = () => {
       <Box
         sx={{
           display: "flex",
-          justifyContent:"flex-start",
-          flexDirection:"column",
+          justifyContent: "flex-start",
+          flexDirection: "column",
           pt: 2,
         }}
       >
         <Header
-          title="LOAD CENTERS"
-          subtitle="Overview and Management of Energy Distribution and Consumption"
+          title={t('loadCenter.title')}
+          subtitle={t('loadCenter.subtitle')}
         />
       </Box>
       <Box>
         {error ? (
           <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-            <Typography color="error">Error loading powermeters: {error.message || String(error)}</Typography>
+            <Typography color="error">{t('loadCenter.errorLoading', { error: error.message || String(error) })}</Typography>
           </Box>
         ) : isLoading || !powermetersData ? (
           <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
@@ -91,22 +93,22 @@ const LoadCenter = () => {
           </Box>
         ) : Array.isArray(powermetersData) && powermetersData.length === 0 ? (
           <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-            <Typography>No powermeters found.</Typography>
+            <Typography>{t('loadCenter.noPowermeters')}</Typography>
           </Box>
         ) : (
           Object.entries(installations).map(([installationId, { installation_alias, meters }]) => (
             <Box key={installationId} sx={{ mb: 4 }}>
-     <Divider
-          variant="fullWidth"
-          sx={{
-            my: 2,
-            borderColor:theme.palette.text.secondary,
-            borderBottomWidth: 2,
-            opacity: 0.7,
-          }}
-        />
+              <Divider
+                variant="fullWidth"
+                sx={{
+                  my: 2,
+                  borderColor:theme.palette.text.secondary,
+                  borderBottomWidth: 2,
+                  opacity: 0.7,
+                }}
+              />
               <Typography variant="h5" sx={{ mb: 1, fontWeight: 'bold' }}>
-                {installation_alias || "Sin alias"}
+                {installation_alias || t('loadCenter.noAlias')}
               </Typography>
               <Grid2 container spacing={2}>
                 {meters.map((item) => (
@@ -114,7 +116,7 @@ const LoadCenter = () => {
                     <Card sx={{ minWidth: 275, px: 1 }}>
                       <CardContent>
                         <Typography variant="h6" sx={{ mb: 2 , fontWeight:600}}>
-                          {item.powermeter_alias || "Sin alias"}
+                          {item.powermeter_alias || t('loadCenter.noAlias')}
                         </Typography>
                         <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }} alignItems={"center"}>
                           <Box sx={{flexDirection: 'column', alignItems: 'center'}}>
@@ -129,15 +131,14 @@ const LoadCenter = () => {
                             valueFormatter={value => value.toFixed(2)}
                             sx={{
                               [`& .${gaugeClasses.valueArc}`]: {
-                                fill: getColorByFP(0.96), // Use actual value here
-                              },
+                                fill: getColorByFP(0.96),                              },
                               [`& .${gaugeClasses.valueText}`]: {
                                 fontSize: 18,
                               },
                             }}
                           />
                           <Typography variant="body2" sx={{ textAlign: 'center', mt: 0 }}>
-                            Power Factor
+                            {t('loadCenter.powerFactor')}
                           </Typography>
                           </Box>
                           <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: { xs: 0, md: 2 } }} />
@@ -163,7 +164,7 @@ const LoadCenter = () => {
                           />
 
                           <Typography variant="body2" sx={{ textAlign: 'center', mt: 0 }}>
-                            Demand
+                            {t('loadCenter.demand')}
                           </Typography>
                           </Box>
                         </Stack>
@@ -174,7 +175,7 @@ const LoadCenter = () => {
                           size="small"
                           onClick={() => navigate(`/dashboard?powermeter_id=${item.powermeter_id}`)}
                         >
-                          Go to dashboard
+                          {t('loadCenter.goToDashboard')}
                         </Button>
                       </CardActions>
                     </Card>

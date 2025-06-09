@@ -1,8 +1,11 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import chartColors from '../../../../theme/chartColors';
 
-const EnergyExported = ({ data }) => {
+const EnergyExported = ({ data, title }) => {
+  const { t } = useTranslation();
+
   // Use 0 if value is null or undefined
   const kwh_exported_total = data?.kwh_exported_total ?? 0;
   const kwh_exported_l1 = data?.kwh_exported_l1 ?? 0;
@@ -22,10 +25,10 @@ const EnergyExported = ({ data }) => {
     return (
       <Paper elevation={3} sx={{ px: 2, height: 450 }}>
         <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
-          Energy Exported
+          {title || t('measurements.energyExported')}
         </Typography>
         <Typography variant="body2" color="text.secondary" pt={20}>
-          Data not available.
+          {t('dashboard.dataNotAvailable')}
         </Typography>
       </Paper>
     );
@@ -34,7 +37,7 @@ const EnergyExported = ({ data }) => {
   return (
     <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
       <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
-        Energy Exported
+        {title || t('measurements.energyExported')}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart

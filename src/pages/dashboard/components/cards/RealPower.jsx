@@ -1,7 +1,10 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import chartColors from '../../../../theme/chartColors';
-const RealPower = ({ data }) => {
+const RealPower = ({ data, title }) => {
+  const { t } = useTranslation();
+
   // Debug: log the incoming data and its type
   console.log('RealPower received data:', data, 'Type:', typeof data, Array.isArray(data) ? 'Array' : 'Not array');
 
@@ -19,15 +22,11 @@ const RealPower = ({ data }) => {
   if (!hasValidData) {
     return (
       <Paper elevation={3} sx={{ px: 2, height: 450 }}>
-        <Typography 
-        variant="h3" 
-        sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop:2 }}
-      >
-          Real Power
+        <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
+          {title || t('measurements.realPower')}
         </Typography>
         <Typography variant="body2" color="text.secondary" pt={20}>
-          Data not available.<br/>
-          <pre style={{ fontSize: 10, textAlign: 'left', whiteSpace: 'pre-wrap' }}>{JSON.stringify(data, null, 2)}</pre>
+          {t('dashboard.dataNotAvailable')}
         </Typography>
       </Paper>
     );
@@ -38,10 +37,10 @@ const RealPower = ({ data }) => {
   return (
     <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
       <Typography 
-  variant="h3" 
-  sx={{fontWeight:600 , textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
->
-        Real Power
+        variant="h3" 
+        sx={{fontWeight:600 , textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+      >
+        {title || t('measurements.realPower')}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart

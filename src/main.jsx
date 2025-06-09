@@ -36,12 +36,11 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 // Context imports
 import { ModeProvider } from "./context/AppModeContext.jsx";
 
-// MSAL imports
+// Services imports
 import { MsalProvider } from "@azure/msal-react";
 import { msalInstance } from "./services/auth/msalConfig.js";
-
-// React Query imports
 import ReactQueryProvider from "./services/reactQuery/ReactQueryProvider.jsx";
+import './services/i18n/i18n';
 
 function MainApp() {
   const [theme, colorMode] = useMode();

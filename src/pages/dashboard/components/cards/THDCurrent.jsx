@@ -1,8 +1,11 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Typography, Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import chartColors from '../../../../theme/chartColors';
 
-const THDCurrent = ({ data }) => {
+const THDCurrent = ({ data, title }) => {
+  const { t } = useTranslation();
+
   // Use 0 if value is null or undefined
   const thd_current_l1 = data?.thd_current_l1 ?? 0;
   const thd_current_l2 = data?.thd_current_l2 ?? 0;
@@ -16,10 +19,10 @@ const THDCurrent = ({ data }) => {
     return (
       <Paper elevation={3} sx={{ px: 2, height: 450 }}>
         <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
-          THD Current
+          {title || t('measurements.thdCurrent')}
         </Typography>
         <Typography variant="body2" color="text.secondary" pt={20}>
-          Data not available.
+          {t('dashboard.dataNotAvailable')}
         </Typography>
       </Paper>
     );
@@ -28,7 +31,7 @@ const THDCurrent = ({ data }) => {
   return (
     <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
       <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
-        THD Current
+        {title || t('measurements.thdCurrent')}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart

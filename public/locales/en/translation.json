@@ -1,0 +1,38 @@
+{
+  "loadCenter": {
+    "title": "LOAD CENTERS",
+    "subtitle": "Overview and Management of Energy Distribution and Consumption",
+    "errorLoading": "Error loading powermeters: {{error}}",
+    "noPowermeters": "No powermeters found.",
+    "powerFactor": "Power Factor",
+    "demand": "Demand",
+    "goToDashboard": "Go to dashboard",
+    "noAlias": "No alias"
+  },
+  "dashboard": {
+    "title": "DASHBOARD",
+    "subtitle": "Comprehensive Monitoring of Energy Metrics and Historical Performance",
+    "selectPowerMeter": "Select Power Meter",
+    "dataNotAvailable": "Data not available."
+  },
+  "measurements": {
+    "realPower": "Real Power",
+    "reactivePower": "Reactive Power",
+    "currents": "Currents",
+    "powerFactor": "Power Factor",
+    "powerFactorRange": "Power Factor (0 to 1)",
+    "voltageLN": "Voltage LN",
+    "voltageLL": "Voltage LL",
+    "thdCurrent": "THD Current",
+    "thdVoltageLN": "THD Voltage LN",
+    "thdVoltageLL": "THD Voltage LL",
+    "energyImported": "Energy Imported",
+    "energyExported": "Energy Exported",
+    "phases": "Phases",
+    "total": "Total",
+    "power": "Power",
+    "watts": "Watts (W)",
+    "apparentPower": "Apparent Power (VA)",
+    "reactivePowerLabel": "Reactive Power (var)"
+  }
+}

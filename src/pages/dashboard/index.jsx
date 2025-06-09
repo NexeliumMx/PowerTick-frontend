@@ -1,18 +1,30 @@
+// React imports
 import { useState, useEffect, useContext } from "react";
+
+// MUI imports
 import { Box, Typography, Select, MenuItem } from "@mui/material";
+
+//Components
 import NavButtons from "./components/ui/NavButtons";
-import Configuration from "./subpages/Configuration";
-import Analysis from "./subpages/Analysis";
-import Measurements from "./subpages/Measurements";
 import Header from "../../components/ui/Header";
+
+//Context
 import { ModeContext } from "../../context/AppModeContext";
 
 //Hooks
 import { usePowermetersByUserAccess } from '../../hooks/usePowermetersByUserAccess';
 import { useMsal } from "@azure/msal-react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+
+//Subpages
+import Measurements from "./subpages/Measurements";
+import Analysis from "./subpages/Analysis";
+import Configuration from "./subpages/Configuration";
+
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const { state } = useContext(ModeContext);
   const { accounts } = useMsal ? useMsal() : { accounts: [] };
   const user_id = accounts && accounts[0]?.idTokenClaims?.oid;
@@ -67,8 +79,8 @@ const Dashboard = () => {
         }}
       >
         <Header 
-        title="DASHBOARD" 
-        subtitle="Comprehensive Monitoring of Energy Metrics and Historical Performance" 
+          title={t('dashboard.title')} 
+          subtitle={t('dashboard.subtitle')} 
         />
         {/* Power Meter Dropdown */}
         <Select
@@ -79,7 +91,7 @@ const Dashboard = () => {
           disabled={isPowerMetersLoading}
         >
           <MenuItem value="" disabled>
-            Select Power Meter
+            {t('dashboard.selectPowerMeter')}
           </MenuItem>
           {powerMeters.map((meter, index) => (
             <MenuItem key={index} value={meter.powermeter_id}>
