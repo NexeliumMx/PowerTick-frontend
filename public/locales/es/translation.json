@@ -13,7 +13,12 @@
     "title": "TABLERO",
     "subtitle": "Monitoreo integral de métricas energéticas y desempeño histórico",
     "selectPowerMeter": "Seleccionar medidor",
-    "dataNotAvailable": "Datos no disponibles."
+    "dataNotAvailable": "Datos no disponibles.",
+    "measurements": "Mediciones",
+    "analysis": "Análisis",
+    "configuration": "Info. del Medidor",
+    "loadingMeasurementRange": "Cargando rango de medición...",
+    "errorLoadingMeasurementRange": "Error al cargar el rango de medición: {{error}}"
   },
   "measurements": {
     "realPower": "Potencia Activa",
@@ -34,5 +39,11 @@
     "watts": "Watts (W)",
     "apparentPower": "Potencia Aparente (VA)",
     "reactivePowerLabel": "Potencia Reactiva (var)"
+  },
+  "Analysis": {
+    "consumptionHistory": "Historial de Consumo",
+    "demandHistory": "Historial de Demanda",
+    "consumptionProfile": "Perfil de Consumo",
+    "demandProfile": "Perfil de Demanda"
   }
 }

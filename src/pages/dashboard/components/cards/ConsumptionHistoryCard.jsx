@@ -34,8 +34,12 @@ dayjs.extend(timezone);
 
 // Deprycated
 import { formatDashboardTimestamp } from '../../utils/formatDashboardTimestamp';
+import { useTranslation } from 'react-i18next';
 
-const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter }) => {
+const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter, t: tProp }) => {
+  const { t: tHook } = useTranslation();
+  const t = tProp || tHook;
+
   const theme = useTheme(); 
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid;
@@ -181,16 +185,16 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
     }
   }
 
-  //X lable variable title
+  // X lable variable title
   const xAxisLabel = timeInterval === "year"
-  ? "Mes"
-  : timeInterval === "month"
-  ? "Día"
-  : timeInterval === "day"
-  ? "Hora"
-  : timeInterval === "hour"
-  ? "Minutos"
-      : "Tiempo";
+    ? t('dashboard.month', 'Mes')
+    : timeInterval === "month"
+    ? t('dashboard.day', 'Día')
+    : timeInterval === "day"
+    ? t('dashboard.hour', 'Hora')
+    : timeInterval === "hour"
+    ? t('dashboard.minutes', 'Minutos')
+    : t('dashboard.time', 'Tiempo');
 
   // Transform data for Recharts (show local time)
   const chartData = consumptionHistoryData?.map((item) => ({
@@ -233,10 +237,13 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
     }
   }, [timeInterval]);
 
+  // Use t('Analysis.consumptionHistory') for the card title
+  const cardTitle = t('Analysis.consumptionHistory');
+
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
       <CardHeader
-        title="Consumption History"
+        title={cardTitle}
         titleTypographyProps={{
           variant: 'h3',
           sx: {

@@ -13,7 +13,12 @@
     "title": "DASHBOARD",
     "subtitle": "Comprehensive Monitoring of Energy Metrics and Historical Performance",
     "selectPowerMeter": "Select Power Meter",
-    "dataNotAvailable": "Data not available."
+    "dataNotAvailable": "Data not available.",
+    "measurements": "Measurements",
+    "analysis": "Analysis",
+    "configuration": "Meter Info.",
+    "loadingMeasurementRange": "Loading measurement range...",
+    "errorLoadingMeasurementRange": "Error loading measurement range: {{error}}"
   },
   "measurements": {
     "realPower": "Real Power",
@@ -34,5 +39,11 @@
     "watts": "Watts (W)",
     "apparentPower": "Apparent Power (VA)",
     "reactivePowerLabel": "Reactive Power (var)"
+  },
+  "Analysis": {
+    "consumptionHistory": "Consumption History",
+    "demandHistory": "Demand History",
+    "consumptionProfile": "Consumption Profile",
+    "demandProfile": "Demand Profile"
   }
 }

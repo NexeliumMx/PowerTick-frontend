@@ -2,6 +2,7 @@
 import { Box } from "@mui/material";
 import { useState, useEffect, useContext } from "react";
 import Grid from "@mui/material/Grid2";
+import { useTranslation } from 'react-i18next';
 
 // Context
 import { ModeContext } from "../../../context/AppModeContext";
@@ -24,6 +25,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const Analysis = ({ powerMeter }) => {
+  const { t } = useTranslation();
   const { state } = useContext(ModeContext);
   const { data: measurementRange, isLoading: isRangeLoading, error: rangeError } = useMeasurementRange(powerMeter, state.mode);
 
@@ -51,20 +53,20 @@ const Analysis = ({ powerMeter }) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       {/* Optionally show loading/error for measurement range */}
-      {isRangeLoading && <div>Loading measurement range...</div>}
-      {rangeError && <div>Error loading measurement range: {rangeError.message}</div>}
+      {isRangeLoading && <div>{t('dashboard.loadingMeasurementRange', 'Loading measurement range...')}</div>}
+      {rangeError && <div>{t('dashboard.errorLoadingMeasurementRange', { error: rangeError.message })}</div>}
       <Grid container spacing={2}>
         <Grid size={6}>
-          <ConsumptionHistoryCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} />
+          <ConsumptionHistoryCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} t={t} />
         </Grid>
         <Grid size={6}>
-          <DemandHistoryCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} />
+          <DemandHistoryCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} t={t} />
         </Grid>
         <Grid size={6}>
-          <ConsumptionProfileCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} />
+          <ConsumptionProfileCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} t={t} />
         </Grid>
         <Grid size={6}>
-          <DemandProfileCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} />
+          <DemandProfileCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} t={t} />
         </Grid>
       </Grid>
     </Box>
