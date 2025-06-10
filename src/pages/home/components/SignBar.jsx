@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { ColorModeContext } from "../../../theme"; // <-- adjust this path as needed
+import { ColorModeContext } from "../../../theme";
 import {
   Box,
   IconButton,
@@ -9,11 +9,13 @@ import {
 } from "@mui/material";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import { useMsal } from "@azure/msal-react";
+import { Link, useLocation } from "react-router-dom";
 
 const SignBar = () => {
   const theme = useTheme();
   const colorMode = useContext(ColorModeContext);
   const { instance } = useMsal();
+  const location = useLocation();
 
   const handleSignIn = () => {
     instance.loginRedirect().catch(error => {
@@ -22,7 +24,6 @@ const SignBar = () => {
   };
 
   const handleTryDemo = () => {
-    // TODO: Implement demo mode logic or navigation
     alert("Demo mode not implemented yet.");
   };
 
@@ -40,6 +41,8 @@ const SignBar = () => {
       {/* Left: Logo and Title */}
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Box
+          component={Link}
+          to="/"
           sx={{
             width: "45px",
             height: "45px",
@@ -47,6 +50,7 @@ const SignBar = () => {
             alignItems: "center",
             justifyContent: "center",
             mr: 2,
+            textDecoration: "none",
           }}
         >
           <img
@@ -63,16 +67,61 @@ const SignBar = () => {
           />
         </Box>
         <Typography
-          variant="h3" // Match the top bar title size
+          variant="h3"
+          component={Link}
+          to="/"
           sx={{
             fontWeight: 700,
             color: theme.palette.text.primary,
             letterSpacing: "0.05em",
             ml: 1,
+            textDecoration: "none",
+            cursor: "pointer",
           }}
         >
           PowerTick
         </Typography>
+      </Box>
+      {/* Center: Navigation Links */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+        <Button
+          component={Link}
+          to="/home-pages/update-log"
+          sx={{
+            textDecoration: location.pathname === "/home-pages/update-log" ? "underline" : "none",
+            color: "text.primary",
+            fontWeight: location.pathname === "/home-pages/update-log" ? "bold" : "normal",
+            mx: 1,
+          }}
+        >
+          Novedades
+        </Button>
+          <Button
+          component={Link}
+          to="/home-pages/codigo-de-red"
+          sx={{
+            textDecoration: location.pathname === "/home-pages/codigo-de-red" ? "underline" : "none",
+            color: "text.primary",
+            fontWeight: location.pathname === "/home-pages/codigo-de-red" ? "bold" : "normal",
+            mx: 1,
+          }}
+        >
+          Código de Red
+        </Button>
+        <Button
+          component={Link}
+          to="/home-pages/acerca-de"
+          sx={{
+            textDecoration: location.pathname === "/home-pages/acerca-de" ? "underline" : "none",
+            color: "text.primary",
+            fontWeight: location.pathname === "/home-pages/acerca-de" ? "bold" : "normal",
+            mx: 1,
+          }}
+        >
+          Acerca De
+        </Button>
+
+        {/* Add more navigation links here as needed */}
       </Box>
       {/* Right: Buttons and Icons */}
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -95,7 +144,6 @@ const SignBar = () => {
         <IconButton onClick={colorMode.toggleColorMode}>
           <LightModeOutlinedIcon />
         </IconButton>
-        {/* Removed DarkMode, Notifications, and Settings icons */}
       </Box>
     </Box>
   );

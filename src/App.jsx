@@ -29,7 +29,9 @@ import Dashboard from "./pages/dashboard";
 import UserManual from "./pages/user-manual";
 import Downloads from "./pages/downloads";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-
+import UpdateLog from "./pages/home/AdditionalPages/UpdateLog";
+import CodigoDeRed from "./pages/home/AdditionalPages/CodigoDeRed";
+import AcercaDe from "./pages/home/AdditionalPages/AcercaDe";
 // Test
 import SidebarMenuTest from "./pages/test/SidebarMenuTest";
 import MUIComponentsTest from "./pages/test/MUIComponentsTest";
@@ -40,6 +42,9 @@ function App() {
       {/* Public Routes (Accessible to Everyone) */}
       <Route path="/" element={<Home />} />
       <Route path="*" element={<NotFound />} />
+      <Route path="/home-pages/update-log" element={<UpdateLog />} />
+      <Route path="/home-pages/codigo-de-red" element={<CodigoDeRed />} />
+      <Route path="/home-pages/acerca-de" element={<AcercaDe />} />
 
       {/* Protected Routes (Require Authentication) */}
       <Route element={<ProtectedRoute />}>

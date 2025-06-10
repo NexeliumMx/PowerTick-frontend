@@ -10,7 +10,7 @@ const HeroSection = () => (
       position: "relative",
       display: "flex",
       flexDirection: { xs: "column", md: "row" },
-      alignItems: "center",
+      alignItems: "flex",
       justifyContent: "space-between",
       overflow: "hidden",
       boxShadow: 3,
@@ -35,17 +35,22 @@ const HeroSection = () => (
         height: "100%",
         objectFit: "cover",
         zIndex: 0,
-        opacity: 0.45,
+        opacity: 1,
         pointerEvents: "none",
       }}
     />
     {/* Content */}
-    <Box sx={{ flex: 1, zIndex: 1 }}>
-      <Typography variant="h2" sx={{ fontWeight: 800, mb: 2, color: "primary.main" }}>
-        PowerTick: Control total de tu energía
+    <Box sx={{ 
+      flex: 1,
+      zIndex: 1, 
+      minWidth: { xs: "100%", md: "80%" },
+      mt: { xs: 4, md: 5 },
+      }}>
+      <Typography variant="h1" sx={{ fontWeight: 800, mb: 2, color: "primary.main" }}>
+        La salud de tus procesos empieza con buena calidad energética; un sistema bien alimentado vive más, mejor y con menos
       </Typography>
-      <Typography variant="h5" sx={{ color: "primary.main", mb: 4 }}>
-        Monitorea, analiza y optimiza tu consumo eléctrico en tiempo real y desde cualquier lugar.
+      <Typography variant="h4" sx={{ fontWeight: 600, color: "primary.main", mb: 4 }}>
+        Gestiona tu calidad energética y optimiza tu consumo eléctrico a través de monitoreo en tiempo real y herramientas de análisis histórico desde cualquier lugar en todo momento.
       </Typography>
     </Box>
     <Box
