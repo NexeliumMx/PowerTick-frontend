@@ -1,7 +1,8 @@
 import { Box, Divider, Typography } from "@mui/material";
 import SignBar from "../components/SignBar";
 import ExtraInfoFooter from "../components/ExtraInfoFooter";
-import about1 from "./about1.jpg";
+import about1 from "./HomePagesMedia/about1.jpg";
+import monograma_claro_recortado from "./HomePagesMedia/monograma_claro_recortado.png";
 
 export default function AcercaDe() {
   return (
@@ -58,7 +59,7 @@ export default function AcercaDe() {
               anticipar riesgos, detectar oportunidades y transformar datos en acciones. Al integrar tecnología con capacidades humanas, ayudamos a construir operaciones más robustas, sostenibles y preparadas para el futuro.
             </Typography>
             <Typography variant="body1" color="primary" mt={2} lineHeight={2}>
-              Nuestra visión y compromiso es ofrecerte una experiencia cada vez más robusta,
+              Desde el año 2025, nuestra visión y compromiso es ofrecerte una experiencia cada vez más robusta,
                eficiente y alineada con tus necesidades, creciendo a tu lado. Revisamos y 
                evolucionamos constantemente nuestras herramientas para asegurar un desempeño 
                confiable, mayor facilidad de uso, y nuevas funciones de monitoreo y análisis 
@@ -94,17 +95,77 @@ export default function AcercaDe() {
         </Box>
     
       </Box>
-      <Box sx={{ textAlign: "center", maxWidth: "100%", backgroundColor: "background.default", p: 2}}>
-        <Typography variant="h4" color="white" fontWeight={700} gutterBottom>
-          Tecnología diseñada y administrada por Nexelium
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ maxWidth: "800px", mx: "auto", lineHeight: 1.6 }}>
-          En PowerTick, estamos comprometidos con la mejora continua y la innovación constante. Nuestro equipo trabaja incansablemente para ofrecerte las mejores herramientas de monitoreo energético, asegurando que cada actualización aporte valor real a tu operación.
-        </Typography>
-
-
-    </Box>
-      <Box sx={{ mt: "auto" }}>
+      <Box
+  sx={{
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "background.default",
+    p: 10,
+    width: "100%",
+  }}
+>
+  <Box
+    sx={{
+      width: { xs: "100%", md: "50%" },
+      minWidth: { xs: "120px", md: "150px" },
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      mr: { xs: 2, md: 4 },
+    }}
+  >
+    <img
+      src={monograma_claro_recortado}
+      alt="Logo Nexelium"
+      style={{
+        width: "100%",
+        height: "auto",
+        maxWidth: 300,
+      }}
+    />
+  </Box>
+  <Box
+    sx={{
+      width: { xs: "100%", md: "50%" },
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      textAlign:"justified",
+    }}
+  >
+    <Typography variant="h2" color="secondary.main2" fontWeight={700} gutterBottom marginBottom={4}>
+      Tecnología diseñada y administrada por Nexelium Technological Solutions
+    </Typography>
+    <Typography variant="body1" color="text.secondary" sx={{ maxWidth: "800px", lineHeight: 2, textAlign: "justify" }}>
+      Powertick es una plataforma desarrollada y administrada por Nexelium, una empresa mexicana comprometida con la innovación y la optimización de recursos en la industria. Fundada en 2024, Nexelium combina electrónica, telecomunicaciones y computación para crear soluciones estratégicas que mejoran la eficiencia operativa y promueven la sustentabilidad.
+      Con un enfoque en evolución constante, Nexelium garantiza que Powertick continúe ofreciendo herramientas avanzadas para el monitoreo y gestión energética. Su tecnología no solo mide, sino que transforma la manera en que las empresas comprenden y optimizan su consumo, fortaleciendo procesos y reduciendo costos.
+      A través de Powertick, Nexelium reafirma su compromiso con el desarrollo de soluciones tecnológicas que impulsen industrias más inteligentes y sostenibles.
+    </Typography>
+    
+    <Typography
+  variant="body1"
+  color="text.secondary"
+  sx={{ mt: 2 }}
+>
+  Conoce más en su sitio web&nbsp;
+  <Box
+    component="a"
+    href="https://nexelium.com.mx"
+    target="_blank"
+    rel="noopener noreferrer"
+    sx={{
+      color: "secondary.main2",
+      textDecoration: "underline",
+      fontWeight: 600,
+      fontSize: "inherit",
+    }}
+  >
+    aquí
+  </Box>
+</Typography>
+  </Box>
+</Box>      <Box>
         <ExtraInfoFooter />
       </Box>
     </Box>
