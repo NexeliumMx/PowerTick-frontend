@@ -57,8 +57,8 @@ const SignBar = () => {
             src="/assets/logo_powertick-02.svg"
             alt="Logo"
             style={{
-              width: "250%",
-              height: "250%",
+              width: "180%",
+              height: "180%",
               cursor: "pointer",
               filter: theme.palette.mode === "dark"
                 ? "brightness(0) invert(1)"

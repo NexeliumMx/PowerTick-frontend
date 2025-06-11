@@ -155,7 +155,7 @@ export default function AcercaDe() {
     target="_blank"
     rel="noopener noreferrer"
     sx={{
-      color: "secondary.main2",
+      color: "white",
       textDecoration: "underline",
       fontWeight: 600,
       fontSize: "inherit",

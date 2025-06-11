@@ -87,7 +87,7 @@ export default function UpdateLog() {
       </Typography>
 
       {/* Cards de actualizaciones */}
-      <Box sx={{ mx: 8, mt:2, display: "flex", flexDirection: "column", gap: 3 }}>
+      <Box sx={{ mx: 8, mt:2, mb:5 , display: "flex", flexDirection: "column", gap: 3 }}>
         {updates.map((update, idx) => (
           <Card key={idx} sx={{ backgroundColor: "white", boxShadow: 1 }}>
             <CardContent>
