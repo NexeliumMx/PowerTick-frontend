@@ -9,7 +9,6 @@ const Currents = ({ data, title }) => {
     typeof data.current_l1 === 'number' &&
     typeof data.current_l2 === 'number' &&
     typeof data.current_l3 === 'number';
-  // 🔍 Here you can see if the component receives new data
   console.log('Current meter data:', data);
   if (!hasValidData) {
     return (
@@ -35,11 +34,23 @@ const Currents = ({ data, title }) => {
       >
         {title || t('measurements.currents')}
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: -3 }}>
         <BarChart
+          slotProps={{
+            legend: {
+              direction: 'row',
+              position: {vertical: 'top', horizontal: 'center'},
+              itemGap: 100, 
+              shrink: true,
+              markShape: 'rect',
+              
+            }
+          }}
+
+
         borderRadius={10}
         grid={{horizontal:true}}
-         margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
+         margin={{ left: 70, right: 20, top: 110, bottom: 40 }}
           xAxis={[
             {
               data: ['Phase 1', 'Phase 2', 'Phase 3', 'Total'],
@@ -57,7 +68,7 @@ const Currents = ({ data, title }) => {
               labelStyle: { transform: 'translateX(-20px)', writingMode: 'sideways-lr', textAnchor: 'middle'} // Axis separation
             },
           ]}
-          height={350}
+          height={410}
           series={[
             {
               data: [current_l1, null, null, null],

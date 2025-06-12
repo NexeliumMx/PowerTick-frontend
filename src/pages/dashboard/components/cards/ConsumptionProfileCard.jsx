@@ -111,14 +111,14 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
   let xAxisLabel = '';
   let xDataKey = '';
   if (apiTimeInterval === 'month') {
-    xAxisLabel = t('dashboard.day', 'Día');
-    xDataKey = 'day';
-  } else if (apiTimeInterval === 'year') {
     xAxisLabel = t('dashboard.month', 'Mes');
-    xDataKey = 'month';
+    xDataKey = 'month_start_local';
+  } else if (apiTimeInterval === 'year') {
+    xAxisLabel = t('dashboard.year', 'Ano');
+    xDataKey = 'year';
   } else if (apiTimeInterval === 'day') {
-    xAxisLabel = t('dashboard.hour', 'Hora');
-    xDataKey = 'hour';
+    xAxisLabel = t('dashboard.day', 'Dia');
+    xDataKey = 'day_start_utc';
   } else {
     xAxisLabel = t('dashboard.time', 'Tiempo');
     xDataKey = 'time';
