@@ -35,29 +35,22 @@ const VoltageLL = ({ data, title }) => {
       >
         {title || t('measurements.voltageLL')}
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: -3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
-        slotProps={{
-            legend: {
-              direction: 'row',
-              position: {vertical: 'top', horizontal: 'center'},
-              itemGap: 100, 
-              shrink: true,
-              markShape: 'rect',
-              
-            }
+          slotProps={{
+            legend: { hidden: true }
           }}
           borderRadius={10}
           grid={{ horizontal: true }}
-          height={410}
-          margin={{ left: 70, right: 20, top: 110, bottom: 40 }}
+          height={350}
+          margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[{
             data: ['L1-L2', 'L2-L3', 'L3-L1', 'Average'],
             scaleType: 'band',
             categoryGapRatio: 0.2,
             barGapRatio: -1,
             label: 'Phases',
-            labelStyle: { textAnchor: 'middle'}
+            labelStyle: { textAnchor: 'middle' }
           }]}
           yAxis={[{
             label: 'Voltage (V)',
@@ -78,22 +71,21 @@ const VoltageLL = ({ data, title }) => {
               data: [0, voltage_l2_l3, 0, 0],
               label: 'L2-L3',
               color: chartColors.phase2,
-                valueFormatter: (value) => `${value} V`
+              valueFormatter: (value) => `${value} V`
             },
             {
               data: [0, 0, voltage_l3_l1, 0],
               label: 'L3-L1',
               color: chartColors.phase3,
-                            valueFormatter: (value) => `${value} V`
+              valueFormatter: (value) => `${value} V`
             },
             {
               data: [0, 0, 0, voltage_ll],
               label: 'Average',
               color: chartColors.phaseTotal,
-                            valueFormatter: (value) => `${value} V`
+              valueFormatter: (value) => `${value} V`
             },
           ]}
-        
           tooltip={{
             trigger: 'item',
             render: (params) => {
