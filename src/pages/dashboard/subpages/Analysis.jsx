@@ -1,5 +1,5 @@
 // MUI Imports
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { useState, useEffect, useContext } from "react";
 import Grid from "@mui/material/Grid2";
 import { useTranslation } from 'react-i18next';
@@ -50,22 +50,25 @@ const Analysis = ({ powerMeter }) => {
     }
   }, [measurementRange]);
 
+  // Responsive logic
+  const isSmallScreen = useMediaQuery("(max-width:960px)"); // Adjust breakpoint as needed
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       {/* Optionally show loading/error for measurement range */}
       {isRangeLoading && <div>{t('dashboard.loadingMeasurementRange', 'Loading measurement range...')}</div>}
       {rangeError && <div>{t('dashboard.errorLoadingMeasurementRange', { error: rangeError.message })}</div>}
       <Grid container spacing={2}>
-        <Grid size={6}>
+        <Grid size={isSmallScreen ? 12 : 6}>
           <ConsumptionHistoryCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} t={t} />
         </Grid>
-        <Grid size={6}>
+        <Grid size={isSmallScreen ? 12 : 6}>
           <DemandHistoryCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} t={t} />
         </Grid>
-        <Grid size={6}>
+        <Grid size={isSmallScreen ? 12 : 6}>
           <ConsumptionProfileCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} t={t} />
         </Grid>
-        <Grid size={6}>
+        <Grid size={isSmallScreen ? 12 : 6}>
           <DemandProfileCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} t={t} />
         </Grid>
       </Grid>
