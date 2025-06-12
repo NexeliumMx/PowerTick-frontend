@@ -137,3 +137,19 @@ export async function fetchDemandProfile(user_id, powermeter_id, time_interval, 
   }
   return resData;
 }
+
+export async function fetchThdProfile(user_id, powermeter_id, time_interval, start_utc, end_utc, mode = 'PRODUCTION') {
+  let url = `https://power-tick-api-js.nexelium.mx/api/ThdProfile?user_id=${user_id}&powermeter_id=${powermeter_id}&time_interval=${time_interval}&start_utc=${start_utc}&end_utc=${end_utc}`;
+  if (mode === 'DEMO') {
+    url += "&enviroment=demo";
+  } else if (mode === 'DEV') {
+    url += "&enviroment=dev";
+  }
+  console.log(`[API CALL] fetchThdProfile: ${url}`);
+  const response = await fetch(url);
+  const resData = await response.json();
+  if (!response.ok) {
+    throw new Error('Failed to fetch consumption profile');
+  }
+  return resData;
+}

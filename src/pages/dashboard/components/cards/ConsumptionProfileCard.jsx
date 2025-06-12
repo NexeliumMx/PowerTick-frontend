@@ -113,9 +113,9 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
   if (apiTimeInterval === 'month') {
     xAxisLabel = t('dashboard.month', 'Mes');
     xDataKey = 'month_start_local';
-  } else if (apiTimeInterval === 'year') {
-    xAxisLabel = t('dashboard.year', 'Ano');
-    xDataKey = 'year';
+  } else if (apiTimeInterval === 'hour') {
+    xAxisLabel = t('dashboard.hour', 'hora');
+    xDataKey = 'hour_start_utc';
   } else if (apiTimeInterval === 'day') {
     xAxisLabel = t('dashboard.day', 'Dia');
     xDataKey = 'day_start_utc';

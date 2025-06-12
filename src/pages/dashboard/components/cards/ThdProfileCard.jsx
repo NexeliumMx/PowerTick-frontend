@@ -1,12 +1,13 @@
+// React imports
 import { useState, useEffect, useContext } from "react";
+import { ModeContext } from '../../../../context/AppModeContext';
+import { useMsal } from "@azure/msal-react";
 import { Card, CardHeader, CardContent, CardActions, Box, Typography, Divider } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
-import { useDemandProfile } from '../../../../hooks/useDemandProfile';
-import { useMsal } from "@azure/msal-react";
+import ChartSkeletonCard from "./ChartSkeletonCard";
 import { BarChart } from '@mui/x-charts/BarChart';
-import ChartSkeletonCard from "../cards/ChartSkeletonCard";
+import { useThdProfile } from '../../../../hooks/useThdProfile';
 import TimeFilterProfile from '../ui/TimeFilterProfile';
-import { ModeContext } from '../../../../context/AppModeContext';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -15,14 +16,14 @@ import { useTranslation } from 'react-i18next';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter, t: tProp }) => {
+const ThdProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter, t: tProp }) => {
+  const { t: tHook } = useTranslation();
+  const t = tProp || tHook;
   const theme = useTheme();
   const { accounts } = useMsal();
   const { state: appModeState } = useContext(ModeContext);
   const user_id = accounts[0]?.idTokenClaims?.oid;
   const mode = appModeState?.mode || 'PRODUCTION';
-  const { t: tHook } = useTranslation();
-  const t = tProp || tHook;
 
   // Time filter state
   const [timeInterval, setTimeInterval] = useState("day");
@@ -97,7 +98,7 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
   }
 
   // Fetch data
-  const { data: demandProfileData, isLoading } = useDemandProfile(
+  const { data: thdProfileData, isLoading } = useThdProfile(
     user_id,
     selectedPowerMeter,
     apiTimeInterval,
@@ -116,15 +117,19 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     xAxisLabel = t('dashboard.hour', 'hora');
     xDataKey = 'hour_start_utc';
   } else if (apiTimeInterval === 'day') {
-    xAxisLabel = t('dashboard.day', 'dia');
+    xAxisLabel = t('dashboard.day', 'Dia');
     xDataKey = 'day_start_utc';
   } else {
     xAxisLabel = t('dashboard.time', 'Tiempo');
     xDataKey = 'time';
   }
 
+  // Value formatters for chart
+  const whFormatter = (value) => value != null ? `${value} Wh` : '';
+  const varhFormatter = (value) => value != null ? `${value} VArh` : '';
+
   // Transform data for MUI X BarChart (show formatted local time for x-axis)
-  const chartData = demandProfileData?.map((item) => {
+  const chartData = thdProfileData?.map((item) => {
     let formattedName = item[xDataKey];
     if (apiTimeInterval === 'hour') {
       formattedName = formatHourLocal(item[xDataKey]);
@@ -136,19 +141,13 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     return {
       ...item,
       name: formattedName,
-      w_max: item.w_max,
-      w_avg: item.w_avg,
-      var_max: item.var_max,
-      var_avg: item.var_avg,
+      wh: item.wh,
+      varh: item.varh,
     };
   });
 
-  // Value formatters for chart
-  const wFormatter = (value) => value != null ? `${value} W` : '';
-  const varFormatter = (value) => value != null ? `${value} VAr` : '';
-
-  // Use t('Analysis.demandProfile') for the card title
-  const cardTitle = t('Analysis.demandProfile');
+  // Use t('Analysis.consumptionProfile') for the card title
+  const cardTitle = t('Analysis.consumptionProfile');
 
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
@@ -170,17 +169,17 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
         <Box sx={{ width: "100%", overflow: "auto", px: 2, py:1}}>
           {isLoading ? (
             <ChartSkeletonCard/>
-          ) : demandProfileData ? (
+          ) : thdProfileData ? (
             <BarChart
               dataset={chartData}
               series={[
-                { dataKey: 'w_max', stack: 'w', label: 'W Max', valueFormatter: wFormatter },
-                { dataKey: 'w_avg', stack: 'w', label: 'W Avg', valueFormatter: wFormatter },
-                { dataKey: 'var_max', stack: 'var', label: 'VAR Max', valueFormatter: varFormatter },
-                { dataKey: 'var_avg', stack: 'var', label: 'VAR Avg', valueFormatter: varFormatter },
+                { dataKey: 'wh', label: 'Wh', valueFormatter: whFormatter },
+                { dataKey: 'varh', label: 'VARh', valueFormatter: varhFormatter },
               ]}
-              xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band' }]}
+              xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band', tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 }, minStep: 20, interval: 0 }]}
               height={350}
+              margin={{ left: 40, bottom: 60 }}
+              sx={{ background: 'transparent' }}
             />
           ) : (
             <Typography variant="body1">Data not available</Typography>
@@ -219,4 +218,4 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
   );
 };
 
-export default DemandProfileCard;
+export default ThdProfileCard;
