@@ -39,26 +39,15 @@ const VoltageLN = ({ data, title }) => {
       >
         {title || t('measurements.voltageLN')}
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: -3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
-        slotProps={{
-            legend: {
-              direction: 'row',
-              position: {vertical: 'top', horizontal: 'center'},
-              itemGap: 100, 
-              shrink: true,
-              markShape: 'rect',
-              
-            }
-          }}
-          animation={{
-            duration: 1000, // in milliseconds
-            easing: 'ease-out', // options: 'linear', 'ease-in', 'ease-out', 'ease-in-out'
+          slotProps={{
+            legend: { hidden: true }
           }}
           borderRadius={10}
           grid={{ horizontal: true }}
-          height={410}
-          margin={{ left: 70, right: 20, top: 110, bottom: 40 }}
+          height={350}
+          margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[
             {
               data: ['L1', 'L2', 'L3', 'Average'],
@@ -66,8 +55,7 @@ const VoltageLN = ({ data, title }) => {
               categoryGapRatio: 0.2,
               barGapRatio: -1,
               label: 'Phases',
-              labelStyle: { textAnchor: 'middle'}
-              
+              labelStyle: { textAnchor: 'middle' }
             },
           ]}
           yAxis={[
