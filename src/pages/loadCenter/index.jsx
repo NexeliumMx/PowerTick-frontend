@@ -37,10 +37,13 @@ const groupByInstallation = (powermeters) => {
   }, {});
 };
 const getColorByFP = (value) => {
-  if (value >= 0.95) return chartColors.powerFactorGood;
-  if (value >= 0.90) return chartColors.powerFactorModerate;
-  return chartColors.powerFactorPoor;
+  
+  if (value >= 0.95) return chartColors.powerFactorGood;     // Green
+  if (value >= 0.92) return chartColors.powerFactorModerate; // Yellow
+  if (value >= 0.90) return chartColors.powerFactorRisky;    // Orange
+  return chartColors.powerFactorPoor;                       // Red
 };
+
 const getColorByDemand = (demand_kw, capacity_kw) => {
   if (!capacity_kw || capacity_kw === 0) return chartColors.undefined;
   const ratio = capacity_kw/demand_kw;

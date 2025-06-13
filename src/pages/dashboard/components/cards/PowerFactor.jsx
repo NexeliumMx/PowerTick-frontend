@@ -7,7 +7,7 @@ import { useTheme } from '@mui/material/styles';
 const getColorByFP = (value) => {
   
   if (value >= 0.95) return chartColors.powerFactorGood;     // Green
-  if (value >= 0.93) return chartColors.powerFactorModerate; // Yellow
+  if (value >= 0.92) return chartColors.powerFactorModerate; // Yellow
   if (value >= 0.90) return chartColors.powerFactorRisky;    // Orange
   return chartColors.powerFactorPoor;                       // Red
 };
