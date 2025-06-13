@@ -1,10 +1,12 @@
 import { BarChart } from '@mui/x-charts/BarChart';
-import { Paper, Typography, Box } from '@mui/material';
+import { Card, Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import chartColors from '../../../../theme/chartColors';
+import { useTheme } from '@mui/material/styles';
 
 const EnergyImported = ({ data, title }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   // Use 0 if value is null or undefined
   const kwh_imported_total = data?.kwh_imported_total ?? 0;
@@ -19,6 +21,7 @@ const EnergyImported = ({ data, title }) => {
   const varh_imported_q2_l1 = data?.varh_imported_q2_l1 ?? 0;
   const varh_imported_q2_l2 = data?.varh_imported_q2_l2 ?? 0;
   const varh_imported_q2_l3 = data?.varh_imported_q2_l3 ?? 0;
+
   const hasValidData =
     typeof kwh_imported_total === 'number' &&
     typeof kwh_imported_l1 === 'number' &&
@@ -27,33 +30,56 @@ const EnergyImported = ({ data, title }) => {
 
   if (!hasValidData) {
     return (
-      <Paper elevation={3} sx={{ px: 2, height: 450 }}>
-        <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
+      <Card
+        sx={{
+          px: 2,
+          minHeight: 450,
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: theme.palette.background.card, // Matches the Card theme
+          boxShadow: theme.shadows[3], // Adds elevation
+        }}
+      >
+        <Typography 
+          variant="h3" 
+          sx={{ fontWeight: 600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+        >
           {title || t('measurements.energyImported')}
         </Typography>
-        <Typography variant="body2" color="text.secondary" pt={20}>
+        <Typography variant="body2" color="text.secondary" align="center" pt={20}>
           {t('dashboard.dataNotAvailable')}
         </Typography>
-      </Paper>
+      </Card>
     );
   }
 
   return (
-    <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
-      <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
+    <Card
+      sx={{
+        px: 3,
+        minHeight: 450,
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: theme.palette.background.card, // Matches the Card theme
+        boxShadow: theme.shadows[3], // Adds elevation
+      }}
+    >
+      <Typography 
+        variant="h3" 
+        sx={{ fontWeight: 600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+      >
         {title || t('measurements.energyImported')}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: -4.5 }}>
         <BarChart
-        slotProps={{
+          slotProps={{
             legend: {
               direction: 'row',
-              position: {vertical: 'top', horizontal: 'center'},
-              itemGap: 120, 
+              position: { vertical: 'top', horizontal: 'center' },
+              itemGap: 120,
               shrink: true,
               markShape: 'rect',
-              
-            }
+            },
           }}
           borderRadius={10}
           grid={{ horizontal: true }}
@@ -63,7 +89,7 @@ const EnergyImported = ({ data, title }) => {
             data: ['L1', 'L2', 'L3', 'Total'],
             scaleType: 'band',
             label: 'Phases',
-            labelStyle: { textAnchor: 'middle'}
+            labelStyle: { textAnchor: 'middle' },
           }]}
           yAxis={[{
             label: 'kWh / varh',
@@ -78,19 +104,19 @@ const EnergyImported = ({ data, title }) => {
               data: [kwh_imported_l1, kwh_imported_l2, kwh_imported_l3, kwh_imported_total],
               label: 'kWh Imported',
               color: chartColors.phase1,
-              valueFormatter: (value) => `${value} kWh`
+              valueFormatter: (value) => `${value} kWh`,
             },
             {
               data: [varh_imported_q1_l1, varh_imported_q1_l2, varh_imported_q1_l3, varh_imported_q1],
               label: 'varh Imported Q1',
               color: chartColors.phase2,
-              valueFormatter: (value) => `${value} varh`
+              valueFormatter: (value) => `${value} varh`,
             },
             {
               data: [varh_imported_q2_l1, varh_imported_q2_l2, varh_imported_q2_l3, varh_imported_q2],
               label: 'varh Imported Q2',
               color: chartColors.phase3,
-              valueFormatter: (value) => `${value} varh`
+              valueFormatter: (value) => `${value} varh`,
             },
           ]}
           tooltip={{
@@ -101,7 +127,7 @@ const EnergyImported = ({ data, title }) => {
                 return (
                   <Box sx={{ p: 1 }}>
                     <Typography variant="body2">
-                      <strong>{item.seriesLabel} {['L1','L2','L3','Total'][item.dataIndex]}:</strong> {item.value} {item.seriesLabel.includes('kWh') ? 'kWh' : 'varh'}
+                      <strong>{item.seriesLabel} {['L1', 'L2', 'L3', 'Total'][item.dataIndex]}:</strong> {item.value} {item.seriesLabel.includes('kWh') ? 'kWh' : 'varh'}
                     </Typography>
                   </Box>
                 );
@@ -111,7 +137,7 @@ const EnergyImported = ({ data, title }) => {
           }}
         />
       </Box>
-    </Paper>
+    </Card>
   );
 };
 

@@ -1,6 +1,7 @@
 // MUi imports
 import { Box, Typography, Card, CardActions, Button, Grid2, CardContent, Stack, CircularProgress, Divider } from "@mui/material";
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
+import { useTheme } from "@mui/material/styles";
 
 // Components
 import Header from "../../components/ui/Header";
@@ -16,7 +17,6 @@ import { useMsal } from "@azure/msal-react";
 import { useContext } from "react";
 import { usePowermetersByUserAccess } from '../../hooks/usePowermetersByUserAccess';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from 'react-i18next';
 
 
@@ -102,7 +102,7 @@ const LoadCenter = () => {
                 variant="fullWidth"
                 sx={{
                   my: 2,
-                  borderColor:theme.palette.text.secondary,
+                  borderColor: theme.palette.text.secondary,
                   borderBottomWidth: 2,
                   opacity: 0.7,
                 }}
@@ -113,65 +113,71 @@ const LoadCenter = () => {
               <Grid2 container spacing={2}>
                 {meters.map((item) => (
                   <Grid2 key={item.serial_number} xs={12} sm={6} md={3}>
-                    <Card sx={{ minWidth: 275, px: 1 }}>
+                    <Card
+                      sx={{
+                        minWidth: 275,
+                        px: 1,
+                        backgroundColor: theme.palette.background.card, // Apply theme background color
+                      }}
+                    >
                       <CardContent>
-                        <Typography variant="h6" sx={{ mb: 2 , fontWeight:600}}>
+                        <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                           {item.powermeter_alias || t('loadCenter.noAlias')}
                         </Typography>
                         <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }} alignItems={"center"}>
-                          <Box sx={{flexDirection: 'column', alignItems: 'center'}}>
-                          <Gauge
-                            width={100}
-                            height={100}
-                            value={0.96}
-                            valueMin={0}
-                            valueMax={1}
-                            startAngle={-110}
-                            endAngle={110}
-                            valueFormatter={value => value.toFixed(2)}
-                            sx={{
-                              [`& .${gaugeClasses.valueArc}`]: {
-                                fill: getColorByFP(0.96),                              },
-                              [`& .${gaugeClasses.valueText}`]: {
-                                fontSize: 18,
-                              },
-                            }}
-                          />
-                          <Typography variant="body2" sx={{ textAlign: 'center', mt: 0 }}>
-                            {t('loadCenter.powerFactor')}
-                          </Typography>
+                          <Box sx={{ flexDirection: 'column', alignItems: 'center' }}>
+                            <Gauge
+                              width={100}
+                              height={100}
+                              value={0.96}
+                              valueMin={0}
+                              valueMax={1}
+                              startAngle={-110}
+                              endAngle={110}
+                              valueFormatter={value => value.toFixed(2)}
+                              sx={{
+                                [`& .${gaugeClasses.valueArc}`]: {
+                                  fill: getColorByFP(0.96),
+                                },
+                                [`& .${gaugeClasses.valueText}`]: {
+                                  fontSize: 18,
+                                },
+                              }}
+                            />
+                            <Typography variant="body2" sx={{ textAlign: 'center', mt: 0 }}>
+                              {t('loadCenter.powerFactor')}
+                            </Typography>
                           </Box>
                           <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: { xs: 0, md: 2 } }} />
                           <Divider orientation="horizontal" variant="middle" flexItem sx={{ mx: { xs: 2, md: 0 } }} />
-                          <Box sx={{flexDirection: 'column', alignItems: 'center'}}>
-                          <Gauge
-                            width={100}
-                            height={100}
-                            value={Math.min(demand_kw, capacity_kw)}
-                            valueMin={0}
-                            valueMax={capacity_kw} 
-                            startAngle={-110}
-                            endAngle={110}
-                            text={({ value }) => `${value.toFixed(0)} kW`} 
-                            sx={{
-                              [`& .${gaugeClasses.valueArc}`]: {
-                                fill: getColorByDemand(demand_kw, capacity_kw),
-                              },
-                              [`& .${gaugeClasses.valueText}`]: {
-                                fontSize: 16,
-                              },
-                            }}
-                          />
-
-                          <Typography variant="body2" sx={{ textAlign: 'center', mt: 0 }}>
-                            {t('loadCenter.demand')}
-                          </Typography>
+                          <Box sx={{ flexDirection: 'column', alignItems: 'center' }}>
+                            <Gauge
+                              width={100}
+                              height={100}
+                              value={Math.min(demand_kw, capacity_kw)}
+                              valueMin={0}
+                              valueMax={capacity_kw}
+                              startAngle={-110}
+                              endAngle={110}
+                              text={({ value }) => `${value.toFixed(0)} kW`}
+                              sx={{
+                                [`& .${gaugeClasses.valueArc}`]: {
+                                  fill: getColorByDemand(demand_kw, capacity_kw),
+                                },
+                                [`& .${gaugeClasses.valueText}`]: {
+                                  fontSize: 16,
+                                },
+                              }}
+                            />
+                            <Typography variant="body2" sx={{ textAlign: 'center', mt: 0 }}>
+                              {t('loadCenter.demand')}
+                            </Typography>
                           </Box>
                         </Stack>
                       </CardContent>
                       <CardActions sx={{ justifyContent: "flex-end" }}>
-                        <Button 
-                          variant="contained" 
+                        <Button
+                          variant="contained"
                           size="small"
                           onClick={() => navigate(`/dashboard?powermeter_id=${item.powermeter_id}`)}
                         >

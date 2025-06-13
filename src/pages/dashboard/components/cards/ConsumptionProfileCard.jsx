@@ -150,7 +150,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
   const cardTitle = t('Analysis.consumptionProfile');
 
   return (
-    <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
+    <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column", backgroundColor: theme.palette.background.card}}>
       <CardHeader
         title={cardTitle}
         titleTypographyProps={{

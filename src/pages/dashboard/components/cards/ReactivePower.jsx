@@ -1,9 +1,13 @@
 import { BarChart } from '@mui/x-charts/BarChart';
-import { Paper, Typography, Box } from '@mui/material';
+import { Card, Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import chartColors from '../../../../theme/chartColors';
+import { useTheme } from '@mui/material/styles';
+
 const ReactivePower = ({ data, title }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
+
   const hasValidData =
     data &&
     typeof data.var_l1 === 'number' &&
@@ -13,17 +17,26 @@ const ReactivePower = ({ data, title }) => {
 
   if (!hasValidData) {
     return (
-      <Paper elevation={3} sx={{ px: 2, height: 450 }}>
+      <Card
+        sx={{
+          px: 2,
+          minHeight: 450,
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: theme.palette.background.card, // Matches the Card theme
+          boxShadow: theme.shadows[3], // Adds elevation
+        }}
+      >
         <Typography 
-  variant="h3" 
-  sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2}}
->
+          variant="h3" 
+          sx={{ fontWeight: 600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+        >
           {title || t('measurements.reactivePower')}
         </Typography>
-        <Typography variant="body2" color="text.secondary" pt={20}>
+        <Typography variant="body2" color="text.secondary" align="center" pt={20}>
           {t('dashboard.dataNotAvailable')}
         </Typography>
-      </Paper>
+      </Card>
     );
   }
 
@@ -31,11 +44,20 @@ const ReactivePower = ({ data, title }) => {
   const totalVar = data['var'];
 
   return (
-    <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
+    <Card
+      sx={{
+        px: 3,
+        minHeight: 450,
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: theme.palette.background.card, // Matches the Card theme
+        boxShadow: theme.shadows[3], // Adds elevation
+      }}
+    >
       <Typography 
-  variant="h3" 
-  sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2}}
->
+        variant="h3" 
+        sx={{ fontWeight: 600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+      >
         {title || t('measurements.reactivePower')}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
@@ -107,7 +129,7 @@ const ReactivePower = ({ data, title }) => {
           }}
         />
       </Box>
-    </Paper>
+    </Card>
   );
 };
 
