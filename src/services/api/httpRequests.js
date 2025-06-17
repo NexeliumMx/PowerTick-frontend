@@ -139,7 +139,7 @@ export async function fetchDemandProfile(user_id, powermeter_id, time_interval, 
 }
 
 export async function fetchThdProfile(user_id, powermeter_id, time_interval, start_utc, end_utc, mode = 'PRODUCTION') {
-  let url = `https://power-tick-api-js.nexelium.mx/api/ThdProfile?user_id=${user_id}&powermeter_id=${powermeter_id}&time_interval=${time_interval}&start_utc=${start_utc}&end_utc=${end_utc}`;
+  let url = `https://power-tick-api-js.nexelium.mx/api/thdCurrentProfile?user_id=${user_id}&powermeter_id=${powermeter_id}&time_interval=${time_interval}&start_utc=${start_utc}&end_utc=${end_utc}`;
   if (mode === 'DEMO') {
     url += "&enviroment=demo";
   } else if (mode === 'DEV') {
