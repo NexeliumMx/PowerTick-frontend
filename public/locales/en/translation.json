@@ -13,6 +13,7 @@
     "title": "DASHBOARD",
     "subtitle": "Comprehensive Monitoring of Energy Metrics and Historical Performance",
     "selectPowerMeter": "Select Power Meter",
+    "selectedPowerMeter": "Power Meter",
     "dataNotAvailable": "Data not available.",
     "measurements": "Measurements",
     "analysis": "Analysis",

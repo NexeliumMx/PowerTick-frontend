@@ -13,6 +13,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { formatHourLocal, formatDayLocal, formatMonthLocal } from '../ui/TimestampFormatter';
 import { useTranslation } from 'react-i18next';
+import chartColors from "../../../../theme/chartColors";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -166,19 +167,29 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
         }}
       />
       <CardContent sx={{ flexGrow: 1, pt: 0 }}>
-        <Box sx={{ width: "100%", overflow: "auto", px: 2, py:1}}>
+        <Box sx={{ width: "100%", overflow: "auto", px: 2, my:-5}}>
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : consumptionProfileData ? (
             <BarChart
+              slotProps={{
+                legend: {
+                  hidden: false,
+                  position: { vertical: 'top', horizontal: 'center' },
+                  itemGap: 100, // Space between legend items
+                }}}
               dataset={chartData}
               series={[
-                { dataKey: 'wh', label: 'Wh', valueFormatter: whFormatter },
-                { dataKey: 'varh', label: 'VARh', valueFormatter: varhFormatter },
+                { dataKey: 'wh', label: 'Wh', valueFormatter: whFormatter, color: chartColors.realEnergy },
+                { dataKey: 'varh', label: 'VARh', valueFormatter: varhFormatter, color: chartColors.reactiveEnergy },
               ]}
-              xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band', tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 }, minStep: 20, interval: 0 }]}
-              height={350}
-              margin={{ left: 40, bottom: 60 }}
+              xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band', tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 }, minStep: 20, interval: 0 , labelStyle: { transform:'translateY(15px)' } }]}
+              height={400}
+              margin={{ 
+                top: 100,
+                left: 40, 
+                bottom: 60 
+              }}
               sx={{ background: 'transparent' }}
             />
           ) : (
@@ -188,7 +199,12 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
       </CardContent>
       <Divider
         variant="middle"
-        sx={{ mb: 1, borderColor: 'primary.main', borderBottomWidth: 3 }}
+        sx={{ 
+          mt: { xs: 4, sm: 4, md: 4 },
+          mb: 1, 
+          borderColor: 'primary.main', 
+          borderBottomWidth: 3 
+        }}
       />
       <CardActions
         sx={{

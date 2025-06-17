@@ -13,10 +13,10 @@ const chartColors = {
   // d92525 rojo
   realEnergy: "#F29F05",
   reactiveEnergy: "#cca42e",
-  avgRealPower: "#0E3D59",
-  avgVar: "#F29F05",
-  maxRealPower: "#44a248",
-  maxVar: "#F25C05",
+  avgRealPower: "#F29F05",
+  avgVar: "#cca42e",
+  maxRealPower: "#F25C05",
+  maxVar: "#E6C85C",
 
   //Measurements
   phase1: "#eaeb81",

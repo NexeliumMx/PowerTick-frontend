@@ -31,8 +31,15 @@ const MonthlyReportsTable = () => {
   const [selectedYear, setSelectedYear] = useState("");
   const [validYears, setValidYears] = useState([]);
   const { state: appModeState } = useContext(ModeContext);
-  
-  const { data: monthlyReport, isMonthlyReportLoading, error: monthlyReportError } = useMonthlyReport(
+  const [isOpen, setIsOpen] = useState(false);
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => setIsOpen(false);
+  const mockMonthlyReport = [
+    { month: "January", consumption: 1200, demand: 50, powerFactor: 0.95 },
+    { month: "February", consumption: 1100, demand: 45, powerFactor: 0.94 },
+  ];
+
+  const { data: monthlyReport=mockMonthlyReport, isMonthlyReportLoading, error: monthlyReportError } = useMonthlyReport(
     user_id,
     selectedPowerMeter,
     selectedYear,
@@ -75,18 +82,22 @@ const MonthlyReportsTable = () => {
       <Box sx={{ display: "flex", gap: 2 }}>
         {/* Serial Number Dropdown */}
         <FormControl size="small" sx={{ minWidth: 200 }}>
-          <InputLabel id="serial-number-label">Serial Number</InputLabel>
+          <InputLabel id="serial-number-label">
+          {isOpen || selectedPowerMeter
+            ? t("dashboard.selectedPowerMeter") 
+              : t("dashboard.selectPowerMeter")} 
+          </InputLabel>
           <Select
             labelId="serial-number-label"
             value={selectedPowerMeter || ""}
             label="Power Meter"
             onChange={(e) => setSelectedPowerMeter(e.target.value)}
-            displayEmpty
             disabled={isPowerMetersLoading}
-
+            onOpen={handleOpen}
+            onClose={handleClose}
           >
            <MenuItem value="" disabled>
-        {t("dashboard.selectPowerMeter")}
+        
       </MenuItem>
       {powerMeters.map((meter, index) => (
         <MenuItem key={index} value={meter.powermeter_id}>

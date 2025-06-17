@@ -13,6 +13,7 @@
     "title": "TABLERO",
     "subtitle": "Monitoreo integral de métricas energéticas y desempeño histórico",
     "selectPowerMeter": "Seleccionar medidor",
+    "selectedPowerMeter": "Medidor",
     "dataNotAvailable": "Datos no disponibles.",
     "measurements": "Mediciones",
     "analysis": "Análisis",
