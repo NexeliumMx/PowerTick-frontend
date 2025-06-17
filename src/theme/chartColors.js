@@ -7,11 +7,12 @@ const chartColors = {
   // 88A61B verde opaco
   //44a248 verde
   // 0E3D59 azul opaco
+  //4d8bff azul claro opaco
   // F29F05 amarillo
   // F25C05 naranja opaco
   // d92525 rojo
   realEnergy: "#F29F05",
-  reactiveEnergy: "#dddf7b",
+  reactiveEnergy: "#cca42e",
   avgRealPower: "#0E3D59",
   avgVar: "#F29F05",
   maxRealPower: "#44a248",

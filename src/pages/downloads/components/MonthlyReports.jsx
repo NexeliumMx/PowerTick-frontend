@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Box, Select, MenuItem, Typography, FormControl, InputLabel } from "@mui/material";
+import { useContext, useState, useEffect } from "react";
+import { Box, Select, MenuItem, Typography, FormControl, InputLabel,CircularProgress } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -10,43 +10,51 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { useTheme } from "@mui/material/styles";
 import Header from "../../../components/ui/Header";
+import { useMonthlyReport } from "../../../hooks/useMonthlyReport"; 
+import { usePowermetersByUserAccess } from "../../../hooks/usePowermetersByUserAccess";
+import { ModeContext } from "../../../context/AppModeContext";
+import { useMsal } from "@azure/msal-react";
+import { useTranslation } from 'react-i18next';
+
+
+
 
 const MonthlyReportsTable = () => {
   // Placeholder data for serial numbers
   const theme = useTheme();
-  const powerMeters = [
-    { serial_number: "SN12345" },
-    { serial_number: "SN67890" },
-  ];
-  const [selectedSerialNumber, setSelectedSerialNumber] = useState(
-    powerMeters[0].serial_number
+  const { t } = useTranslation();
+  const {state}=useContext(ModeContext);
+  const { accounts } = useMsal? useMsal() : { accounts: [] };
+  const user_id = accounts && accounts[0]?.idTokenClaims?.oid;
+  const { data: powerMeters = [], isLoading: isPowerMetersLoading, error: powerMetersError } = usePowermetersByUserAccess(user_id, state.mode);
+  const [selectedPowerMeter, setSelectedPowerMeter] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
+  const [validYears, setValidYears] = useState([]);
+  const { state: appModeState } = useContext(ModeContext);
+  
+  const { data: monthlyReport, isMonthlyReportLoading, error: monthlyReportError } = useMonthlyReport(
+    user_id,
+    selectedPowerMeter,
+    selectedYear,
+    appModeState?.mode || 'PRODUCTION'
+    
   );
-  const [selectedYear, setSelectedYear] = useState("2024");
 
-  const pf = [
-    0.76, 0.79, 0.82, 0.85, 0.88, 0.91, 0.93, 0.8, 0.83, 0.9, 0.95, 0.77,
-  ];
-  const consumption = [
-    18245, 23102, 19876, 16354, 21789, 24501, 17932, 22648, 20517, 15982,
-    25000, 18777,
-  ];
-  const maxDemand = [
-    45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100,
-  ];
-  const months = [
-    { name: "January", value: "1" },
-    { name: "February", value: "2" },
-    { name: "March", value: "3" },
-    { name: "April", value: "4" },
-    { name: "May", value: "5" },
-    { name: "June", value: "6" },
-    { name: "July", value: "7" },
-    { name: "August", value: "8" },
-    { name: "September", value: "9" },
-    { name: "October", value: "10" },
-    { name: "November", value: "11" },
-    { name: "December", value: "12" },
-  ];
+
+  useEffect(() => {
+    if (selectedPowerMeter) {
+      const powermeter = powerMeters.find((pm) => pm.powermeter_id === selectedPowerMeter);
+      setValidYears(powermeter?.availableYears || []); // Fallback to an empty array
+    }
+  }, [selectedPowerMeter, powerMeters]);
+
+  if (isPowerMetersLoading) {
+    return <CircularProgress />;
+  }
+
+  if (isMonthlyReportLoading) {
+    return <CircularProgress />;
+  }
 
   return (
     <Box sx={{ position: "relative"}}>
@@ -70,42 +78,56 @@ const MonthlyReportsTable = () => {
           <InputLabel id="serial-number-label">Serial Number</InputLabel>
           <Select
             labelId="serial-number-label"
-            value={selectedSerialNumber}
-            label="Serial Number"
-            onChange={(e) => setSelectedSerialNumber(e.target.value)}
+            value={selectedPowerMeter || ""}
+            label="Power Meter"
+            onChange={(e) => setSelectedPowerMeter(e.target.value)}
+            displayEmpty
+            disabled={isPowerMetersLoading}
+
           >
-            {powerMeters.map((meter, index) => (
-              <MenuItem key={index} value={meter.serial_number}>
-                {meter.serial_number}
-              </MenuItem>
-            ))}
+           <MenuItem value="" disabled>
+        {t("dashboard.selectPowerMeter")}
+      </MenuItem>
+      {powerMeters.map((meter, index) => (
+        <MenuItem key={index} value={meter.powermeter_id}>
+          {meter.powermeter_alias || meter.powermeter_id}
+        </MenuItem>
+      ))}
           </Select>
         </FormControl>
 
         {/* Year Dropdown */}
-        <FormControl size="small" sx={{ minWidth: 100 }}>
+        <FormControl size="small" sx={{ minWidth: 100 }} disabled={!validYears.length}>
           <InputLabel id="year-label">Year</InputLabel>
           <Select
             labelId="year-label"
             value={selectedYear}
-            label="Year"
             onChange={(e) => setSelectedYear(e.target.value)}
+            label="Year"
           >
-            <MenuItem value="2023">2023</MenuItem>
-            <MenuItem value="2024">2024</MenuItem>
+            {Array.isArray(validYears) && validYears.length > 0 && validYears.map((year) => (
+              <MenuItem key={year} value={year}>
+                {year}
+              </MenuItem>
+              ))}
           </Select>
         </FormControl>
       </Box>
       
       </Box>
 
-      
+      <Box>
+        {monthlyReportError ? (
+          <Typography color="error">Error: {monthlyReportError.message || "Failed to load monthly report."}</Typography>
+        ) : monthlyReport.length === 0 ? (
+          <Typography>No data available for the selected powermeter and year.</Typography>
+        ) : (
       <TableContainer component={Paper} sx={{ marginTop: 2 }}>
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: theme.palette.background.paper }}>
               <TableCell align="center">
-                <Typography variant="h6" fontWeight={600}>Serial Number</Typography>
+                <Typography variant="h6" fontWeight={600}>Power Meter</Typography>
               </TableCell>
               <TableCell align="center">
                 <Typography variant="h6" fontWeight={600}>Month</Typography>
@@ -120,35 +142,35 @@ const MonthlyReportsTable = () => {
                 <Typography variant="h6" fontWeight={600}>Max Demand</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h6"fontWeight={600}>Download</Typography>
+                <Typography variant="h6" fontWeight={600}>Download</Typography>
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {months.map((month, idx) => (
+            {monthlyReport.map((row, index) => (
               <TableRow
-                key={month.value}
+                key={row.month}
                 sx={{
                   backgroundColor:
-                    idx % 2 === 0
+                    index % 2 === 0
                       ? theme.palette.background.default
                       : theme.palette.background.default,
                 }}
               >
                 <TableCell align="center">
-                  <Typography variant="h6">{selectedSerialNumber}</Typography>
+                  <Typography variant="h6">{selectedPowerMeter}</Typography>
                 </TableCell>
                 <TableCell align="center">
-                  <Typography variant="h6">{month.name}</Typography>
+                  <Typography variant="h6">{row.month}</Typography>
                 </TableCell>
                 <TableCell align="center">
-                  <Typography variant="h6">{consumption[idx]}</Typography>
+                  <Typography variant="h6">{row.consumption}</Typography>
                 </TableCell>
                 <TableCell align="center">
-                  <Typography variant="h6">{pf[idx]}</Typography>
+                  <Typography variant="h6">{row.demand}</Typography>
                 </TableCell>
                 <TableCell align="center">
-                  <Typography variant="h6">{maxDemand[idx]}</Typography>
+                  <Typography variant="h6">{row.powerFactor}</Typography>
                 </TableCell>
                 <TableCell align="center">
                   <Button variant="contained" color="primary" disabled>
@@ -160,6 +182,7 @@ const MonthlyReportsTable = () => {
           </TableBody>
         </Table>
       </TableContainer>
+        )}</Box>
     </Box>
   );
 };
