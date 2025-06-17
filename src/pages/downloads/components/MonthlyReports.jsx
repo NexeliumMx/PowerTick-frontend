@@ -15,9 +15,12 @@ import { usePowermetersByUserAccess } from "../../../hooks/usePowermetersByUserA
 import { ModeContext } from "../../../context/AppModeContext";
 import { useMsal } from "@azure/msal-react";
 import { useTranslation } from 'react-i18next';
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
-
-
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const MonthlyReportsTable = () => {
   // Placeholder data for serial numbers
@@ -34,12 +37,8 @@ const MonthlyReportsTable = () => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
-  const mockMonthlyReport = [
-    { month: "January", consumption: 1200, demand: 50, powerFactor: 0.95 },
-    { month: "February", consumption: 1100, demand: 45, powerFactor: 0.94 },
-  ];
-
-  const { data: monthlyReport=mockMonthlyReport, isMonthlyReportLoading, error: monthlyReportError } = useMonthlyReport(
+  
+  const { data: monthlyReport, isMonthlyReportLoading, error: monthlyReportError } = useMonthlyReport(
     user_id,
     selectedPowerMeter,
     selectedYear,
@@ -51,7 +50,26 @@ const MonthlyReportsTable = () => {
   useEffect(() => {
     if (selectedPowerMeter) {
       const powermeter = powerMeters.find((pm) => pm.powermeter_id === selectedPowerMeter);
-      setValidYears(powermeter?.availableYears || []); // Fallback to an empty array
+      const measurementRange = powermeter?.measurementRange; // Assuming measurementRange is part of powermeter data
+      console.log("Measurement Range:", measurementRange);
+
+      if (measurementRange && measurementRange.min_utc && measurementRange.max_utc) {
+        const tz = dayjs.tz.guess();
+        const min = dayjs.utc(measurementRange.min_utc).tz(tz);
+        const max = dayjs.utc(measurementRange.max_utc).tz(tz);
+
+        const years = [];
+        for (let year = min.year(); year <= max.year(); year++) {
+          years.push(year);
+        }
+        setValidYears(years);
+      } else {
+        console.warn("Measurement Range is undefined or invalid. Using fallback logic.");
+        const fallbackYears = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
+        setValidYears(fallbackYears); // Fallback to last 5 years
+      }
+    } else {
+      setValidYears([]); // Reset valid years if no power meter is selected
     }
   }, [selectedPowerMeter, powerMeters]);
 
@@ -130,69 +148,69 @@ const MonthlyReportsTable = () => {
       <Box>
         {monthlyReportError ? (
           <Typography color="error">Error: {monthlyReportError.message || "Failed to load monthly report."}</Typography>
-        ) : monthlyReport.length === 0 ? (
+        ) : !Array.isArray(monthlyReport) || monthlyReport.length === 0 ? (
           <Typography>No data available for the selected powermeter and year.</Typography>
         ) : (
-      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-        <Table>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: theme.palette.background.paper }}>
+    <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+      <Table>
+        <TableHead>
+          <TableRow sx={{ backgroundColor: theme.palette.background.paper }}>
+            <TableCell align="center">
+              <Typography variant="h6" fontWeight={600}>Power Meter</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography variant="h6" fontWeight={600}>Month</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography variant="h6" fontWeight={600}>Consumption</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography variant="h6" fontWeight={600}>Power Factor</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography variant="h6" fontWeight={600}>Max Demand</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography variant="h6" fontWeight={600}>Download</Typography>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {monthlyReport.map((row, index) => (
+            <TableRow
+              key={row.month}
+              sx={{
+                backgroundColor:
+                  index % 2 === 0
+                    ? theme.palette.background.default
+                    : theme.palette.background.default,
+              }}
+            >
               <TableCell align="center">
-                <Typography variant="h6" fontWeight={600}>Power Meter</Typography>
+                <Typography variant="h6">{selectedPowerMeter}</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h6" fontWeight={600}>Month</Typography>
+                <Typography variant="h6">{row.month}</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h6" fontWeight={600}>Consumption</Typography>
+                <Typography variant="h6">{row.consumption}</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h6" fontWeight={600}>Power Factor</Typography>
+                <Typography variant="h6">{row.demand}</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h6" fontWeight={600}>Max Demand</Typography>
+                <Typography variant="h6">{row.powerFactor}</Typography>
               </TableCell>
               <TableCell align="center">
-                <Typography variant="h6" fontWeight={600}>Download</Typography>
+                <Button variant="contained" color="primary" disabled>
+                  <Typography variant="h6">Download</Typography>
+                </Button>
               </TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {monthlyReport.map((row, index) => (
-              <TableRow
-                key={row.month}
-                sx={{
-                  backgroundColor:
-                    index % 2 === 0
-                      ? theme.palette.background.default
-                      : theme.palette.background.default,
-                }}
-              >
-                <TableCell align="center">
-                  <Typography variant="h6">{selectedPowerMeter}</Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Typography variant="h6">{row.month}</Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Typography variant="h6">{row.consumption}</Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Typography variant="h6">{row.demand}</Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Typography variant="h6">{row.powerFactor}</Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Button variant="contained" color="primary" disabled>
-                    <Typography variant="h6">Download</Typography>
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
         )}</Box>
     </Box>
   );
