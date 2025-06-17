@@ -103,6 +103,7 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     end_utc,
     mode
   );
+  console.log('Demand Profile Data:', demandProfileData);
 
   // X axis label and dataKey
   let xAxisLabel = '';
@@ -131,16 +132,17 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     } else if (apiTimeInterval === 'month') {
       formattedName = formatMonthLocal(item[xDataKey]);
     }
+     console.log( typeof item.w_avg)
     return {
       ...item,
       name: formattedName,
-      w_max: item.w_max,
-      w_avg: item.w_avg,
-      var_max: item.var_max,
-      var_avg: item.var_avg,
+      w_m: item.w_max,
+      w_a: parseFloat(parseFloat(item.w_avg).toFixed(3)),
+      var_m: item.var_max,
+      var_a: parseFloat(parseFloat(item.var_avg).toFixed(3)),
     };
   });
-
+  
   // Value formatters for chart
   const wFormatter = (value) => value != null ? `${value} W` : '';
   const varFormatter = (value) => value != null ? `${value} VAr` : '';
@@ -170,6 +172,7 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
             <ChartSkeletonCard/>
           ) : demandProfileData ? (
             <BarChart
+              
               slotProps={{
                 legend: {
                   hidden: false,
@@ -177,11 +180,12 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
                   itemGap: 100, // Space between legend items
                 }}}
               dataset={chartData}
+              
               series={[
-                { dataKey: 'w_max', stack: 'w', label: 'W Max', valueFormatter: wFormatter, color: chartColors.maxRealPower },
-                { dataKey: 'w_avg', stack: 'w', label: 'W Avg', valueFormatter: wFormatter, color: chartColors.avgRealPower },
-                { dataKey: 'var_max', stack: 'var', label: 'VAR Max', valueFormatter: varFormatter, color: chartColors.maxVar },
-                { dataKey: 'var_avg', stack: 'var', label: 'VAR Avg', valueFormatter: varFormatter, color: chartColors.avgVar },
+                { dataKey: 'w_m', stack: 'w', label: 'W Max', valueFormatter: wFormatter, color: chartColors.maxRealPower },
+                { dataKey: 'w_a', stack: 'w', label: 'W Avg', valueFormatter: wFormatter, color: chartColors.avgRealPower },
+                { dataKey: 'var_m', stack: 'var', label: 'VAR Max', valueFormatter: varFormatter, color: chartColors.maxVar },
+                { dataKey: 'var_a', stack: 'var', label: 'VAR Avg', valueFormatter: varFormatter, color: chartColors.avgVar },
               ]}
               xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band', tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 }, minStep: 20, interval: 0 , labelStyle: { transform:'translateY(15px)' } }]}
               height={400}
