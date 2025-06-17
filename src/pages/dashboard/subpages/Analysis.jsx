@@ -12,7 +12,7 @@ import DemandProfileCard from "../components/cards/DemandProfileCard";
 import DemandHistoryCard from "../components/cards/DemandHistoryCard";
 import ConsumptionProfileCard from "../components/cards/ConsumptionProfileCard";
 import ConsumptionHistoryCard from "../components/cards/ConsumptionHistoryCard";
-
+import ThdProfileCard from "../components/cards/ThdProfileCard";
 // Hooks
 import { useMeasurementRange } from '../../../hooks/useMeasurementRange';
 
@@ -70,6 +70,9 @@ const Analysis = ({ powerMeter }) => {
         </Grid>
         <Grid size={isSmallScreen ? 12 : 6}>
           <DemandProfileCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} t={t} />
+        </Grid>
+        <Grid size={isSmallScreen ? 12 : 6}>
+          <ThdProfileCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} t={t} />
         </Grid>
       </Grid>
     </Box>

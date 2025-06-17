@@ -125,9 +125,13 @@ const ThdProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilte
   }
 
   // Value formatters for chart
-  const whFormatter = (value) => value != null ? `${value} Wh` : '';
-  const varhFormatter = (value) => value != null ? `${value} VArh` : '';
-
+  const thdFormatter = (value) => value != null ? `${value} %` : '';
+  /*l1_avg,
+    l2_avg,
+    l3_avg,
+    Thdl1_avg,
+    Thdl2_avg,
+    Thdl3_avg*/
   // Transform data for MUI X BarChart (show formatted local time for x-axis)
   const chartData = thdProfileData?.map((item) => {
     let formattedName = item[xDataKey];
@@ -141,8 +145,9 @@ const ThdProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilte
     return {
       ...item,
       name: formattedName,
-      wh: item.wh,
-      varh: item.varh,
+      hdl1: (item.Thdl1_avg),
+      hdl2: (item.Thdl2_avg),
+      hdl3: (item.Thdl3_avg),
     };
   });
 
@@ -173,8 +178,9 @@ const ThdProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilte
             <BarChart
               dataset={chartData}
               series={[
-                { dataKey: 'wh', label: 'Wh', valueFormatter: whFormatter },
-                { dataKey: 'varh', label: 'VARh', valueFormatter: varhFormatter },
+                { dataKey: 'hdl1', label: 'THDL1', valueFormatter: thdFormatter },
+                { dataKey: 'hdl2', label: 'THDL2', valueFormatter: thdFormatter },
+                { dataKey: ' hdl3', label: 'THDL3', valueFormatter: thdFormatter },
               ]}
               xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band', tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 }, minStep: 20, interval: 0 }]}
               height={350}
