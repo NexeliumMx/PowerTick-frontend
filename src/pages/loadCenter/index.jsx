@@ -4,7 +4,7 @@ import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import { useTheme } from "@mui/material/styles";
 
 // Components
-import Header from "../../components/ui/Header";
+import Header from "../../layout/Header";
 
 // Import chart colors
 import chartColors from "../../theme/chartColors";

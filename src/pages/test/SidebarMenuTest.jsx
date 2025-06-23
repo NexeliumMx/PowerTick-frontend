@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box } from "@mui/material";
-import SidebarMenu from "../../components/ui/SidebarMenu";
-import Topbar from "../../components/ui/Topbar";
+import SidebarMenu from "../../layout/SideBar/SidebarMenu";
+import Topbar from "../../layout/Topbar";
 import MUIComponentsTest from "./MUIComponentsTest";
 
 const SidebarMenuTest = () => {

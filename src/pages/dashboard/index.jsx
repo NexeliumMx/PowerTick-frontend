@@ -6,7 +6,7 @@ import { Box, Typography, Select, MenuItem } from "@mui/material";
 
 //Components
 import NavButtons from "./components/ui/NavButtons";
-import Header from "../../components/ui/Header";
+import Header from "../../layout/Header";
 
 //Context
 import { ModeContext } from "../../context/AppModeContext";
