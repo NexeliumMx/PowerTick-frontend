@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchThdProfile } from '../services/api/httpRequests';
+import { fetchThdProfile } from '../api/httpRequests';
 
 /**
  * Custom hook to fetch consumption profile for a powermeter and user, given a time range and interval.

@@ -9,7 +9,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { fetchPowermetersByUserAccess } from '../services/api/httpRequests';
+import { fetchPowermetersByUserAccess } from '../api/httpRequests';
 
 export function usePowermetersByUserAccess(user_id, mode = 'PRODUCTION', options = {}) {
   return useQuery({

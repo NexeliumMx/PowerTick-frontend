@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchMeasurementRange } from '../services/api/httpRequests';
+import { fetchMeasurementRange } from '../api/httpRequests';
 
 /**
  * Custom hook to fetch the available measurement range for a powermeter.

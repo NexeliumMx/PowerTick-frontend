@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchMonthlyReport } from '../services/api/httpRequests';
+import { fetchMonthlyReport } from '../api/httpRequests';
 
 /**
  * Custom hook to fetch demand history for a powermeter and user, given a time range.
