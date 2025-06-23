@@ -27,6 +27,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import "dayjs/locale/en";
+import "dayjs/locale/es"; // Import Spanish locale
 import { useMeasurementRange } from "../../../hooks/useMeasurementRange";
 
 dayjs.extend(utc);
@@ -54,7 +55,7 @@ const getValidYears = (measurementRange) => {
 
 const MonthlyReportsTable = () => {
   const theme = useTheme();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { state } = useContext(ModeContext);
   const { accounts } = useMsal ? useMsal() : { accounts: [] };
   const user_id = accounts && accounts[0]?.idTokenClaims?.oid;
@@ -90,6 +91,11 @@ const MonthlyReportsTable = () => {
       setSelectedYear("");
     }
   }, [validYears, selectedYear]);
+
+  // Set dayjs locale when language changes
+  useEffect(() => {
+    dayjs.locale(i18n.language === "es" ? "es" : "en");
+  }, [i18n.language]);
 
   const {
     data: monthlyReport,
@@ -190,11 +196,6 @@ const MonthlyReportsTable = () => {
                 <TableRow sx={{ backgroundColor: theme.palette.background.paper }}>
                   <TableCell align="center">
                     <Typography variant="h6" fontWeight={600}>
-                      Power Meter
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="center">
-                    <Typography variant="h6" fontWeight={600}>
                       Month
                     </Typography>
                   </TableCell>
@@ -232,9 +233,6 @@ const MonthlyReportsTable = () => {
                     }}
                   >
                     <TableCell align="center">
-                      <Typography variant="h6">{selectedPowerMeter}</Typography>
-                    </TableCell>
-                    <TableCell align="center">
                       <Typography variant="h6">
                         {dayjs(row.month, "YYYY-MM").format("MMMM")}
                       </Typography>
@@ -243,10 +241,10 @@ const MonthlyReportsTable = () => {
                       <Typography variant="h6">{row.consumption}</Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Typography variant="h6">{row.demand}</Typography>
+                      <Typography variant="h6">{row.avg_power_factor}</Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Typography variant="h6">{row.powerFactor}</Typography>
+                      <Typography variant="h6">{row.max_demand}</Typography>
                     </TableCell>
                     <TableCell align="center">
                       <Button variant="contained" color="primary" disabled>
