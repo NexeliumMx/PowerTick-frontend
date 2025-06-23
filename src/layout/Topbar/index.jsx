@@ -9,6 +9,7 @@ import {
   Select,
   useMediaQuery,
   Typography,
+  Button,
 } from "@mui/material";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
@@ -20,6 +21,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Icon } from '@iconify/react';
 import { useTranslation } from 'react-i18next';
 import LanguageIcon from '@mui/icons-material/Language';
+import { useMsal } from "@azure/msal-react";
 
 const Topbar = ({ handleDrawerToggle }) => {
   const theme = useTheme();
@@ -27,6 +29,7 @@ const Topbar = ({ handleDrawerToggle }) => {
   const colorMode = useContext(ColorModeContext);
   const { state, dispatch } = useContext(ModeContext);
   const { i18n, t } = useTranslation();
+  const { instance } = useMsal();
 
   // Detect small screens (sm and xs)
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -44,6 +47,10 @@ const Topbar = ({ handleDrawerToggle }) => {
   };
 
   const getFlagCode = (lang) => lang === 'es' ? 'MX' : 'US';
+
+  const handleLogout = () => {
+    instance.logoutRedirect();
+  };
 
   return (
     <Box
@@ -171,6 +178,20 @@ const Topbar = ({ handleDrawerToggle }) => {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
+        <Button
+          variant="outlined"
+          sx={{
+            color: '#fff',
+            borderColor: '#fff',
+            '&:hover': {
+              borderColor: '#fff',
+            },
+            ml: 2,
+          }}
+          onClick={handleLogout}
+        >
+          Logout
+        </Button>
       </Box>
     </Box>
   );
