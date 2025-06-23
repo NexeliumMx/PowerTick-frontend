@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import SignBar from "../components/SignBar";
+import SignBar from "../components/Topbar";
 import ExtraInfoFooter from "../components/ExtraInfoFooter";
 
 export default function CodigoDeRed() {

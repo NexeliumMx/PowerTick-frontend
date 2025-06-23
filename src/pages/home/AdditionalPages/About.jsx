@@ -1,10 +1,10 @@
 import { Box, Divider, Typography } from "@mui/material";
-import SignBar from "../components/SignBar";
+import SignBar from "../components/Topbar";
 import ExtraInfoFooter from "../components/ExtraInfoFooter";
 import about1 from "./HomePagesMedia/about1.jpg";
 import monograma_claro_recortado from "./HomePagesMedia/monograma_claro_recortado.png";
 
-export default function AcercaDe() {
+export default function About() {
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "white", display: "flex", flexDirection: "column" }}>
       <SignBar />

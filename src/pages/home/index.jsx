@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import { useMsal } from "@azure/msal-react";
 import { useEffect, useRef, useState } from "react";
-import SignBar from "./components/SignBar";
+import SignBar from "./components/Topbar";
 import HeroSection from "./components/HeroSection";
 import { AnimatePresence } from "framer-motion";
 import ExtraInfoFooter from "./components/ExtraInfoFooter";

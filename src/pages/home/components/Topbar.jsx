@@ -11,7 +11,7 @@ import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import { useMsal } from "@azure/msal-react";
 import { Link, useLocation } from "react-router-dom";
 
-const SignBar = () => {
+const Topbar = () => {
   const theme = useTheme();
   const colorMode = useContext(ColorModeContext);
   const { instance } = useMsal();
@@ -110,11 +110,11 @@ const SignBar = () => {
         </Button>
         <Button
           component={Link}
-          to="/home-pages/acerca-de"
+          to="/home-pages/about"
           sx={{
-            textDecoration: location.pathname === "/home-pages/acerca-de" ? "underline" : "none",
+            textDecoration: location.pathname === "/home-pages/about" ? "underline" : "none",
             color: "text.primary",
-            fontWeight: location.pathname === "/home-pages/acerca-de" ? "bold" : "normal",
+            fontWeight: location.pathname === "/home-pages/about" ? "bold" : "normal",
             mx: 1,
           }}
         >
@@ -149,4 +149,4 @@ const SignBar = () => {
   );
 };
 
-export default SignBar;
+export default Topbar;

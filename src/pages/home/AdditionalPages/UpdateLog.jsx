@@ -1,6 +1,6 @@
 import { Box, Typography, Divider, Card, CardContent, List, ListItem, ListItemText } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import SignBar from "../components/SignBar";
+import SignBar from "../components/Topbar";
 import ExtraInfoFooter from "../components/ExtraInfoFooter";
 
 // Utilidad para estructurar la información de una actualización
