@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchConsumptionHistory } from '../services/api/httpRequests';
+import { fetchConsumptionHistory } from '../api/httpRequests';
 
 /**
  * Custom hook to fetch consumption history for a powermeter and user, given a time range.

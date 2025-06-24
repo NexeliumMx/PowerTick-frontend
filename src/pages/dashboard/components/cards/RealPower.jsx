@@ -1,9 +1,12 @@
 import { BarChart } from '@mui/x-charts/BarChart';
-import { Paper, Typography, Box } from '@mui/material';
+import { Card, Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import chartColors from '../../../../theme/chartColors';
+import { useTheme } from '@mui/material/styles';
+
 const RealPower = ({ data, title }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   // Debug: log the incoming data and its type
   console.log('RealPower received data:', data, 'Type:', typeof data, Array.isArray(data) ? 'Array' : 'Not array');
@@ -21,29 +24,53 @@ const RealPower = ({ data, title }) => {
 
   if (!hasValidData) {
     return (
-      <Paper elevation={3} sx={{ px: 2, height: 450 }}>
-        <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
+      <Card
+        sx={{
+          px: 2,
+          minHeight: 450,
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: theme.palette.background.card, // Matches the Card theme
+          boxShadow: theme.shadows[3], // Adds elevation
+        }}
+      >
+        <Typography 
+          variant="h3" 
+          sx={{ fontWeight: 600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+        >
           {title || t('measurements.realPower')}
         </Typography>
-        <Typography variant="body2" color="text.secondary" pt={20}>
+        <Typography variant="body2" color="text.secondary" align="center" pt={20}>
           {t('dashboard.dataNotAvailable')}
         </Typography>
-      </Paper>
+      </Card>
     );
   }
 
   const { watts_l1, watts_l2, watts_l3, watts, timestamp } = safeData;
 
   return (
-    <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
+    <Card
+      sx={{
+        px: 3,
+        minHeight: 450,
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: theme.palette.background.card, // Matches the Card theme
+        boxShadow: theme.shadows[3], // Adds elevation
+      }}
+    >
       <Typography 
         variant="h3" 
-        sx={{fontWeight:600 , textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+        sx={{ fontWeight: 600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
       >
         {title || t('measurements.realPower')}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
+          slotProps={{
+            legend: { hidden: true }
+          }}
           key={timestamp}
           borderRadius={10}
           grid={{ horizontal: true }}
@@ -54,14 +81,14 @@ const RealPower = ({ data, title }) => {
               data: ['L1', 'L2', 'L3', 'Total'],
               scaleType: 'band',
               label: 'Phases',
-              labelStyle: { textAnchor: 'middle'},
+              labelStyle: { textAnchor: 'middle' },
               categoryGapRatio: 0.2,
               barGapRatio: -1,
             },
           ]}
           yAxis={[
             {
-              label: 'Power (W)',
+              label: 'Power (kW)',
               labelStyle: {
                 transform: 'translateX(-20px)',
                 writingMode: 'sideways-lr',
@@ -71,28 +98,28 @@ const RealPower = ({ data, title }) => {
           ]}
           series={[
             {
-              data: [watts_l1, null, null, null],
+              data: [watts_l1/10000, null, null, null],
               label: 'L1',
               color: chartColors.phase1,
-              valueFormatter: (value) => `${value} W`
+              valueFormatter: (value) => `${value} kW`
             },
             {
-              data: [null, watts_l2, null, null],
+              data: [null, watts_l2/10000, null, null],
               label: 'L2',
               color: chartColors.phase2,
-              valueFormatter: (value) => `${value} W`
+              valueFormatter: (value) => `${value} jW`
             },
             {
-              data: [null, null, watts_l3, null],
+              data: [null, null, watts_l3/10000, null],
               label: 'L3',
               color: chartColors.phase3,
-              valueFormatter: (value) => `${value} W`
+              valueFormatter: (value) => `${value} kW`
             },
             {
-              data: [null, null, null, watts],
+              data: [null, null, null, watts/10000],
               label: 'Total',
               color: chartColors.phaseTotal,
-              valueFormatter: (value) => `${value} W`
+              valueFormatter: (value) => `${value} kW`
             }
           ]}
           tooltip={{
@@ -115,7 +142,7 @@ const RealPower = ({ data, title }) => {
           }}
         />
       </Box>
-    </Paper>
+    </Card>
   );
 };
 

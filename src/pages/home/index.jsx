@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import { useMsal } from "@azure/msal-react";
 import { useEffect, useRef, useState } from "react";
-import SignBar from "./components/SignBar";
+import SignBar from "./components/Topbar";
 import HeroSection from "./components/HeroSection";
 import { AnimatePresence } from "framer-motion";
 import ExtraInfoFooter from "./components/ExtraInfoFooter";
@@ -45,10 +45,20 @@ export default function Home() {
     const handleScroll = () => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      console.log("Showcase rect.top:", rect.top, "rect.bottom:", rect.bottom, "windowInner",window.innerHeight); // <-- Logging here
 
-      // Only lock when the top is very close to the top of the viewport
-      if (rect.top >= -50 && rect.top <= 2 && rect.bottom > window.innerHeight / 2) {
+      const atFirst = activeIndex === 0;
+      const atLast = activeIndex === showcaseCards.length - 1;
+
+      // If at the first or last slide, never lock the scroll
+      if (atFirst || atLast) {
+        setShowcaseActive(false);
+        document.body.style.overflow = "";
+        showcaseLockedRef.current = false;
+        return;
+      }
+
+      // Only lock when the top is within a wider range of the viewport
+      if (rect.top >= -200 && rect.top <= 200 && rect.bottom > window.innerHeight / 2) {
         setShowcaseActive(true);
         document.body.style.overflow = "hidden";
         if (!showcaseLockedRef.current) {
@@ -71,29 +81,31 @@ export default function Home() {
       document.body.style.overflow = "";
       showcaseLockedRef.current = false;
     };
-  }, []);
+  }, [activeIndex]);
 
   // Handle wheel for card transitions only when showcase is active
   useEffect(() => {
     if (!showcaseActive) return;
 
     const handleWheel = (e) => {
-      console.log("Scroll Event Triggered");
-      console.log("Delta:", e.deltaY, "Active Index:", activeIndex);
-
-
-
       const delta = e.deltaY;
       const isScrollingDown = delta > 0;
       const isScrollingUp = delta < 0;
 
-      const allowScrollUpToExit = isScrollingUp && activeIndex === 0;
-      const allowScrollDownToExit = isScrollingDown && activeIndex === showcaseCards.length - 1;
+      const atFirst = activeIndex === 0;
+      const atLast = activeIndex === showcaseCards.length - 1;
 
-      if (!allowScrollUpToExit && !allowScrollDownToExit) {
-        e.preventDefault();
-        e.stopPropagation();
+      // If at the first slide and scrolling up, or at the last and scrolling down, unlock immediately
+      if ((atFirst && isScrollingUp) || (atLast && isScrollingDown)) {
+        document.body.style.overflow = "";
+        setShowcaseActive(false);
+        showcaseLockedRef.current = false;
+        return; // Let the scroll event propagate
       }
+
+      // Otherwise, lock and handle slide transitions
+      e.preventDefault();
+      e.stopPropagation();
 
       if (scrollTimeout.current) return;
 
@@ -101,10 +113,6 @@ export default function Home() {
         setActiveIndex((prev) => Math.min(prev + 1, showcaseCards.length - 1));
       } else if (isScrollingUp && activeIndex > 0) {
         setActiveIndex((prev) => Math.max(prev - 1, 0));
-      } else if (allowScrollUpToExit || allowScrollDownToExit) {
-        document.body.style.overflow = "";
-        setShowcaseActive(false);
-        showcaseLockedRef.current = false;
       }
 
       scrollTimeout.current = setTimeout(() => {
