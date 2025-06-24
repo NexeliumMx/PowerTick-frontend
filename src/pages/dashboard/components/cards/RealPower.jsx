@@ -88,7 +88,7 @@ const RealPower = ({ data, title }) => {
           ]}
           yAxis={[
             {
-              label: 'Power (W)',
+              label: 'Power (kW)',
               labelStyle: {
                 transform: 'translateX(-20px)',
                 writingMode: 'sideways-lr',
@@ -98,28 +98,28 @@ const RealPower = ({ data, title }) => {
           ]}
           series={[
             {
-              data: [watts_l1, null, null, null],
+              data: [watts_l1/10000, null, null, null],
               label: 'L1',
               color: chartColors.phase1,
-              valueFormatter: (value) => `${value} W`
+              valueFormatter: (value) => `${value} kW`
             },
             {
-              data: [null, watts_l2, null, null],
+              data: [null, watts_l2/10000, null, null],
               label: 'L2',
               color: chartColors.phase2,
-              valueFormatter: (value) => `${value} W`
+              valueFormatter: (value) => `${value} jW`
             },
             {
-              data: [null, null, watts_l3, null],
+              data: [null, null, watts_l3/10000, null],
               label: 'L3',
               color: chartColors.phase3,
-              valueFormatter: (value) => `${value} W`
+              valueFormatter: (value) => `${value} kW`
             },
             {
-              data: [null, null, null, watts],
+              data: [null, null, null, watts/10000],
               label: 'Total',
               color: chartColors.phaseTotal,
-              valueFormatter: (value) => `${value} W`
+              valueFormatter: (value) => `${value} kW`
             }
           ]}
           tooltip={{

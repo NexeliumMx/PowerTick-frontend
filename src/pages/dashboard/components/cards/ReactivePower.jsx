@@ -78,7 +78,7 @@ const ReactivePower = ({ data, title }) => {
             labelStyle: { textAnchor: 'middle' }
           }]}
           yAxis={[{
-            label: 'Reactive Power (VAR)',
+            label: 'Reactive Power (kVAR)',
             labelStyle: {
               transform: 'translateX(-20px)',
               writingMode: 'sideways-lr',
@@ -87,28 +87,28 @@ const ReactivePower = ({ data, title }) => {
           }]}
           series={[
             {
-              data: [var_l1, null, null, null],
+              data: [var_l1/10000, null, null, null],
               label: 'L1',
               color: chartColors.phase1,
-              valueFormatter: (value) => `${value} VAR`
+              valueFormatter: (value) => `${value} kVAr`
             },
             {
-              data: [null, var_l2, null, null],
+              data: [null, var_l2/10000, null, null],
               label: 'L2',
               color: chartColors.phase2,
-              valueFormatter: (value) => `${value} VAR`
+              valueFormatter: (value) => `${value} kVAr`
             },
             {
-              data: [null, null, var_l3, null],
+              data: [null, null, var_l3/10000, null],
               label: 'L3',
               color: chartColors.phase3,
-              valueFormatter: (value) => `${value} VAR`
+              valueFormatter: (value) => `${value} kVAr`
             },
             {
-              data: [null, null, null, totalVar],
+              data: [null, null, null, totalVar/10000],
               label: 'Total',
               color: chartColors.phaseTotal,
-              valueFormatter: (value) => `${value} VAR`
+              valueFormatter: (value) => `${value} kVAr`
             }
           ]}
           tooltip={{

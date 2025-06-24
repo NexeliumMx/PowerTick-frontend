@@ -101,22 +101,22 @@ const Power = ({ data, title }) => {
           }]}
           series={[
             {
-              data: [watts_l1, watts_l2, watts_l3, watts],
+              data: [watts_l1/10, watts_l2/10, watts_l3/10, watts/10],
               label: t('measurements.watts'),
               color: chartColors.phase1,
-              valueFormatter: (value) => `${value} W`,
+              valueFormatter: (value) => `${value} kW`,
             },
             {
-              data: [va_l1, va_l2, va_l3, va],
+              data: [va_l1/10000, va_l2/10000, va_l3/10000, va/10000],
               label: t('measurements.apparentPower'),
               color: chartColors.phase2,
-              valueFormatter: (value) => `${value} VA`,
+              valueFormatter: (value) => `${value} kVA`,
             },
             {
-              data: [var_l1, var_l2, var_l3, var_],
+              data: [var_l1/10000, var_l2/10000, var_l3/10000, var_/10000],
               label: t('measurements.reactivePower'),
               color: chartColors.phase3,
-              valueFormatter: (value) => `${value} var`,
+              valueFormatter: (value) => `${value} kvar`,
             },
           ]}
           tooltip={{
@@ -124,9 +124,9 @@ const Power = ({ data, title }) => {
             render: (params) => {
               const item = params[0];
               if (item) {
-                let unit = 'W';
-                if (item.seriesLabel.includes('Apparent')) unit = 'VA';
-                if (item.seriesLabel.includes('Reactive')) unit = 'var';
+                let unit = 'kW';
+                if (item.seriesLabel.includes('Apparent')) unit = 'kVA';
+                if (item.seriesLabel.includes('Reactive')) unit = 'kvar';
                 return (
                   <Box sx={{ p: 1 }}>
                     <Typography variant="body2">

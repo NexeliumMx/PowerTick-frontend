@@ -90,25 +90,25 @@ const VoltageLN = ({ data, title }) => {
           ]}
           series={[
             {
-              data: [voltage_l1, 0, 0, 0],
+              data: [voltage_l1/10, 0, 0, 0],
               label: 'L1',
               color: chartColors.phase1,
               valueFormatter: (value) => `${value} V`
             },
             {
-              data: [0, voltage_l2, 0, 0],
+              data: [0, voltage_l2/10, 0, 0],
               label: 'L2',
               color: chartColors.phase2,
               valueFormatter: (value) => `${value} V`
             },
             {
-              data: [0, 0, voltage_l3, 0],
+              data: [0, 0, voltage_l3/10, 0],
               label: 'L3',
               color: chartColors.phase3,
               valueFormatter: (value) => `${value} V`
             },
             {
-              data: [0, 0, 0, voltage_ln],
+              data: [0, 0, 0, voltage_ln/10],
               label: 'Average',
               color: chartColors.phaseTotal,
               valueFormatter: (value) => `${value} V`

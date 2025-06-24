@@ -108,22 +108,22 @@ const Currents = ({ data, title }) => {
           height={350}
           series={[
             {
-              data: [current_l1, null, null, null],
+              data: [current_l1/1000, null, null, null],
               label: 'Phase 1',
               valueFormatter: (value) => `${value} A`,
             },
             {
-              data: [null, current_l2, null, null],
+              data: [null, current_l2/1000, null, null],
               label: 'Phase 2',
               valueFormatter: (value) => `${value} A`,
             },
             {
-              data: [null, null, current_l3, null],
+              data: [null, null, current_l3/1000, null],
               label: 'Phase 3',
               valueFormatter: (value) => `${value} A`,
             },
             {
-              data: [null, null, null, total],
+              data: [null, null, null, total/1000],
               label: 'Total',
               valueFormatter: (value) => `${value} A`,
             },

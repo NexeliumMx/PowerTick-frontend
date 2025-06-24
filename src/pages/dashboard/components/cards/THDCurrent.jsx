@@ -91,7 +91,7 @@ const THDCurrent = ({ data, title }) => {
           }]}
           series={[
             {
-              data: [thd_current_l1, thd_current_l2, thd_current_l3],
+              data: [thd_current_l1/100, thd_current_l2/100, thd_current_l3/100],
               label: 'THD Current',
               color: chartColors.phaseTotal,
               valueFormatter: (value) => `${value} %`,

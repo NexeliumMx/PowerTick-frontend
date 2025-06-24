@@ -191,7 +191,7 @@ const LoadCenter = () => {
                                   <Gauge
                                     width={100}
                                     height={100}
-                                    value={item.avg_power_factor ? Number((item.avg_power_factor / 10).toFixed(1)) : 0}
+                                    value={item.avg_power_factor ? Number((item.avg_power_factor / 1000).toFixed(3)) : 0}
                                     valueMin={0}
                                     valueMax={100}
                                     startAngle={-110}

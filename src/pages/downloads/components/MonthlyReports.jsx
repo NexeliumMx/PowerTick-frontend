@@ -241,7 +241,7 @@ const MonthlyReportsTable = () => {
                       <Typography variant="h6">{row.consumption}</Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Typography variant="h6">{row.avg_power_factor}</Typography>
+                      <Typography variant="h6">{(row.avg_power_factor/1000).toFixed(4)}</Typography>
                     </TableCell>
                     <TableCell align="center">
                       <Typography variant="h6">{row.max_demand}</Typography>
