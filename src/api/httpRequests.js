@@ -170,3 +170,20 @@ export async function fetchMonthlyReport(user_id, powermeter_id, year, mode = 'P
   }
   return resData;
 }
+
+// Fetch monthly report
+export async function fetchLoadCenters(user_id, mode = 'PRODUCTION') {
+  let url = `https://power-tick-api-js.nexelium.mx/api/loadCenters?user_id=${user_id}`;
+  if (mode === 'DEMO') {
+    url += "&enviroment=demo";
+  } else if (mode === 'DEV') {
+    url += "&enviroment=dev";
+  }
+  console.log(`[API CALL] fetchLoadCenters: ${url}`);
+  const response = await fetch(url);
+  const resData = await response.json();
+  if (!response.ok) {
+    throw new Error('Failed to fetch monthly report');
+  }
+  return resData;
+}

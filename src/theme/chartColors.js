@@ -36,9 +36,9 @@ const chartColors = {
   powerFactorPoor: "#d92525",
 
 // Demand LoadCenters
-  welldimensioned: "#2ECC71", // Green
-  overdimensioned: "#F1C40F", // Yellow
-  underdimensioned: "#E74C3C", // Red
+  nopeak: "#88A61B", // Green
+  semipeak: "#F29F05", // Yellow
+  peak: "#d92525", // Red
   undefined: "#9E9E9E", // Grey for undefined values
 };
 
