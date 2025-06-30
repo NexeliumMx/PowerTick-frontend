@@ -1,7 +1,7 @@
 import { Box, Button, Typography, Link } from "@mui/material";
 import BluuCard from "../../components/test/BluuCard";
 import { useTheme } from "@mui/material/styles";
-import Header from "../../components/ui/Header";
+import Header from "../../layout/Header";
 
 export default function MUIComponentsTest() {
   const theme = useTheme();

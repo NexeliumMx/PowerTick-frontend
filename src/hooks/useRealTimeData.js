@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchRealTimeData } from '../services/api/httpRequests';
+import { fetchRealTimeData } from '../api/httpRequests';
 
 export function useRealTimeData(user_id, powermeter_id, mode = 'PRODUCTION', options = {}) {
   return useQuery({

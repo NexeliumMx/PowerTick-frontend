@@ -1,4 +1,4 @@
-import { Box, Typography, FormControl, InputLabel, Select, MenuItem, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Box, Typography, FormControl, InputLabel, Select, MenuItem, ToggleButton, ToggleButtonGroup, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import dayjs from 'dayjs';
 
@@ -19,9 +19,29 @@ const TimeFilterProfile = ({
   validYears, validMonths, validDays
 }) => {
   const theme = useTheme();
+  const isSmallScreen = useMediaQuery("(max-width:960px)");
+
   return (
-    <>
-      <Box sx={{ width: "50%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        flexDirection: isSmallScreen ? "column" : "row",
+        gap: 2,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {/* Analysis Interval */}
+      <Box
+        sx={{
+          width: isSmallScreen ? "100%" : "50%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Typography variant="h5" sx={{ mb: 2 }}>
           Analysis Interval
         </Typography>
@@ -36,13 +56,32 @@ const TimeFilterProfile = ({
           <ToggleButton value="day" aria-label="Daily">Daily</ToggleButton>
         </ToggleButtonGroup>
       </Box>
-      <Box sx={{ width: "50%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+
+      {/* Time Filter */}
+      <Box
+        sx={{
+          width: isSmallScreen ? "100%" : "50%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Typography variant="h5" sx={{ mb: 2 }}>
           Time Filter
         </Typography>
-        <Box sx={{ width: "100%", display: "flex", alignItems: "flex-end", justifyContent: "center", gap: 2 }}>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            gap: 2,
+            alignItems: "flex-end",
+            justifyContent: "center",
+          }}
+        >
           {(timeInterval === "year" || timeInterval === "month" || timeInterval === "day") && (
-            <FormControl size="small" sx={{ minWidth: 90 }}>
+            <FormControl size="small" sx={{ minWidth: 90, width: isSmallScreen ? "100%" : "auto" }}>
               <InputLabel id="year-label">Year</InputLabel>
               <Select
                 size="small"
@@ -57,7 +96,7 @@ const TimeFilterProfile = ({
             </FormControl>
           )}
           {(timeInterval === "month" || timeInterval === "day") && (
-            <FormControl size="small" sx={{ minWidth: 90 }}>
+            <FormControl size="small" sx={{ minWidth: 90, width: isSmallScreen ? "100%" : "auto" }}>
               <InputLabel id="month-label">Month</InputLabel>
               <Select
                 size="small"
@@ -72,7 +111,7 @@ const TimeFilterProfile = ({
             </FormControl>
           )}
           {timeInterval === "day" && (
-            <FormControl size="small" sx={{ minWidth: 90 }}>
+            <FormControl size="small" sx={{ minWidth: 90, width: isSmallScreen ? "100%" : "auto" }}>
               <InputLabel id="day-label">Day</InputLabel>
               <Select
                 size="small"
@@ -88,7 +127,7 @@ const TimeFilterProfile = ({
           )}
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };
 
