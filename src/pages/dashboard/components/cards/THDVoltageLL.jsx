@@ -13,7 +13,7 @@ const THDVoltageLL = ({ data, title }) => {
   const thd_voltage_l1_l2 = data?.thd_voltage_l1_l2 ?? 0;
   const thd_voltage_l2_l3 = data?.thd_voltage_l2_l3 ?? 0;
   const thd_voltage_l3_l1 = data?.thd_voltage_l3_l1 ?? 0;
-
+console.log(thd_voltage_ll, thd_voltage_l1_l2, thd_voltage_l2_l3, thd_voltage_l3_l1);
   const hasValidData =
     typeof thd_voltage_ll === 'number' &&
     typeof thd_voltage_l1_l2 === 'number' &&

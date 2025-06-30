@@ -13,6 +13,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { formatHourLocal, formatDayLocal, formatMonthLocal } from '../ui/TimestampFormatter';
 import { useTranslation } from 'react-i18next';
+import { number } from "framer-motion";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -142,18 +143,19 @@ const ThdProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilte
     } else if (apiTimeInterval === 'month') {
       formattedName = formatMonthLocal(item[xDataKey]);
     }
+    
     return {
       ...item,
       name: formattedName,
-      hdl1: (item.Thdl1_avg),
-      hdl2: (item.Thdl2_avg),
-      hdl3: (item.Thdl3_avg),
+      hdl1: Number(item.thd_current_l1_avg)/100,
+      hdl2: Number(item.thd_current_l2_avg)/100,
+      hdl3: Number(item.thd_current_l3_avg)/100,
     };
   });
 
   // Use t('Analysis.consumptionProfile') for the card title
-  const cardTitle = t('Analysis.consumptionProfile');
-
+  const cardTitle = 'THD Profile';
+  console.log('THD Profile Card Data:', chartData);
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
       <CardHeader
@@ -180,7 +182,7 @@ const ThdProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilte
               series={[
                 { dataKey: 'hdl1', label: 'THDL1', valueFormatter: thdFormatter },
                 { dataKey: 'hdl2', label: 'THDL2', valueFormatter: thdFormatter },
-                { dataKey: ' hdl3', label: 'THDL3', valueFormatter: thdFormatter },
+                { dataKey: 'hdl3', label: 'THDL3', valueFormatter: thdFormatter },
               ]}
               xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band', tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 }, minStep: 20, interval: 0 }]}
               height={350}
