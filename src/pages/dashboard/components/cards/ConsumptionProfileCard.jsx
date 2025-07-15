@@ -112,13 +112,13 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
   let xAxisLabel = '';
   let xDataKey = '';
   if (apiTimeInterval === 'month') {
-    xAxisLabel = t('dashboard.month', 'Mes');
+    xAxisLabel = t('analysis.month', 'Mes');
     xDataKey = 'month_start_local';
   } else if (apiTimeInterval === 'hour') {
-    xAxisLabel = t('dashboard.hour', 'hora');
+    xAxisLabel = t('analysis.hour', 'hora');
     xDataKey = 'hour_start_utc';
   } else if (apiTimeInterval === 'day') {
-    xAxisLabel = t('dashboard.day', 'Dia');
+    xAxisLabel = t('analysis.day', 'Dia');
     xDataKey = 'day_start_utc';
   } else {
     xAxisLabel = t('dashboard.time', 'Tiempo');
@@ -148,7 +148,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
   });
 
   // Use t('Analysis.consumptionProfile') for the card title
-  const cardTitle = t('Analysis.consumptionProfile');
+  const cardTitle = t('analysis.consumptionProfile');
 
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column", backgroundColor: theme.palette.background.card}}>
@@ -167,7 +167,7 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
         }}
       />
       <CardContent sx={{ flexGrow: 1, pt: 0 }}>
-        <Box sx={{ width: "100%", overflow: "auto", px: 2, my:-5}}>
+        <Box sx={{ width: "100%", overflow: "auto", px: 2, my:-9}}>
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : consumptionProfileData ? (
@@ -176,24 +176,36 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
                 legend: {
                   hidden: false,
                   position: { vertical: 'top', horizontal: 'center' },
-                  itemGap: 100, // Space between legend items
+                  itemGap: 150, // Space between legend items
                 }}}
               dataset={chartData}
               series={[
-                { dataKey: 'wh', label: 'Wh', valueFormatter: whFormatter, color: chartColors.realEnergy },
-                { dataKey: 'varh', label: 'VARh', valueFormatter: varhFormatter, color: chartColors.reactiveEnergy },
+                { dataKey: 'wh', label: t('analysis.activeEnergy'), valueFormatter: whFormatter, color: chartColors.realEnergy },
+                { dataKey: 'varh', label: t('analysis.reactiveEnergy'), valueFormatter: varhFormatter, color: chartColors.reactiveEnergy },
               ]}
               xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band', tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 }, minStep: 20, interval: 0 , labelStyle: { transform:'translateY(15px)' } }]}
-              height={400}
+              yAxis={[{
+                label: t('analysis.consumption'),
+                labelStyle: {
+                  transform: 'translate(-85px, 0px) rotate(-90deg)',
+                  transformOrigin: 'left center',
+                  dominantBaseline: 'middle',
+                  textAnchor: 'middle'
+                },
+                tickLabelStyle: {
+                  fontSize: 12
+                }
+              }]}
+              height={440}
               margin={{ 
-                top: 100,
-                left: 40, 
+                top: 120,
+                left: 65, 
                 bottom: 60 
               }}
               sx={{ background: 'transparent' }}
             />
           ) : (
-            <Typography variant="body1">Data not available</Typography>
+            <Typography variant="body1">{t('analysis.noData')}</Typography>
           )}
         </Box>
       </CardContent>

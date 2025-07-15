@@ -39,12 +39,38 @@
     "power": "Potencia",
     "watts": "Watts (W)",
     "apparentPower": "Potencia Aparente (VA)",
-    "reactivePowerLabel": "Potencia Reactiva (var)"
+    "reactivePowerLabel": "Potencia Reactiva (var)",
+    "l1": "Fase 1",
+    "l2": "Fase 2",
+    "l3": "Fase 3"
   },
-  "Analysis": {
+  "analysis": {
     "consumptionHistory": "Historial de Consumo",
     "demandHistory": "Historial de Demanda",
     "consumptionProfile": "Perfil de Consumo",
-    "demandProfile": "Perfil de Demanda"
+    "demandProfile": "Perfil de Demanda",
+    "demand": "Demanda (w)",
+    "lastHour": "Última Hora",
+    "activeEnergy": "Consumo Efectivo (Wh)",
+    "reactiveEnergy": "Consumo Reactivo (varh)",
+    "noData": "No hay datos disponibles",
+    "consumption": "Consumo",
+    "realMax": "Potencia Activa Máxima",
+    "reactiveMax": "Potencia Reactiva Máxima",
+    "realAvg": "Potencia Activa Promedio",
+    "reactiveAvg": "Potencia Reactiva Promedio",
+    "realPower": "Demanda Activa",
+    "reactivePower": "Demanda Reactiva",
+    "interval": "Seleccionar Intervalo",
+    "yearly": "Anual",
+    "monthly": "Mensual",
+    "daily": "Diario",
+    "hourly": "Por Hora",
+    "minutes": "Minutos",
+    "time": "Filtros de tiempo",
+    "year": "Año",
+    "month": "Mes",
+    "day": "Día",
+    "hour": "Hora"
   }
 }

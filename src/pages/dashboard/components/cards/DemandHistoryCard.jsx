@@ -187,13 +187,13 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
 
   // X label variable title
   const xAxisLabel = timeInterval === "year"
-    ? t('dashboard.month', 'Mes')
+    ? t('analysis.month', 'Mes')
     : timeInterval === "month"
-    ? t('dashboard.day', 'Día')
+    ? t('analysis.day', 'Día')
     : timeInterval === "day"
-    ? t('dashboard.hour', 'Hora')
+    ? t('analysis.hour', 'Hora')
     : timeInterval === "hour"
-    ? t('dashboard.minutes', 'Minutos')
+    ? t('analysis.minutes', 'Minutos')
     : t('dashboard.time', 'Tiempo');
 
   // Transform data for Recharts (show local time)
@@ -212,8 +212,8 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
           <Typography variant="body2" sx={{ fontWeight: 600 }}>
             {payload[0].payload.timestamp_local}
           </Typography>
-          <Typography variant="body2">Real Power (W): {payload[0].payload.realPower}</Typography>
-          <Typography variant="body2">Reactive Power (VAR): {payload[0].payload.reactivePower}</Typography>
+          <Typography variant="body2">{t('analysis.realPower')}: {payload[0].payload.realPower}</Typography>
+          <Typography variant="body2">{t('analysis.reactivePower')}: {payload[0].payload.reactivePower}</Typography>
         </Box>
       );
     }
@@ -238,7 +238,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
   }, [timeInterval]);
 
   // Use t('Analysis.demandHistory') for the card title
-  const cardTitle = t('Analysis.demandHistory');
+  const cardTitle = t('analysis.demandHistory');
 
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" , backgroundColor: theme.palette.background.card }}>
@@ -283,7 +283,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
                   stroke={theme.palette.text.primary}
                 >
                   <Label
-                    value="Real Power (W)"
+                    value={t('analysis.realPower')}
                     angle={-90}
                     position="insideLeft"
                     offset={-10}
@@ -301,7 +301,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
                   stroke={theme.palette.text.primary}
                 >
                   <Label
-                    value="Reactive Power (VAR)"
+                    value={t('analysis.reactivePower')}
                     angle={-90}
                     position="insideRight"
                     offset={-10}
@@ -314,12 +314,12 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
                 </YAxis>
                 <Tooltip content={<CustomTooltip />} />
                 <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{marginRight: 40, paddingBottom: 8}} />
-                <Line type="monotone" dataKey="realPower" stroke={chartColors.realEnergy} name="Real Power (W)" dot={false} yAxisId="left" strokeWidth={3}/>
-                <Line type="monotone" dataKey="reactivePower" stroke={chartColors.reactiveEnergy} name="Reactive Power (VAR)"  dot={false} yAxisId="right" strokeWidth={3}/>
+                <Line type="monotone" dataKey="realPower" stroke={chartColors.realEnergy} name={t("analysis.realPower")} dot={false} yAxisId="left" strokeWidth={3}/>
+                <Line type="monotone" dataKey="reactivePower" stroke={chartColors.reactiveEnergy} name={t("analysis.reactivePower")}  dot={false} yAxisId="right" strokeWidth={3}/>
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <Typography variant="body1">No data available</Typography>
+            <Typography variant="body1">{t('analysis.noData')}</Typography>
           )}
         </Box>
       </CardContent>

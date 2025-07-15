@@ -13,6 +13,7 @@ import timezone from 'dayjs/plugin/timezone';
 import { formatHourLocal, formatDayLocal, formatMonthLocal } from '../ui/TimestampFormatter';
 import { useTranslation } from 'react-i18next';
 import chartColors from "../../../../theme/chartColors";
+import { AnalyticsSharp } from "@mui/icons-material";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -109,13 +110,13 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
   let xAxisLabel = '';
   let xDataKey = '';
   if (apiTimeInterval === 'month') {
-    xAxisLabel = t('dashboard.month', 'Mes');
+    xAxisLabel = t('analysis.month', 'Mes');
     xDataKey = 'month_start_local';
   } else if (apiTimeInterval === 'hour') {
-    xAxisLabel = t('dashboard.hour', 'hora');
+    xAxisLabel = t('analysis.hour', 'hora');
     xDataKey = 'hour_start_utc';
   } else if (apiTimeInterval === 'day') {
-    xAxisLabel = t('dashboard.day', 'dia');
+    xAxisLabel = t('analysis.day', 'dia');
     xDataKey = 'day_start_utc';
   } else {
     xAxisLabel = t('dashboard.time', 'Tiempo');
@@ -148,7 +149,7 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
   const varFormatter = (value) => value != null ? `${value} VAr` : '';
 
   // Use t('Analysis.demandProfile') for the card title
-  const cardTitle = t('Analysis.demandProfile');
+  const cardTitle = t('analysis.demandProfile');
 
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" , backgroundColor: theme.palette.background.card}}>
@@ -167,7 +168,7 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
         }}
       />
       <CardContent sx={{ flexGrow: 1, pt: 0 }}>
-        <Box sx={{ width: "100%", overflow: "auto", px: 2, my:-5}}>
+        <Box sx={{ width: "100%", overflow: "auto", px: 2, my:-10}}>
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : demandProfileData ? (
@@ -177,27 +178,39 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
                 legend: {
                   hidden: false,
                   position: { vertical: 'top', horizontal: 'center' },
-                  itemGap: 100, // Space between legend items
+                  itemGap: 180, // Space between legend items
                 }}}
               dataset={chartData}
               
               series={[
-                { dataKey: 'w_m', stack: 'w', label: 'W Max', valueFormatter: wFormatter, color: chartColors.maxRealPower },
-                { dataKey: 'w_a', stack: 'w', label: 'W Avg', valueFormatter: wFormatter, color: chartColors.avgRealPower },
-                { dataKey: 'var_m', stack: 'var', label: 'VAR Max', valueFormatter: varFormatter, color: chartColors.maxVar },
-                { dataKey: 'var_a', stack: 'var', label: 'VAR Avg', valueFormatter: varFormatter, color: chartColors.avgVar },
+                { dataKey: 'w_m', stack: 'w', label: t('analysis.realMax'), valueFormatter: wFormatter, color: chartColors.maxRealPower },
+                { dataKey: 'w_a', stack: 'w', label: t('analysis.realAvg'), valueFormatter: wFormatter, color: chartColors.avgRealPower },
+                { dataKey: 'var_m', stack: 'var', label: t('analysis.reactiveMax'), valueFormatter: varFormatter, color: chartColors.maxVar },
+                { dataKey: 'var_a', stack: 'var', label: t('analysis.reactiveAvg'), valueFormatter: varFormatter, color: chartColors.avgVar },
               ]}
               xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band', tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 }, minStep: 20, interval: 0 , labelStyle: { transform:'translateY(15px)' } }]}
-              height={400}
+              yAxis={[{
+                label: t('analysis.demand'),
+                labelStyle: {
+                  transform: 'translate(-90px, 0px) rotate(-90deg)',
+                  transformOrigin: 'left center',
+                  dominantBaseline: 'middle',
+                  textAnchor: 'middle'
+                },
+                tickLabelStyle: {
+                  fontSize: 12
+                }
+              }]}
+              height={450}
               margin={{ 
-                top: 100,
-                left: 40, 
+                top: 150,
+                left: 70, 
                 bottom: 60 
               }}
               sx={{ background: 'transparent' }}
             />
           ) : (
-            <Typography variant="body1">Data not available</Typography>
+            <Typography variant="body1">{t('analysis.noData')}</Typography>
           )}
         </Box>
       </CardContent>

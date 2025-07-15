@@ -1,6 +1,6 @@
 // Centralized constant for 'Last Hour' selection in time filters
 export const LAST_HOUR_VALUE = 'last_hour';
-
+import { useTranslation } from 'react-i18next';
 import { Box, Typography, FormControl, InputLabel, Select, MenuItem, ToggleButton, ToggleButtonGroup, useMediaQuery } from '@mui/material';
 
 /**
@@ -19,8 +19,12 @@ const TimeFilterHistory = ({
   selectedMonth, setSelectedMonth,
   selectedDay, setSelectedDay,
   selectedHour, setSelectedHour,
-  validYears, validMonths, validDays, validHours, hours
+  validYears, validMonths, validDays, validHours, hours,
+  t: tProp
 }) => {
+  const { t: tHook } = useTranslation();
+  const t = tProp || tHook;
+  
   // Responsive logic
   const isSmallScreen = useMediaQuery("(max-width:960px)");
 
@@ -46,17 +50,17 @@ const TimeFilterHistory = ({
         }}
       >
         <Typography variant="h5" sx={{ mb: 2 }}>
-          Analysis Interval
+            {t('analysis.interval')}
         </Typography>
         <ToggleButtonGroup
           value={timeInterval}
           exclusive
           onChange={(e, v) => v && setTimeInterval(v)}
-          aria-label="Time Interval"
+          aria-label={t('analysis.interval')}
           
         >
-          <ToggleButton value="day" aria-label="Daily">Daily</ToggleButton>
-          <ToggleButton value="hour" aria-label="Hourly">Hourly</ToggleButton>
+          <ToggleButton value="day" aria-label={t('analysis.daily')}>{t('analysis.daily')}</ToggleButton>
+          <ToggleButton value="hour" aria-label={t('analysis.hourly')}>{t('analysis.hourly')}</ToggleButton>
         </ToggleButtonGroup>
       </Box>
 
@@ -71,7 +75,7 @@ const TimeFilterHistory = ({
         }}
       >
         <Typography variant="h5" sx={{ mb: 2 }}>
-          Time Filters
+          {t('analysis.time')}
         </Typography>
         <Box
           sx={{
@@ -79,11 +83,12 @@ const TimeFilterHistory = ({
             display: "flex",
             flexDirection:"row",
             gap: 1,
+            justifyContent: "center",
           }}
         >
           {(timeInterval === "year" || timeInterval === "month" || timeInterval === "day" || timeInterval === "hour") && (
             <FormControl size="small" sx={{ minWidth: 90, width: isSmallScreen ? "100%" : "auto" }}>
-              <InputLabel id="year-label">Year</InputLabel>
+              <InputLabel id="year-label">{t('analysis.year')}</InputLabel>
               <Select
                 size="small"
                 value={selectedYear}
@@ -98,12 +103,12 @@ const TimeFilterHistory = ({
           )}
           {(timeInterval === "month" || timeInterval === "day" || timeInterval === "hour") && (
             <FormControl size="small" sx={{ minWidth: 90, width: isSmallScreen ? "100%" : "auto" }}>
-              <InputLabel id="month-label">Month</InputLabel>
+              <InputLabel id="month-label">{t('analysis.month')}</InputLabel>
               <Select
                 size="small"
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(e.target.value)}
-                label="Month"
+                label={t('analysis.month')}
               >
                 {validMonths.map((month, idx) => (
                   <MenuItem key={month} value={idx + 1}>{month}</MenuItem>
@@ -113,12 +118,12 @@ const TimeFilterHistory = ({
           )}
           {(timeInterval === "day" || timeInterval === "hour") && (
             <FormControl size="small" sx={{ minWidth: 90, width: isSmallScreen ? "100%" : "auto" }}>
-              <InputLabel id="day-label">Day</InputLabel>
+              <InputLabel id="day-label">{t('analysis.day')}</InputLabel>
               <Select
                 size="small"
                 value={selectedDay}
                 onChange={(e) => setSelectedDay(e.target.value)}
-                label="Day"
+                label={t('analysis.day')}
               >
                 {validDays.map((day) => (
                   <MenuItem key={day} value={day}>{day}</MenuItem>
@@ -128,12 +133,12 @@ const TimeFilterHistory = ({
           )}
           {timeInterval === "hour" && (
             <FormControl size="small" sx={{ minWidth: 90, width: isSmallScreen ? "100%" : "auto" }}>
-              <InputLabel id="hour-label">Hour</InputLabel>
+              <InputLabel id="hour-label">{t('analysis.hour')}</InputLabel>
               <Select
                 size="small"
                 value={selectedHour}
                 onChange={(e) => setSelectedHour(e.target.value)}
-                label="Hour"
+                label={t('analysis.hour')}
               >
                 {hours.map((hour) => (
                   <MenuItem key={hour.value} value={hour.value}>
