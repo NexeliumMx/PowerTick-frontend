@@ -94,5 +94,18 @@
     "month": "Mes",
     "day": "Día",
     "hour": "Hora"
+  },
+  "monthlyReports": {
+    "title": "Reporte Mensuales",
+    "subtitle": "Descarga reportes mensuales de consumo y demanda",
+    "powermeter": "Medidor",
+    "year": "Año",
+    "error": "Error al cargar el reporte mensual",
+    "month": "Mes",
+    "consumption": "Consumo (kWh)",
+    "PowerFactor": "Factor de Potencia Promedio",
+    "maxDemand": "Demanda Máxima (kW)",
+    "download": "Descargar",
+    "noDataAvailable": "No hay datos disponibles para el medidor seleccionado y el año."
   }
 }

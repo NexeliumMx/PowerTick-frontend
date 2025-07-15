@@ -93,5 +93,18 @@
   "month": "Month",
   "day": "Day",
   "hour": "Hour"
+},
+"monthlyReports": {
+  "title": "Monthly Reports",
+  "subtitle": "Download monthly consumption and demand reports",
+  "powermeter": "Power Meter",
+  "year": "Year",
+  "error": "Error loading monthly report",
+  "month": "Month",
+  "consumption": "Consumption (kWh)",
+  "PowerFactor": "Average Power Factor",
+  "maxDemand": "Maximum Demand (kW)",
+  "download": "Download",
+  "noDataAvailable": "No data available for the selected power meter and year."
 }
 }

@@ -129,8 +129,8 @@ const MonthlyReportsTable = () => {
         }}
       >
         <Header
-          title="MONTHLY REPORTS"
-          subtitle="Read and download all the Power Measurements Data"
+          title={t("monthlyReports.title")}
+          subtitle={t("monthlyReports.subtitle")}
         />
 
         <Box sx={{ display: "flex", gap: 2 }}>
@@ -144,7 +144,7 @@ const MonthlyReportsTable = () => {
             <Select
               labelId="serial-number-label"
               value={selectedPowerMeter || ""}
-              label="Power Meter"
+              label={t("monthlyReports.powermeter")}
               onChange={(e) => setSelectedPowerMeter(e.target.value)}
               disabled={isPowerMetersLoading}
               onOpen={handleOpen}
@@ -161,7 +161,7 @@ const MonthlyReportsTable = () => {
 
           {/* Year Dropdown */}
           <FormControl size="small" sx={{ minWidth: 100 }} disabled={!validYears.length}>
-            <InputLabel id="year-label">Year</InputLabel>
+            <InputLabel id="year-label">{t('monthlyReports.year')}</InputLabel>
             <Select
               labelId="year-label"
               value={selectedYear}
@@ -183,11 +183,11 @@ const MonthlyReportsTable = () => {
       <Box>
         {monthlyReportError ? (
           <Typography color="error">
-            Error: {monthlyReportError.message || "Failed to load monthly report."}
+            Error: {monthlyReportError.message ||   t('dashboard.error')}
           </Typography>
         ) : !Array.isArray(monthlyReport) || monthlyReport.length === 0 ? (
           <Typography>
-            No data available for the selected powermeter and year.
+            {t('monthlyReports.noDataAvailable')}
           </Typography>
         ) : (
           <TableContainer component={Paper} sx={{ marginTop: 2 }}>
@@ -196,27 +196,27 @@ const MonthlyReportsTable = () => {
                 <TableRow sx={{ backgroundColor: theme.palette.background.paper }}>
                   <TableCell align="center">
                     <Typography variant="h6" fontWeight={600}>
-                      Month
+                      {t('monthlyReports.month')}
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
                     <Typography variant="h6" fontWeight={600}>
-                      Consumption
+                      {t('monthlyReports.consumption')}
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
                     <Typography variant="h6" fontWeight={600}>
-                      Power Factor
+                      {t('monthlyReports.PowerFactor')}
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
                     <Typography variant="h6" fontWeight={600}>
-                      Max Demand
+                      {t('monthlyReports.maxDemand')}
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
                     <Typography variant="h6" fontWeight={600}>
-                      Download
+                      {t('monthlyReports.download')}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -248,7 +248,7 @@ const MonthlyReportsTable = () => {
                     </TableCell>
                     <TableCell align="center">
                       <Button variant="contained" color="primary" disabled>
-                        <Typography variant="h6">Download</Typography>
+                        <Typography variant="h6">{t('monthlyReports.download')}</Typography>
                       </Button>
                     </TableCell>
                   </TableRow>
