@@ -76,13 +76,13 @@ const THDCurrent = ({ data, title }) => {
           height={410}
           margin={{ left: 70, right: 20, top: 110, bottom: 40 }}
           xAxis={[{
-            data: ['L1', 'L2', 'L3'],
-            scaleType: 'band',
-            label: 'Phases',
+          data: [t('measurements.l1'), t('measurements.l2'), t('measurements.l3')], 
+           scaleType: 'band',
+            label: t('measurements.phases'),
             labelStyle: { textAnchor: 'middle' },
           }]}
           yAxis={[{
-            label: 'THD (%)',
+            label: t('measurements.thdCurrentAxis'),
             labelStyle: {
               transform: 'translateX(-20px)',
               writingMode: 'sideways-lr',
@@ -92,7 +92,7 @@ const THDCurrent = ({ data, title }) => {
           series={[
             {
               data: [thd_current_l1/100, thd_current_l2/100, thd_current_l3/100],
-              label: 'THD Current',
+              label: t('measurements.thdCurrent'),
               color: chartColors.phaseTotal,
               valueFormatter: (value) => `${value} %`,
             },
@@ -105,7 +105,7 @@ const THDCurrent = ({ data, title }) => {
                 return (
                   <Box sx={{ p: 1 }}>
                     <Typography variant="body2">
-                      <strong>{item.seriesLabel} {['L1', 'L2', 'L3'][item.dataIndex]}:</strong> {item.value} %
+                      <strong>{item.seriesLabel} {[t('measurements.l1'),t('measurements.l2'), t('measurements.l3')][item.dataIndex]}:</strong> {item.value} %
                     </Typography>
                   </Box>
                 );

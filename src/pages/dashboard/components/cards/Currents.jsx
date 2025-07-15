@@ -87,9 +87,9 @@ const Currents = ({ data, title }) => {
           margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[
             {
-              data: ['Phase 1', 'Phase 2', 'Phase 3', 'Total'],
+              data: [t('measurements.l1'), t('measurements.l2'), t('measurements.l3'), t('measurements.total')],
               scaleType: 'band',
-              label: 'Phases',
+              label: t('measurements.phases'),
               labelStyle: { textAnchor: 'middle' },
               categoryGapRatio: 0.2,
               barGapRatio: -1,
@@ -97,7 +97,7 @@ const Currents = ({ data, title }) => {
           ]}
           yAxis={[
             {
-              label: 'Current (A)',
+              label: t('measurements.currentAxis'),
               labelStyle: {
                 transform: 'translateX(-20px)',
                 writingMode: 'sideways-lr',
@@ -109,22 +109,22 @@ const Currents = ({ data, title }) => {
           series={[
             {
               data: [current_l1/1000, null, null, null],
-              label: 'Phase 1',
+              label: t('measurements.l1'),
               valueFormatter: (value) => `${value} A`,
             },
             {
               data: [null, current_l2/1000, null, null],
-              label: 'Phase 2',
+              label: t('measurements.l2'),
               valueFormatter: (value) => `${value} A`,
             },
             {
               data: [null, null, current_l3/1000, null],
-              label: 'Phase 3',
+              label: t('measurements.l3'),
               valueFormatter: (value) => `${value} A`,
             },
             {
               data: [null, null, null, total/1000],
-              label: 'Total',
+              label: t('measurements.total'),
               valueFormatter: (value) => `${value} A`,
             },
           ]}
@@ -141,13 +141,13 @@ const Currents = ({ data, title }) => {
                 return (
                   <Box sx={{ p: 2 }}>
                     <Typography variant="body2">
-                      <strong>Total:</strong> {total.toFixed(0)} A
+                      <strong>{t('measurements.total')}:</strong> {total.toFixed(0)} A
                     </Typography>
-                    <Typography variant="caption">L1: {current_l1} A</Typography>
+                    <Typography variant="caption">{t('measurements.l1')}: {current_l1} A</Typography>
                     <br />
-                    <Typography variant="caption">L2: {current_l2} A</Typography>
+                    <Typography variant="caption">{t('measurements.l2')}: {current_l2} A</Typography>
                     <br />
-                    <Typography variant="caption">L3: {current_l3} A</Typography>
+                    <Typography variant="caption">{t('measurements.l3')}: {current_l3} A</Typography>
                   </Box>
                 );
               }

@@ -66,29 +66,29 @@ const EnergyExported = ({ data, title }) => {
       >
         {title || t('measurements.energyExported')}
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: -3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: -6 }}>
         <BarChart
           slotProps={{
             legend: {
               direction: 'row',
               position: { vertical: 'top', horizontal: 'center' },
-              itemGap: 100,
+              itemGap: 150,
               shrink: true,
               markShape: 'rect',
             },
           }}
           borderRadius={10}
           grid={{ horizontal: true }}
-          height={410}
-          margin={{ left: 70, right: 20, top: 110, bottom: 40 }}
+          height={430}
+          margin={{ left: 70, right: 20, top: 130, bottom: 40 }}
           xAxis={[{
-            data: ['L1', 'L2', 'L3', 'Total'],
+            data: [t('measurements.l1'), t('measurements.l2'), t('measurements.l3'), t('measurements.total')],
             scaleType: 'band',
-            label: 'Phases',
+            label: t('measurements.phases'),
             labelStyle: { textAnchor: 'middle' },
           }]}
           yAxis={[{
-            label: 'kWh / varh',
+            label: t('measurements.energyAxis'),
             labelStyle: {
               transform: 'translateX(-20px)',
               writingMode: 'sideways-lr',
@@ -98,13 +98,13 @@ const EnergyExported = ({ data, title }) => {
           series={[
             {
               data: [kwh_exported_l1, kwh_exported_l2, kwh_exported_l3, kwh_exported_total],
-              label: 'kWh Exported',
+              label: t('measurements.kwhEnergyExported'),
               color: chartColors.phase1,
               valueFormatter: (value) => `${value} kWh`,
             },
             {
               data: [varh_exported_q4_l1, varh_exported_q4_l2, varh_exported_q4_l3, varh_exported_q4],
-              label: 'varh Exported Q4',
+              label: t('measurements.varhExportedQ4'),
               color: chartColors.phase2,
               valueFormatter: (value) => `${value} varh`,
             },
@@ -117,7 +117,7 @@ const EnergyExported = ({ data, title }) => {
                 return (
                   <Box sx={{ p: 1 }}>
                     <Typography variant="body2">
-                      <strong>{item.seriesLabel} {['L1', 'L2', 'L3', 'Total'][item.dataIndex]}:</strong> {item.value} {item.seriesLabel.includes('kWh') ? 'kWh' : 'varh'}
+                      <strong>{item.seriesLabel} {[t('measurements.l1'), t('measurements.l2'), t('measurements.l3'), t('measurements.total')][item.dataIndex]}:</strong> {item.value} {item.seriesLabel.includes('kWh') ? 'kWh' : 'varh'}
                     </Typography>
                   </Box>
                 );

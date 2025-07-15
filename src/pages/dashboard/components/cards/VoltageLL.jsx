@@ -69,15 +69,15 @@ const VoltageLL = ({ data, title }) => {
           height={350}
           margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[{
-            data: ['L1-L2', 'L2-L3', 'L3-L1', 'Average'],
+            data: [t('measurements.l1l2'), t('measurements.l2l3'), t('measurements.l3l1'), t('measurements.avg')],
             scaleType: 'band',
             categoryGapRatio: 0.2,
             barGapRatio: -1,
-            label: 'Phases',
+            label: t('measurements.phases'),
             labelStyle: { textAnchor: 'middle' }
           }]}
           yAxis={[{
-            label: 'Voltage (V)',
+            label: t('measurements.voltageAxis'),
             labelStyle: {
               transform: 'translateX(-20px)',
               writingMode: 'sideways-lr',

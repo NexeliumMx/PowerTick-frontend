@@ -70,17 +70,16 @@ const VoltageLN = ({ data, title }) => {
           margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[
             {
-              data: ['L1', 'L2', 'L3', 'Average'],
-              scaleType: 'band',
+data: [t('measurements.l1'), t('measurements.l2'), t('measurements.l3'), t('measurements.total')],              scaleType: 'band',
               categoryGapRatio: 0.2,
               barGapRatio: -1,
-              label: 'Phases',
+              label: t('measurements.phases'),
               labelStyle: { textAnchor: 'middle' }
             },
           ]}
           yAxis={[
             {
-              label: 'Voltage (V)',
+              label: t('measurements.voltageAxis'),
               labelStyle: {
                 transform: 'translateX(-20px)',
                 writingMode: 'sideways-lr',
@@ -91,25 +90,25 @@ const VoltageLN = ({ data, title }) => {
           series={[
             {
               data: [voltage_l1/10, 0, 0, 0],
-              label: 'L1',
+              label: t('measurements.l1'),
               color: chartColors.phase1,
               valueFormatter: (value) => `${value} V`
             },
             {
               data: [0, voltage_l2/10, 0, 0],
-              label: 'L2',
+              label: t('measurements.l2'),
               color: chartColors.phase2,
               valueFormatter: (value) => `${value} V`
             },
             {
               data: [0, 0, voltage_l3/10, 0],
-              label: 'L3',
+              label: t('measurements.l3'),
               color: chartColors.phase3,
               valueFormatter: (value) => `${value} V`
             },
             {
               data: [0, 0, 0, voltage_ln/10],
-              label: 'Average',
+              label: t('measurements.avg'),
               color: chartColors.phaseTotal,
               valueFormatter: (value) => `${value} V`
             },

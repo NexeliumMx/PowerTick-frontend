@@ -78,13 +78,13 @@ console.log(thd_voltage_ll, thd_voltage_l1_l2, thd_voltage_l2_l3, thd_voltage_l3
           height={410}
           margin={{ left: 70, right: 20, top: 110, bottom: 40 }}
           xAxis={[{
-            data: ['LL', 'L1-L2', 'L2-L3', 'L3-L1'],
+            data: [t('measurements.ll'), t('measurements.l1l2'), t('measurements.l2l3'), t('measurements.l3l1')],
             scaleType: 'band',
-            label: 'Phases',
+            label: t('measurements.phases'),
             labelStyle: { textAnchor: 'middle' },
           }]}
           yAxis={[{
-            label: 'THD (%)',
+            label: t('measurements.thdVoltageAxis'),
             labelStyle: {
               transform: 'translateX(-20px)',
               writingMode: 'sideways-lr',
@@ -94,7 +94,7 @@ console.log(thd_voltage_ll, thd_voltage_l1_l2, thd_voltage_l2_l3, thd_voltage_l3
           series={[
             {
               data: [thd_voltage_ll, thd_voltage_l1_l2, thd_voltage_l2_l3, thd_voltage_l3_l1],
-              label: 'THD Voltage LL',
+              label: t('measurements.thdVoltage'),
               color: chartColors.phaseTotal,
               valueFormatter: (value) => `${value} %`,
             },
@@ -107,7 +107,7 @@ console.log(thd_voltage_ll, thd_voltage_l1_l2, thd_voltage_l2_l3, thd_voltage_l3
                 return (
                   <Box sx={{ p: 1 }}>
                     <Typography variant="body2">
-                      <strong>{item.seriesLabel} {['LL', 'L1-L2', 'L2-L3', 'L3-L1'][item.dataIndex]}:</strong> {item.value} %
+                      <strong>{item.seriesLabel} {[t('measurements.ll'), t('measurements.l1l2'), t('measurements.l2l3'), t('measurements.l3l1')][item.dataIndex]}:</strong> {item.value} %
                     </Typography>
                   </Box>
                 );

@@ -86,7 +86,7 @@ const Power = ({ data, title }) => {
           height={430}
           margin={{ left: 70, right: 20, top: 130, bottom: 40 }}
           xAxis={[{
-            data: ['L1', 'L2', 'L3', t('measurements.total')],
+            data: [t('measurements.l1'), t('measurements.l2'), t('measurements.l3'), t('measurements.total')],
             scaleType: 'band',
             label: t('measurements.phases'),
             labelStyle: { textAnchor: 'middle' },
@@ -114,7 +114,7 @@ const Power = ({ data, title }) => {
             },
             {
               data: [var_l1/10000, var_l2/10000, var_l3/10000, var_/10000],
-              label: t('measurements.reactivePower'),
+              label: t('measurements.reactivePowerLabel'),
               color: chartColors.phase3,
               valueFormatter: (value) => `${value} kvar`,
             },

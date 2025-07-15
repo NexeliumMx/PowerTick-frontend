@@ -78,9 +78,8 @@ const RealPower = ({ data, title }) => {
           height={350}
           xAxis={[
             {
-              data: ['L1', 'L2', 'L3', 'Total'],
-              scaleType: 'band',
-              label: 'Phases',
+          data: [t('measurements.l1'), t('measurements.l2'), t('measurements.l3'), t('measurements.total')],              scaleType: 'band',
+              label: t('measurements.phases'),
               labelStyle: { textAnchor: 'middle' },
               categoryGapRatio: 0.2,
               barGapRatio: -1,
@@ -88,7 +87,7 @@ const RealPower = ({ data, title }) => {
           ]}
           yAxis={[
             {
-              label: 'Power (kW)',
+              label: t('measurements.realPowerAxis'),
               labelStyle: {
                 transform: 'translateX(-20px)',
                 writingMode: 'sideways-lr',
@@ -99,25 +98,25 @@ const RealPower = ({ data, title }) => {
           series={[
             {
               data: [watts_l1/10000, null, null, null],
-              label: 'L1',
+              label: t('measurements.l1'),
               color: chartColors.phase1,
               valueFormatter: (value) => `${value} kW`
             },
             {
               data: [null, watts_l2/10000, null, null],
-              label: 'L2',
+              label: t('measurements.l2'),
               color: chartColors.phase2,
-              valueFormatter: (value) => `${value} jW`
+              valueFormatter: (value) => `${value} kW`
             },
             {
               data: [null, null, watts_l3/10000, null],
-              label: 'L3',
+              label: t('measurements.l3'),
               color: chartColors.phase3,
               valueFormatter: (value) => `${value} kW`
             },
             {
               data: [null, null, null, watts/10000],
-              label: 'Total',
+              label: t('measurements.total'),
               color: chartColors.phaseTotal,
               valueFormatter: (value) => `${value} kW`
             }
@@ -129,11 +128,11 @@ const RealPower = ({ data, title }) => {
                 return (
                   <Box sx={{ p: 2 }}>
                     <Typography variant="body2">
-                      <strong>Total:</strong> {watts} W
+                      <strong>{t('measurements.total')}:</strong> {watts} W
                     </Typography>
-                    <Typography variant="caption">L1: {watts_l1} W</Typography><br />
-                    <Typography variant="caption">L2: {watts_l2} W</Typography><br />
-                    <Typography variant="caption">L3: {watts_l3} W</Typography>
+                    <Typography variant="caption">{t('measurements.l1')}: {watts_l1} W</Typography><br />
+                    <Typography variant="caption">{t('measurements.l2')}: {watts_l2} W</Typography><br />
+                    <Typography variant="caption">{t('measurements.l3')}: {watts_l3} W</Typography>
                   </Box>
                 );
               }

@@ -70,15 +70,14 @@ const ReactivePower = ({ data, title }) => {
           margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           height={350}
           xAxis={[{
-            data: ['L1', 'L2', 'L3', 'Total'],
-            scaleType: 'band',
+          data: [t('measurements.l1'), t('measurements.l2'), t('measurements.l3'), t('measurements.total')],            scaleType: 'band',
             categoryGapRatio: 0.2,
             barGapRatio: -1,
-            label: 'Phases',
+            label: t('measurements.phases'),
             labelStyle: { textAnchor: 'middle' }
           }]}
           yAxis={[{
-            label: 'Reactive Power (kVAR)',
+            label: t('measurements.reactivePowerAxis'),
             labelStyle: {
               transform: 'translateX(-20px)',
               writingMode: 'sideways-lr',
@@ -88,25 +87,25 @@ const ReactivePower = ({ data, title }) => {
           series={[
             {
               data: [var_l1/10000, null, null, null],
-              label: 'L1',
+              label: t('measurements.l1'),
               color: chartColors.phase1,
               valueFormatter: (value) => `${value} kVAr`
             },
             {
               data: [null, var_l2/10000, null, null],
-              label: 'L2',
+              label: t('measurements.l2'),
               color: chartColors.phase2,
               valueFormatter: (value) => `${value} kVAr`
             },
             {
               data: [null, null, var_l3/10000, null],
-              label: 'L3',
+              label: t('measurements.l3'),
               color: chartColors.phase3,
               valueFormatter: (value) => `${value} kVAr`
             },
             {
               data: [null, null, null, totalVar/10000],
-              label: 'Total',
+              label: t('measurements.total'),
               color: chartColors.phaseTotal,
               valueFormatter: (value) => `${value} kVAr`
             }

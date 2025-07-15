@@ -76,13 +76,13 @@ console.log(thd_voltage_ln, thd_voltage_l1, thd_voltage_l2, thd_voltage_l3);
           height={410}
           margin={{ left: 70, right: 20, top: 110, bottom: 40 }}
           xAxis={[{
-            data: ['LN', 'L1', 'L2', 'L3'],
+            data: [t('measurements.ln'), t('measurements.l1'), t('measurements.l2'), t('measurements.l3')],
             scaleType: 'band',
-            label: 'Phases',
+            label: t('measurements.phases'),
             labelStyle: { textAnchor: 'middle' },
           }]}
           yAxis={[{
-            label: 'THD (%)',
+            label: t('measurements.thdVoltageAxis'),
             labelStyle: {
               transform: 'translateX(-20px)',
               writingMode: 'sideways-lr',
@@ -92,7 +92,7 @@ console.log(thd_voltage_ln, thd_voltage_l1, thd_voltage_l2, thd_voltage_l3);
           series={[
             {
               data: [thd_voltage_ln, thd_voltage_l1, thd_voltage_l2, thd_voltage_l3],
-              label: 'THD Voltage LN',
+              label: t('measurements.thdVoltage'),
               color: chartColors.phaseTotal,
               valueFormatter: (value) => `${value} %`,
             },
