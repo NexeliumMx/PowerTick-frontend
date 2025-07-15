@@ -7,7 +7,10 @@
     "powerFactor": "Power Factor",
     "demand": "Demand",
     "goToDashboard": "Go to dashboard",
-    "noAlias": "No alias"
+    "noAlias": "No alias",
+    "noData": "No data available for this month",
+    "consumption": "Accumulated consumption",
+    "avg": "AVG"
   },
   "dashboard": {
     "title": "DASHBOARD",

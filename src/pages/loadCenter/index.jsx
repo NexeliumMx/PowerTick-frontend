@@ -38,9 +38,9 @@ const groupByInstallation = (powermeters) => {
 };
 const getColorByFP = (value) => {
   
-  if (value >= 950) return chartColors.powerFactorGood;     // Green
-  if (value >= 920) return chartColors.powerFactorModerate; // Yellow
-  if (value >= 900) return chartColors.powerFactorRisky;    // Orange
+  if (value >= .950) return chartColors.powerFactorGood;     // Green
+  if (value >= .920) return chartColors.powerFactorModerate; // Yellow
+  if (value >= .900) return chartColors.powerFactorRisky;    // Orange
   return chartColors.powerFactorPoor;                       // Red
 };
 
@@ -155,7 +155,7 @@ const LoadCenter = () => {
                               }}
                             >
                               <Typography variant="h4" color="text.secondary" sx={{ mb: 2 }}>
-                                No hay datos de este mes
+                                {t('loadCenter.noData')}
                               </Typography>
                             </Box>
                           ) : (
@@ -177,7 +177,7 @@ const LoadCenter = () => {
                                   variant="body1"
                                   sx={{ color: theme.palette.text.primary, fontWeight: 600 }}
                                 >
-                                  Consumo acumulado
+                                  {t('loadCenter.consumption')}
                                 </Typography>
                                 <Typography
                                   variant="body1"
@@ -193,7 +193,7 @@ const LoadCenter = () => {
                                     height={100}
                                     value={item.avg_power_factor ? Number((item.avg_power_factor / 1000).toFixed(3)) : 0}
                                     valueMin={0}
-                                    valueMax={100}
+                                    valueMax={1}
                                     startAngle={-110}
                                     endAngle={110}
                                     valueFormatter={(value) => Math.round(value).toString()} // No decimals
@@ -242,7 +242,7 @@ const LoadCenter = () => {
                                       }}
                                     >
                                       <Typography variant="caption">
-                                        AVG
+                                        {t('loadCenter.avg')}
                                       </Typography>
                                     </Box>
                                     <svg
