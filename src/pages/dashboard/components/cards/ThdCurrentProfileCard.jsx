@@ -14,11 +14,11 @@ import timezone from 'dayjs/plugin/timezone';
 import { formatHourLocal, formatDayLocal, formatMonthLocal } from '../ui/TimestampFormatter';
 import { useTranslation } from 'react-i18next';
 import chartColors from "../../../../theme/chartColors";
-import { AnalyticsSharp } from "@mui/icons-material";
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter, t: tProp }) => {
+const ThdCurrentProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFilter, t: tProp }) => {
   const theme = useTheme();
   const { accounts } = useMsal();
   const { state: appModeState } = useContext(ModeContext);
@@ -78,27 +78,33 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     const min = dayjs.utc(measurementRange.min_utc).tz(tz);
     const max = dayjs.utc(measurementRange.max_utc).tz(tz);
     validYears = [];
-    for (let y = min.year(); y <= max.year(); y++) validYears.push(y);
+    for (let y = min.year(); y <= max.year(); y++) {
+      validYears.push(y);
+    }
     if (selectedYear === min.year() && selectedYear === max.year()) {
       validMonths = months.slice(min.month(), max.month() + 1);
     } else if (selectedYear === min.year()) {
       validMonths = months.slice(min.month());
     } else if (selectedYear === max.year()) {
       validMonths = months.slice(0, max.month() + 1);
-    } else {
-      validMonths = months;
     }
     const daysInMonth = dayjs(`${selectedYear}-${selectedMonth}-01`).daysInMonth();
     let startDay = 1, endDay = daysInMonth;
-    if (selectedYear === min.year() && selectedMonth === min.month() + 1) startDay = min.date();
-    if (selectedYear === max.year() && selectedMonth === max.month() + 1) endDay = max.date();
+    if (selectedYear === min.year() && selectedMonth === min.month() + 1) {
+      startDay = min.date();
+    }
+    if (selectedYear === max.year() && selectedMonth === max.month() + 1) {
+      endDay = max.date();
+    }
     validDays = [];
-    for (let d = startDay; d <= endDay; d++) validDays.push(d);
+    for (let d = startDay; d <= endDay; d++) {
+      validDays.push(d);
+    }
   }
 
-  const { demandProfile } = useApiData();
+  const { thdCurrentProfile } = useApiData();
   // Fetch data
-  const { data: demandProfileData, isLoading } = demandProfile(
+  const { data: thdCurrentProfileData, isLoading } = thdCurrentProfile(
     user_id,
     selectedPowerMeter,
     apiTimeInterval,
@@ -106,52 +112,69 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     end_utc,
     mode
   );
-  console.log('Demand Profile Data:', demandProfileData);
+  console.log('THD Current Profile Data:', thdCurrentProfileData);
 
   // X axis label and dataKey
   let xAxisLabel = '';
   let xDataKey = '';
   if (apiTimeInterval === 'month') {
-    xAxisLabel = t('analysis.month', 'Mes');
+    xAxisLabel = t('dashboard.month', 'Mes');
     xDataKey = 'month_start_local';
   } else if (apiTimeInterval === 'hour') {
-    xAxisLabel = t('analysis.hour', 'hora');
+    xAxisLabel = t('dashboard.hour', 'Hora');
     xDataKey = 'hour_start_utc';
   } else if (apiTimeInterval === 'day') {
-    xAxisLabel = t('analysis.day', 'dia');
+    xAxisLabel = t('dashboard.day', 'Día');
     xDataKey = 'day_start_utc';
-  } else {
-    xAxisLabel = t('dashboard.time', 'Tiempo');
-    xDataKey = 'time';
   }
 
   // Transform data for MUI X BarChart (show formatted local time for x-axis)
-  const chartData = demandProfileData?.map((item) => {
+  const chartData = thdCurrentProfileData?.map((item) => {
     let formattedName = item[xDataKey];
-    if (apiTimeInterval === 'hour') {
-      formattedName = formatHourLocal(item[xDataKey]);
-    } else if (apiTimeInterval === 'day') {
-      formattedName = formatDayLocal(item[xDataKey]);
-    } else if (apiTimeInterval === 'month') {
-      formattedName = formatMonthLocal(item[xDataKey]);
+    
+    // Format the name based on the time interval
+    if (apiTimeInterval === 'hour' && item.hour_start_utc) {
+      formattedName = formatHourLocal(item.hour_start_utc);
+    } else if (apiTimeInterval === 'day' && item.day_start_utc) {
+      formattedName = formatDayLocal(item.day_start_utc);
+    } else if (apiTimeInterval === 'month' && item.month_start_local) {
+      formattedName = formatMonthLocal(item.month_start_local);
     }
-     console.log( typeof item.w_avg)
+
+    // Debug: Log all available fields in the first item
+    if (thdCurrentProfileData.indexOf(item) === 0) {
+      console.log('Available fields in THD Current Profile data:', Object.keys(item));
+      console.log('Sample item data:', item);
+      console.log('xDataKey:', xDataKey);
+      console.log('formattedName:', formattedName);
+    }
+
     return {
-      ...item,
       name: formattedName,
-      w_m: item.w_max/10,
-      w_a: parseFloat(parseFloat(item.w_avg).toFixed(3))/10,
-      var_m: item.var_max,
-      var_a: parseFloat(parseFloat(item.var_avg).toFixed(3))/10,
+      thd_current_a_max: item.thd_current_l1_max || 0,
+      thd_current_a_avg: item.thd_current_l1_avg || 0,
+      thd_current_b_max: item.thd_current_l2_max || 0,
+      thd_current_b_avg: item.thd_current_l2_avg || 0,
+      thd_current_c_max: item.thd_current_l3_max || 0,
+      thd_current_c_avg: item.thd_current_l3_avg || 0,
     };
   });
   
-  // Value formatters for chart
-  const wFormatter = (value) => value != null ? `${value} W` : '';
-  const varFormatter = (value) => value != null ? `${value} VAr` : '';
+  // Check if we have actual data values (not just null values)
+  const hasActualData = thdCurrentProfileData?.some(item => 
+    item.thd_current_l1_max !== null || 
+    item.thd_current_l1_avg !== null || 
+    item.thd_current_l2_max !== null || 
+    item.thd_current_l2_avg !== null || 
+    item.thd_current_l3_max !== null || 
+    item.thd_current_l3_avg !== null
+  );
 
-  // Use t('Analysis.demandProfile') for the card title
-  const cardTitle = t('analysis.demandProfile');
+  // Value formatters for chart
+  const percentFormatter = (value) => value != null ? `${value.toFixed(2)}%` : '';
+
+  // Use t for the card title
+  const cardTitle = t('Analysis.thdCurrentProfile', 'THD Current Profile');
 
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" , backgroundColor: theme.palette.background.card}}>
@@ -170,49 +193,58 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
         }}
       />
       <CardContent sx={{ flexGrow: 1, pt: 0 }}>
-        <Box sx={{ width: "100%", overflow: "auto", px: 2, my:-10}}>
+        <Box sx={{ width: "100%", overflow: "auto", px: 2, my:-5}}>
           {isLoading ? (
             <ChartSkeletonCard/>
-          ) : demandProfileData ? (
+          ) : (thdCurrentProfileData && thdCurrentProfileData.length > 0 && hasActualData) ? (
             <BarChart
               
               slotProps={{
                 legend: {
                   hidden: false,
                   position: { vertical: 'top', horizontal: 'center' },
-                  itemGap: 180, // Space between legend items
-                }}}
+                  itemGap: 50,
+                }
+              }}
               dataset={chartData}
               
               series={[
-                { dataKey: 'w_m', stack: 'w', label: t('analysis.realMax'), valueFormatter: wFormatter, color: chartColors.maxRealPower },
-                { dataKey: 'w_a', stack: 'w', label: t('analysis.realAvg'), valueFormatter: wFormatter, color: chartColors.avgRealPower },
-                { dataKey: 'var_m', stack: 'var', label: t('analysis.reactiveMax'), valueFormatter: varFormatter, color: chartColors.maxVar },
-                { dataKey: 'var_a', stack: 'var', label: t('analysis.reactiveAvg'), valueFormatter: varFormatter, color: chartColors.avgVar },
+                { dataKey: 'thd_current_a_max', stack: 'a', label: 'A Max', valueFormatter: percentFormatter, color: chartColors.phaseAMax || '#ff5722' },
+                { dataKey: 'thd_current_a_avg', stack: 'a', label: 'A Avg', valueFormatter: percentFormatter, color: chartColors.phaseAAvg || '#ff7043' },
+                { dataKey: 'thd_current_b_max', stack: 'b', label: 'B Max', valueFormatter: percentFormatter, color: chartColors.phaseBMax || '#2196f3' },
+                { dataKey: 'thd_current_b_avg', stack: 'b', label: 'B Avg', valueFormatter: percentFormatter, color: chartColors.phaseBAvg || '#42a5f5' },
+                { dataKey: 'thd_current_c_max', stack: 'c', label: 'C Max', valueFormatter: percentFormatter, color: chartColors.phaseCMax || '#4caf50' },
+                { dataKey: 'thd_current_c_avg', stack: 'c', label: 'C Avg', valueFormatter: percentFormatter, color: chartColors.phaseCAvg || '#66bb6a' },
               ]}
               xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band', tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 }, minStep: 20, interval: 0 , labelStyle: { transform:'translateY(15px)' } }]}
-              yAxis={[{
-                label: t('analysis.demand'),
-                labelStyle: {
-                  transform: 'translate(-90px, 0px) rotate(-90deg)',
-                  transformOrigin: 'left center',
-                  dominantBaseline: 'middle',
-                  textAnchor: 'middle'
-                },
-                tickLabelStyle: {
-                  fontSize: 12
-                }
-              }]}
-              height={450}
+              height={400}
               margin={{ 
-                top: 150,
-                left: 70, 
+                top: 100,
+                left: 40, 
                 bottom: 60 
               }}
               sx={{ background: 'transparent' }}
             />
           ) : (
-            <Typography variant="body1">{t('analysis.noData')}</Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 200, gap: 2 }}>
+              <Typography variant="body1" color="text.secondary">
+                {thdCurrentProfileData && thdCurrentProfileData.length > 0 
+                  ? "THD Current Profile data contains no measurements (all values are null)"
+                  : "No THD Current Profile data available for the selected period"
+                }
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
+                {thdCurrentProfileData && thdCurrentProfileData.length > 0 
+                  ? "The API returned data structure but all THD current measurements are null. This suggests the measurement device may not support THD current measurements or no valid measurements were recorded during this period."
+                  : "This could be due to: no measurements in the selected time range, API endpoint not returning data, or the measurement device not supporting THD measurements."
+                }
+              </Typography>
+              {thdCurrentProfileData && thdCurrentProfileData.length > 0 && (
+                <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', fontFamily: 'monospace', mt: 1 }}>
+                  Debug: API returned {thdCurrentProfileData.length} data points with null values
+                </Typography>
+              )}
+            </Box>
           )}
         </Box>
       </CardContent>
@@ -254,7 +286,7 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
 };
 
 // PropTypes validation
-DemandProfileCard.propTypes = {
+ThdCurrentProfileCard.propTypes = {
   selectedPowerMeter: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   measurementRange: PropTypes.shape({
     min_utc: PropTypes.string,
@@ -269,4 +301,4 @@ DemandProfileCard.propTypes = {
   t: PropTypes.func,
 };
 
-export default DemandProfileCard;
+export default ThdCurrentProfileCard;

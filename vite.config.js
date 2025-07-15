@@ -11,8 +11,4 @@ export default defineConfig({
   build: {
     outDir: 'build', // Output directory
   },
-   server: {
-    host: 'localhost',
-    port: 5173, 
-  },
 });

@@ -18,8 +18,7 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { useTheme } from "@mui/material/styles";
 import Header from "../../../layout/Header";
-import { useMonthlyReport } from "../../../hooks/useMonthlyReport";
-import { usePowermetersByUserAccess } from "../../../hooks/usePowermetersByUserAccess";
+import { useApiData } from "../../../hooks/useApiData";
 import { ModeContext } from "../../../context/AppModeContext";
 import { useMsal } from "@azure/msal-react";
 import { useTranslation } from "react-i18next";
@@ -28,7 +27,7 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import "dayjs/locale/en";
 import "dayjs/locale/es"; // Import Spanish locale
-import { useMeasurementRange } from "../../../hooks/useMeasurementRange";
+
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -59,11 +58,12 @@ const MonthlyReportsTable = () => {
   const { state } = useContext(ModeContext);
   const { accounts } = useMsal ? useMsal() : { accounts: [] };
   const user_id = accounts && accounts[0]?.idTokenClaims?.oid;
+  const { powermetersByUserAccess, measurementRange: useMeasurementRange, monthlyReport: useMonthlyReport } = useApiData();
   const {
     data: powerMeters = [],
     isLoading: isPowerMetersLoading,
     error: powerMetersError,
-  } = usePowermetersByUserAccess(user_id, state.mode);
+  } = powermetersByUserAccess(user_id, state.mode);
 
   const [selectedPowerMeter, setSelectedPowerMeter] = useState("");
   const [selectedYear, setSelectedYear] = useState("");

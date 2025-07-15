@@ -12,7 +12,7 @@ import Header from "../../layout/Header";
 import { ModeContext } from "../../context/AppModeContext";
 
 //Hooks
-import { usePowermetersByUserAccess } from '../../hooks/usePowermetersByUserAccess';
+import { useApiData } from '../../hooks/useApiData';
 import { useMsal } from "@azure/msal-react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
@@ -28,7 +28,8 @@ const Dashboard = () => {
   const { state } = useContext(ModeContext);
   const { accounts } = useMsal ? useMsal() : { accounts: [] };
   const user_id = accounts && accounts[0]?.idTokenClaims?.oid;
-  const { data: powerMeters = [], isLoading: isPowerMetersLoading, error: powerMetersError } = usePowermetersByUserAccess(user_id, state.mode);
+  const { powermetersByUserAccess } = useApiData();
+  const { data: powerMeters = [], isLoading: isPowerMetersLoading, error: powerMetersError } = powermetersByUserAccess(user_id, state.mode);
   const [selectedPowerMeter, setSelectedPowerMeter] = useState("");
   const [activePage, setActivePage] = useState("Measurements");
   const location = useLocation();

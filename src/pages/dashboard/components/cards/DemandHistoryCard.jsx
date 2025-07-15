@@ -1,5 +1,6 @@
 // React imports
 import { useState, useEffect, useContext } from "react";
+import PropTypes from 'prop-types';
 
 // Context imports
 import { ModeContext } from '../../../../context/AppModeContext';
@@ -8,16 +9,15 @@ import { ModeContext } from '../../../../context/AppModeContext';
 import { useMsal } from "@azure/msal-react";
 
 // MUI imports
-import { Card, CardHeader, CardContent, CardActions, ToggleButton, ToggleButtonGroup, Box, Typography } from "@mui/material";
+import { Card, CardHeader, CardContent, CardActions, Box, Typography, Divider } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
-import { Select, MenuItem, FormControl, InputLabel, Divider } from "@mui/material";
 
 // Recharts imports
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer, Label } from "recharts";
 
 // Hooks imports
-import { useDemandHistory } from '../../../../hooks/useDemandHistory';
+import { useApiData } from '../../../../hooks/useApiData';
 
 // Theme imports
 import chartColors from "../../../../theme/chartColors";
@@ -85,8 +85,9 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     end_utc = end.utc().format();
   }
 
+  const { demandHistory } = useApiData();
   // Use hook
-  const { data: demandHistoryData, isLoading } = useDemandHistory(
+  const { data: demandHistoryData, isLoading } = demandHistory(
     user_id,
     selectedPowerMeter,
     start_utc,
@@ -357,6 +358,22 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
       </CardActions>
     </Card>
   );
+};
+
+// PropTypes validation
+DemandHistoryCard.propTypes = {
+  selectedPowerMeter: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  measurementRange: PropTypes.shape({
+    min_utc: PropTypes.string,
+    max_utc: PropTypes.string,
+  }),
+  defaultTimeFilter: PropTypes.shape({
+    year: PropTypes.number,
+    month: PropTypes.number,
+    day: PropTypes.number,
+    hour: PropTypes.number,
+  }),
+  t: PropTypes.func,
 };
 
 export default DemandHistoryCard;

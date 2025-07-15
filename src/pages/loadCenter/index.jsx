@@ -15,8 +15,7 @@ import { ModeContext } from "../../context/AppModeContext";
 //Hooks
 import { useMsal } from "@azure/msal-react";
 import { useContext } from "react";
-import { usePowermetersByUserAccess } from '../../hooks/usePowermetersByUserAccess';
-import { useLoadCenters } from "../../hooks/useLoadCenters";
+import { useApiData } from '../../hooks/useApiData';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -62,8 +61,9 @@ const LoadCenter = () => {
   const { state } = useContext(ModeContext); // get mode from context
   // Only call the hook if user_id and state.mode are defined
   const hookEnabled = !!user_id && !!state.mode;
-  const { data: powermetersData, isLoading, error } = usePowermetersByUserAccess(user_id, state.mode, { enabled: hookEnabled });
-  const { data: loadCentersData, isDataLoading, error: loadCenterStatsError } = useLoadCenters(user_id, state.mode, { enabled: hookEnabled });
+  const { powermetersByUserAccess, loadCenters } = useApiData();
+  const { data: powermetersData, isLoading, error } = powermetersByUserAccess(user_id, state.mode, { enabled: hookEnabled });
+  const { data: loadCentersData, isDataLoading, error: loadCenterStatsError } = loadCenters(user_id, state.mode, { enabled: hookEnabled });
   const navigate = useNavigate();
   const theme = useTheme();
 

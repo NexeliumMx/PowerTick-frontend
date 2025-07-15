@@ -6,7 +6,7 @@ import { Card, CardHeader, CardContent, CardActions, Box, Typography, Divider } 
 import { useTheme } from '@mui/material/styles';
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import { BarChart } from '@mui/x-charts/BarChart';
-import { useConsumptionProfile } from '../../../../hooks/useConsumptionProfile';
+import { useApiData } from '../../../../hooks/useApiData';
 import TimeFilterProfile from '../ui/TimeFilterProfile';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -98,8 +98,9 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
     for (let d = startDay; d <= endDay; d++) validDays.push(d);
   }
 
+  const { consumptionProfile } = useApiData();
   // Fetch data
-  const { data: consumptionProfileData, isLoading } = useConsumptionProfile(
+  const { data: consumptionProfileData, isLoading } = consumptionProfile(
     user_id,
     selectedPowerMeter,
     apiTimeInterval,
