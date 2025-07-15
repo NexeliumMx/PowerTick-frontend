@@ -1,9 +1,12 @@
 import { BarChart } from '@mui/x-charts/BarChart';
-import { Paper, Typography, Box } from '@mui/material';
+import { Card, Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import chartColors from '../../../../theme/chartColors';
+import { useTheme } from '@mui/material/styles';
+
 const VoltageLL = ({ data, title }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   const hasValidData =
     data &&
@@ -14,43 +17,67 @@ const VoltageLL = ({ data, title }) => {
 
   if (!hasValidData) {
     return (
-      <Paper elevation={3} sx={{ px: 2, height: 450 }}>
-        <Typography variant="h3" sx={{ fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}>
+      <Card
+        sx={{
+          px: 2,
+          minHeight: 450,
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: theme.palette.background.card, // Matches the Card theme
+          boxShadow: theme.shadows[3], // Adds elevation
+        }}
+      >
+        <Typography 
+          variant="h3" 
+          sx={{ fontWeight: 600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+        >
           {title || t('measurements.voltageLL')}
         </Typography>
-        <Typography variant="body2" color="text.secondary" pt={20}>
+        <Typography variant="body2" color="text.secondary" align="center" pt={20}>
           {t('dashboard.dataNotAvailable')}
         </Typography>
-      </Paper>
+      </Card>
     );
   }
 
   const { voltage_l1_l2, voltage_l2_l3, voltage_l3_l1, voltage_ll } = data;
 
   return (
-    <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
+    <Card
+      sx={{
+        px: 3,
+        minHeight: 450,
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: theme.palette.background.card, // Matches the Card theme
+        boxShadow: theme.shadows[3], // Adds elevation
+      }}
+    >
       <Typography 
         variant="h3" 
-        sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+        sx={{ fontWeight: 600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
       >
         {title || t('measurements.voltageLL')}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <BarChart
+          slotProps={{
+            legend: { hidden: true }
+          }}
           borderRadius={10}
           grid={{ horizontal: true }}
           height={350}
           margin={{ left: 70, right: 20, top: 50, bottom: 40 }}
           xAxis={[{
-            data: ['L1-L2', 'L2-L3', 'L3-L1', 'Average'],
+            data: [t('measurements.l1l2'), t('measurements.l2l3'), t('measurements.l3l1'), t('measurements.avg')],
             scaleType: 'band',
             categoryGapRatio: 0.2,
             barGapRatio: -1,
-            label: 'Phases',
-            labelStyle: { textAnchor: 'middle'}
+            label: t('measurements.phases'),
+            labelStyle: { textAnchor: 'middle' }
           }]}
           yAxis={[{
-            label: 'Voltage (V)',
+            label: t('measurements.voltageAxis'),
             labelStyle: {
               transform: 'translateX(-20px)',
               writingMode: 'sideways-lr',
@@ -59,31 +86,30 @@ const VoltageLL = ({ data, title }) => {
           }]}
           series={[
             {
-              data: [voltage_l1_l2, 0, 0, 0],
+              data: [voltage_l1_l2/10, 0, 0, 0],
               label: 'L1-L2',
               color: chartColors.phase1,
               valueFormatter: (value) => `${value} V`
             },
             {
-              data: [0, voltage_l2_l3, 0, 0],
+              data: [0, voltage_l2_l3/10, 0, 0],
               label: 'L2-L3',
               color: chartColors.phase2,
-                valueFormatter: (value) => `${value} V`
+              valueFormatter: (value) => `${value} V`
             },
             {
-              data: [0, 0, voltage_l3_l1, 0],
+              data: [0, 0, voltage_l3_l1/10, 0],
               label: 'L3-L1',
               color: chartColors.phase3,
-                            valueFormatter: (value) => `${value} V`
+              valueFormatter: (value) => `${value} V`
             },
             {
-              data: [0, 0, 0, voltage_ll],
+              data: [0, 0, 0, voltage_ll/10],
               label: 'Average',
               color: chartColors.phaseTotal,
-                            valueFormatter: (value) => `${value} V`
+              valueFormatter: (value) => `${value} V`
             },
           ]}
-        
           tooltip={{
             trigger: 'item',
             render: (params) => {
@@ -102,7 +128,7 @@ const VoltageLL = ({ data, title }) => {
           }}
         />
       </Box>
-    </Paper>
+    </Card>
   );
 };
 

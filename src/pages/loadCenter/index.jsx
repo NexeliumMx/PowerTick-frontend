@@ -1,9 +1,10 @@
 // MUi imports
 import { Box, Typography, Card, CardActions, Button, Grid2, CardContent, Stack, CircularProgress, Divider } from "@mui/material";
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
+import { useTheme } from "@mui/material/styles";
 
 // Components
-import Header from "../../components/ui/Header";
+import Header from "../../layout/Header";
 
 // Import chart colors
 import chartColors from "../../theme/chartColors";
@@ -14,9 +15,8 @@ import { ModeContext } from "../../context/AppModeContext";
 //Hooks
 import { useMsal } from "@azure/msal-react";
 import { useContext } from "react";
-import { usePowermetersByUserAccess } from '../../hooks/usePowermetersByUserAccess';
+import { useApiData } from '../../hooks/useApiData';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from "@mui/material/styles";
 import { useTranslation } from 'react-i18next';
 
 
@@ -37,16 +37,19 @@ const groupByInstallation = (powermeters) => {
   }, {});
 };
 const getColorByFP = (value) => {
-  if (value >= 0.95) return chartColors.powerFactorGood;
-  if (value >= 0.90) return chartColors.powerFactorModerate;
-  return chartColors.powerFactorPoor;
+  
+  if (value >= .950) return chartColors.powerFactorGood;     // Green
+  if (value >= .920) return chartColors.powerFactorModerate; // Yellow
+  if (value >= .900) return chartColors.powerFactorRisky;    // Orange
+  return chartColors.powerFactorPoor;                       // Red
 };
-const getColorByDemand = (demand_kw, capacity_kw) => {
-  if (!capacity_kw || capacity_kw === 0) return chartColors.undefined;
-  const ratio = capacity_kw/demand_kw;
-  if (ratio > 3) return chartColors.overdimensioned;
-  if (ratio > 1.3) return chartColors.welldimensioned;
-  return chartColors.underdimensioned;
+
+const getColorByDemand = (demand, avg_demand) => {
+  if (!demand || !avg_demand) return chartColors.undefined;
+  const discrepance = Math.abs(demand-avg_demand);
+  if (discrepance > avg_demand*0.3) return chartColors.peak;
+  if (discrepance > avg_demand*0.15) return chartColors.semipeak;
+  return chartColors.nopeak;
 };
 const demand_kw = 1000;
 const capacity_kw = 900;
@@ -58,22 +61,28 @@ const LoadCenter = () => {
   const { state } = useContext(ModeContext); // get mode from context
   // Only call the hook if user_id and state.mode are defined
   const hookEnabled = !!user_id && !!state.mode;
-  const { data: powermetersData, isLoading, error } = usePowermetersByUserAccess(user_id, state.mode, { enabled: hookEnabled });
+  const { powermetersByUserAccess, loadCenters } = useApiData();
+  const { data: powermetersData, isLoading, error } = powermetersByUserAccess(user_id, state.mode, { enabled: hookEnabled });
+  const { data: loadCentersData, isDataLoading, error: loadCenterStatsError } = loadCenters(user_id, state.mode, { enabled: hookEnabled });
   const navigate = useNavigate();
   const theme = useTheme();
-  // Group powermeters by installation
-  const installations = powermetersData ? groupByInstallation(powermetersData) : {};
 
-  // Debug log for hook state
-  console.log('[LoadCenter] user_id:', user_id, 'mode:', state.mode, 'isLoading:', isLoading, 'error:', error, 'powermetersData:', powermetersData);
-
+  const statsByPowermeterId = (loadCentersData || []).reduce((acc, stat) => {
+    acc[stat.powermeter_id] = stat;
+    return acc;
+  }, {});
+  const powermetersWithStats = (powermetersData || []).map((pm) => ({
+    ...pm,
+    ...statsByPowermeterId[pm.powermeter_id], // merges consumption, avg_demand, max_demand, avg_power_factor, etc.
+  }));
+  const installations = groupByInstallation(powermetersWithStats);
   return (
-    <Box sx={{ minHeight: "100vh", padding: "20px", boxSizing: "border-box" }}>
+    <Box sx={{ minHeight: '100vh', padding: '20px', boxSizing: 'border-box' }}>
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "flex-start",
-          flexDirection: "column",
+          display: 'flex',
+          justifyContent: 'flex-start',
+          flexDirection: 'column',
           pt: 2,
         }}
       >
@@ -102,7 +111,7 @@ const LoadCenter = () => {
                 variant="fullWidth"
                 sx={{
                   my: 2,
-                  borderColor:theme.palette.text.secondary,
+                  borderColor: theme.palette.text.secondary,
                   borderBottomWidth: 2,
                   opacity: 0.7,
                 }}
@@ -110,77 +119,175 @@ const LoadCenter = () => {
               <Typography variant="h5" sx={{ mb: 1, fontWeight: 'bold' }}>
                 {installation_alias || t('loadCenter.noAlias')}
               </Typography>
-              <Grid2 container spacing={2}>
-                {meters.map((item) => (
-                  <Grid2 key={item.serial_number} xs={12} sm={6} md={3}>
-                    <Card sx={{ minWidth: 275, px: 1 }}>
-                      <CardContent>
-                        <Typography variant="h6" sx={{ mb: 2 , fontWeight:600}}>
-                          {item.powermeter_alias || t('loadCenter.noAlias')}
-                        </Typography>
-                        <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }} alignItems={"center"}>
-                          <Box sx={{flexDirection: 'column', alignItems: 'center'}}>
-                          <Gauge
-                            width={100}
-                            height={100}
-                            value={0.96}
-                            valueMin={0}
-                            valueMax={1}
-                            startAngle={-110}
-                            endAngle={110}
-                            valueFormatter={value => value.toFixed(2)}
-                            sx={{
-                              [`& .${gaugeClasses.valueArc}`]: {
-                                fill: getColorByFP(0.96),                              },
-                              [`& .${gaugeClasses.valueText}`]: {
-                                fontSize: 18,
-                              },
-                            }}
-                          />
-                          <Typography variant="body2" sx={{ textAlign: 'center', mt: 0 }}>
-                            {t('loadCenter.powerFactor')}
-                          </Typography>
-                          </Box>
-                          <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: { xs: 0, md: 2 } }} />
-                          <Divider orientation="horizontal" variant="middle" flexItem sx={{ mx: { xs: 2, md: 0 } }} />
-                          <Box sx={{flexDirection: 'column', alignItems: 'center'}}>
-                          <Gauge
-                            width={100}
-                            height={100}
-                            value={Math.min(demand_kw, capacity_kw)}
-                            valueMin={0}
-                            valueMax={capacity_kw} 
-                            startAngle={-110}
-                            endAngle={110}
-                            text={({ value }) => `${value.toFixed(0)} kW`} 
-                            sx={{
-                              [`& .${gaugeClasses.valueArc}`]: {
-                                fill: getColorByDemand(demand_kw, capacity_kw),
-                              },
-                              [`& .${gaugeClasses.valueText}`]: {
-                                fontSize: 16,
-                              },
-                            }}
-                          />
+              
+              
 
-                          <Typography variant="body2" sx={{ textAlign: 'center', mt: 0 }}>
-                            {t('loadCenter.demand')}
+              <Grid2 container spacing={2}>
+                {meters.map((item) => {
+                  // If there is no load center data for this powermeter, show a message and the button only
+                  const hasStats =
+                    typeof item.consumption === 'number' ||
+                    typeof item.avg_demand === 'number' ||
+                    typeof item.max_demand === 'number' ||
+                    typeof item.avg_power_factor === 'number';
+
+                  return (
+                    <Grid2 key={item.serial_number} xs={12} sm={6} md={3}>
+                      <Card
+                        sx={{
+                          minWidth: 275,
+                          px: 1,
+                          backgroundColor: theme.palette.background.card,
+                        }}
+                      >
+                        <CardContent>
+                          <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                            {item.powermeter_alias || t('loadCenter.noAlias')}
                           </Typography>
-                          </Box>
-                        </Stack>
-                      </CardContent>
-                      <CardActions sx={{ justifyContent: "flex-end" }}>
-                        <Button 
-                          variant="contained" 
-                          size="small"
-                          onClick={() => navigate(`/dashboard?powermeter_id=${item.powermeter_id}`)}
-                        >
-                          {t('loadCenter.goToDashboard')}
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid2>
-                ))}
+                          {!hasStats ? (
+                            <Box
+                              sx={{
+                                minHeight: 120,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <Typography variant="h4" color="text.secondary" sx={{ mb: 2 }}>
+                                {t('loadCenter.noData')}
+                              </Typography>
+                            </Box>
+                          ) : (
+                            <>
+                              <Box
+                                sx={{
+                                  my: 2,
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  backgroundColor: theme.palette.background.paper,
+                                  borderRadius: 2,
+                                  py: 1,
+                                  px: 2,
+                                }}
+                              >
+                                <Typography
+                                  variant="body1"
+                                  sx={{ color: theme.palette.text.primary, fontWeight: 600 }}
+                                >
+                                  {t('loadCenter.consumption')}
+                                </Typography>
+                                <Typography
+                                  variant="body1"
+                                  sx={{ mt: 1, color: theme.palette.text.primary }}
+                                >
+                                  {item.consumption} kWh
+                                </Typography>
+                              </Box>
+                              <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }} alignItems="center">
+                                <Box sx={{ flexDirection: 'column', alignItems: 'center' }}>
+                                  <Gauge
+                                    width={100}
+                                    height={100}
+                                    value={item.avg_power_factor ? Number((item.avg_power_factor / 1000).toFixed(3)) : 0}
+                                    valueMin={0}
+                                    valueMax={1}
+                                    startAngle={-110}
+                                    endAngle={110}
+                                    valueFormatter={(value) => Math.round(value).toString()} // No decimals
+                                    sx={{
+                                      [`& .${gaugeClasses.valueArc}`]: {
+                                        fill: getColorByFP(item.avg_power_factor ?? 0),
+                                      },
+                                      [`& .${gaugeClasses.valueText}`]: {
+                                        fontSize: 18,
+                                      },
+                                    }}
+                                  />
+                                  <Typography variant="body2" sx={{ textAlign: 'center', mt: 0 }}>
+                                    {t('loadCenter.powerFactor')}
+                                  </Typography>
+                                </Box>
+                                <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: { xs: 0, md: 2 } }} />
+                                <Divider orientation="horizontsal" variant="middle" flexItem sx={{ mx: { xs: 2, md: 0 } }} />
+                                <Box sx={{ flexDirection: 'column', alignItems: 'center' }}>
+                                  <Box sx={{ position: 'relative', width: 100, height: 100, display: 'inline-block' }}>
+                                    <Gauge
+                                      width={100}
+                                      height={100}
+                                      value={item.last_demand ?? 0}
+                                      valueMin={0}
+                                      valueMax={item.avg_demand ? item.avg_demand * 2 : 1}
+                                      startAngle={-110}
+                                      endAngle={110}
+                                      text={({ value }) => `${value.toFixed(0)} kW`}
+                                      sx={{
+                                        [`& .${gaugeClasses.valueArc}`]: {
+                                          fill: getColorByDemand(item.last_demand, item.avg_demand),
+                                        },
+                                        [`& .${gaugeClasses.valueText}`]: {
+                                          fontSize: 16,
+                                        },
+                                      }}
+                                    />
+                                    <Box
+                                      sx={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        pointerEvents: 'none',
+                                      }}
+                                    >
+                                      <Typography variant="caption">
+                                        {t('loadCenter.avg')}
+                                      </Typography>
+                                    </Box>
+                                    <svg
+                                      width={100}
+                                      height={100}
+                                      style={{
+                                        position: 'absolute',
+                                        top: 8,
+                                        left: 0,
+                                        pointerEvents: 'none',
+                                      }}
+                                    >
+                                      <line
+                                        x1={50}
+                                        y1={12}
+                                        x2={50}
+                                        y2={28}
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                        strokeLinecap="round"
+                                      />
+                                    </svg>
+                                  </Box>
+
+                                  <Typography variant="body2" sx={{ textAlign: 'center', mt: 0 }}>
+                                    {t('loadCenter.demand')}
+                                  </Typography>
+                                </Box>
+                              </Stack>
+                            </>
+                          )}
+                        </CardContent>
+                        <CardActions sx={{ justifyContent: 'flex-end' }}>
+                          <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => navigate(`/dashboard?powermeter_id=${item.powermeter_id}`)}
+                          >
+                            {t('loadCenter.goToDashboard')}
+                          </Button>
+                        </CardActions>
+                      </Card>
+                    </Grid2>
+                  );
+                })}
               </Grid2>
             </Box>
           ))

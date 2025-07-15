@@ -17,7 +17,7 @@ import { Select, MenuItem, FormControl, InputLabel, Divider } from "@mui/materia
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer, Label } from "recharts";
 
 // Hooks imports
-import { useConsumptionHistory } from '../../../../hooks/useConsumptionHistory';
+import { useApiData } from '../../../../hooks/useApiData';
 
 // Theme imports
 import chartColors from "../../../../theme/chartColors";
@@ -85,8 +85,9 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
     end_utc = end.utc().format();
   }
 
+  const { consumptionHistory } = useApiData();
   // Use new hook
-  const { data: consumptionHistoryData, isLoading } = useConsumptionHistory(
+  const { data: consumptionHistoryData, isLoading } = consumptionHistory(
     user_id,
     selectedPowerMeter,
     start_utc,
@@ -117,7 +118,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
   if (isToday) {
     // Only show hours up to the current hour, in descending order
     hours = [
-      { value: LAST_HOUR_VALUE, label: 'Last Hour' },
+      { value: LAST_HOUR_VALUE, label: t('analysis.lastHour') },
       ...Array.from({ length: now.hour() + 1 }, (_, i) => {
         const hour = now.hour() - i;
         return {
@@ -187,13 +188,13 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
 
   // X lable variable title
   const xAxisLabel = timeInterval === "year"
-    ? t('dashboard.month', 'Mes')
+    ? t('analysis.month', 'Mes')
     : timeInterval === "month"
-    ? t('dashboard.day', 'Día')
+    ? t('analysis.day', 'Día')
     : timeInterval === "day"
-    ? t('dashboard.hour', 'Hora')
+    ? t('analysis.hour', 'Hora')
     : timeInterval === "hour"
-    ? t('dashboard.minutes', 'Minutos')
+    ? t('analysis.minutes', 'Minutos')
     : t('dashboard.time', 'Tiempo');
 
   // Transform data for Recharts (show local time)
@@ -212,8 +213,8 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
           <Typography variant="body2" sx={{ fontWeight: 600 }}>
             {payload[0].payload.timestamp_local}
           </Typography>
-          <Typography variant="body2">Active Energy (Wh): {payload[0].payload.realEnergy}</Typography>
-          <Typography variant="body2">Reactive Energy (VARh): {payload[0].payload.reactiveEnergy}</Typography>
+          <Typography variant="body2">{t('analysis.activeEnergy')}: {payload[0].payload.realEnergy}</Typography>
+          <Typography variant="body2">{t('analysis.reactiveEnergy')}: {payload[0].payload.reactiveEnergy}</Typography>
         </Box>
       );
     }
@@ -238,10 +239,10 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
   }, [timeInterval]);
 
   // Use t('Analysis.consumptionHistory') for the card title
-  const cardTitle = t('Analysis.consumptionHistory');
+  const cardTitle = t('analysis.consumptionHistory');
 
   return (
-    <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
+    <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column", backgroundColor: theme.palette.background.card }}>
       <CardHeader
         title={cardTitle}
         titleTypographyProps={{
@@ -283,7 +284,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
                   stroke={theme.palette.text.primary}
                 >
                   <Label
-                    value="Active Energy (Wh)"
+                    value={t('analysis.activeEnergy')}
                     angle={-90}
                     position="insideLeft"
                     offset={-10}
@@ -301,7 +302,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
                   stroke={theme.palette.text.primary}
                 >
                   <Label
-                    value="Reactive Energy (VARh)"
+                    value={t('analysis.reactiveEnergy')}
                     angle={-90}
                     position="insideRight"
                     offset={-10}
@@ -314,12 +315,12 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
                 </YAxis>
                 <Tooltip content={<CustomTooltip />} />
                 <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{marginRight: 40, paddingBottom: 8}} />
-                <Line type="monotone" dataKey="realEnergy" stroke={chartColors.realEnergy} name="Active Energy (Wh)" dot={false} yAxisId="left" strokeWidth={3}/>
-                <Line type="monotone" dataKey="reactiveEnergy" stroke={chartColors.reactiveEnergy} name="Reactive Energy (VARh)"  dot={false} yAxisId="right" strokeWidth={3}/>
+                <Line type="monotone" dataKey="realEnergy" stroke={chartColors.realEnergy} name={t('analysis.activeEnergy')} dot={false} yAxisId="left" strokeWidth={3}/>
+                <Line type="monotone" dataKey="reactiveEnergy" stroke={chartColors.reactiveEnergy} name={t('analysis.reactiveEnergy')}  dot={false} yAxisId="right" strokeWidth={3}/>
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <Typography variant="body1">No data available</Typography>
+            <Typography variant="body1">{t('analysis.noData')}</Typography>
           )}
         </Box>
       </CardContent>

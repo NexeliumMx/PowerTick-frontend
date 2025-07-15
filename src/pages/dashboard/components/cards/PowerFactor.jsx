@@ -1,17 +1,20 @@
-import { Paper, Typography, Box } from '@mui/material';
+import { Card, Typography, Box } from '@mui/material';
 import Grid2 from '@mui/material/Grid2';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import { useTranslation } from 'react-i18next';
-
+import chartColors from '../../../../theme/chartColors';
+import { useTheme } from '@mui/material/styles';
 const getColorByFP = (value) => {
-  if (value >= 0.95) return '#4caf50';     // Green
-  if (value >= 0.90) return '#ffb300';     // Yellow
-  return '#f44336';                        // Red
+  
+  if (value >= 0.95) return chartColors.powerFactorGood;     // Green
+  if (value >= 0.92) return chartColors.powerFactorModerate; // Yellow
+  if (value >= 0.90) return chartColors.powerFactorRisky;    // Orange
+  return chartColors.powerFactorPoor;                       // Red
 };
 
 const PowerFactor = ({ data, title }) => {
   const { t } = useTranslation();
-
+  const theme = useTheme();
   const hasValidData =
     data &&
     typeof data.pf_l1 === 'number' &&
@@ -21,50 +24,69 @@ const PowerFactor = ({ data, title }) => {
 
   if (!hasValidData) {
     return (
-      <Paper elevation={3} sx={{ px: 2, height: 450 }}>
+      <Card
+        sx={{
+          px: 2,
+          minHeight: 450,
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: theme.palette.background.card, // Matches the Card theme
+          boxShadow: theme.shadows[3], // Adds elevation
+        }}
+      >
         <Typography 
           variant="h3" 
-          sx={{fontWeight:600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+          sx={{ fontWeight: 600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
         >
           {title || t('measurements.powerFactorRange')}
         </Typography>
         <Typography variant="body2" color="text.secondary" align="center" pt={20}>
           {t('dashboard.dataNotAvailable')}
         </Typography>
-      </Paper>
+      </Card>
     );
   }
 
   const gauges = [
-    { label: 'L1', value: data.pf_l1 / 1000 },
-    { label: 'L2', value: data.pf_l2 / 1000 },
-    { label: 'L3', value: data.pf_l3 / 1000 },
-    { label: 'Avg.', value: data.power_factor / 1000 },
+    { label: t('measurements.l1'), value: data.pf_l1 / 1000 },
+    { label: t('measurements.l1'), value: data.pf_l2 / 1000 },
+    { label: t('measurements.l1'), value: data.pf_l3 / 1000 },
+    { label: t('measurements.avg'), value: data.power_factor / 1000 },
   ];
 
   return (
-    <Paper elevation={3} sx={{ px: 3, minHeight: 450, display: 'flex', flexDirection: 'column' }}>
+    <Card
+      sx={{
+        px: 3,
+        minHeight: 450,
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: theme.palette.background.card, // Matches the Card theme
+        boxShadow: theme.shadows[3], // Adds elevation
+      }}
+    >
       <Typography 
         variant="h3" 
-        sx={{ fontWeight:600 ,textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
+        sx={{ fontWeight: 600, textAlign: 'left', paddingLeft: 1, alignSelf: 'flex-start', paddingTop: 2 }}
       >
         {title || t('measurements.powerFactorRange')}
       </Typography>
       <Grid2 container spacing={2} 
         justifyContent="center" 
         alignItems="center"
-        sx={{ flex:1, minHeight: 0 }}
+        sx={{ flex: 1, minHeight: 0 }}
       >
         {gauges.map(({ label, value }) => {
           const color = getColorByFP(value);
           return (
-          <Grid2
-                  key={label}
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-      ><Box sx={{ width: 140, height: 150, mx: 'auto' }}>
-              <Gauge
+            <Grid2
+              key={label}
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+            >
+              <Box sx={{ width: 140, height: 150, mx: 'auto' }}>
+                <Gauge
                   value={value}
                   valueMin={0}
                   valueMax={1}
@@ -88,7 +110,7 @@ const PowerFactor = ({ data, title }) => {
           );
         })}
       </Grid2>
-    </Paper>
+    </Card>
   );
 };
 
