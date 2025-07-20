@@ -317,3 +317,45 @@ export async function testDBConnection(mode = 'PRODUCTION') {
   }
   return resData;
 }
+export async function downloadCsv({
+  userId,
+  powermeterId,
+  powermeterAlias,
+  month,
+  year,
+  environment = 'production',
+  language = 'en',
+}) {
+  const params = new URLSearchParams({
+    user_id: userId,
+    powermeter_id: powermeterId,
+    month,
+    year,
+    environment,
+    language,
+  });
+
+  const url = `/api/downloads?${params.toString()}`;
+  console.log(`[API CALL] downloadCsv: ${url}`);
+
+  const response = await fetch(url, {
+    method: 'GET',
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to download CSV');
+  }
+
+  const blob = await response.blob();
+  const safeAlias = powermeterAlias.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '');
+  const filename = `${safeAlias}_${month}_${year}.csv`;
+
+  const link = document.createElement('a');
+  const objectUrl = window.URL.createObjectURL(blob);
+  link.href = objectUrl;
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(objectUrl);
+}

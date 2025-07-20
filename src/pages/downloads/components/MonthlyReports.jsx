@@ -27,6 +27,8 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import "dayjs/locale/en";
 import "dayjs/locale/es"; // Import Spanish locale
+import { downloadCsv } from "../../../api/httpRequests";
+
 
 
 dayjs.extend(utc);
@@ -51,6 +53,7 @@ const getValidYears = (measurementRange) => {
   }
   return [];
 };
+
 
 const MonthlyReportsTable = () => {
   const theme = useTheme();
@@ -82,6 +85,39 @@ const MonthlyReportsTable = () => {
   // Compute valid years from measurementRange (like in Analysis/ConsumptionHistory)
   const validYears = getValidYears(measurementRange);
 
+
+  //download CSV function
+  const handleDownload = (row) => {
+    if (!selectedPowerMeter || !selectedYear) return;
+    const powermeterAlias = powerMeters.find(
+      (m) => m.powermeter_id === selectedPowerMeter
+    )?.powermeter_alias || selectedPowerMeter;
+
+    // Extract MM from row.month (supports "YYYY-MM" or ISO string)
+    let month = '';
+    if (typeof row.month === 'string' && row.month.length >= 7) {
+      // Handles "YYYY-MM" or "YYYY-MM-DD..."
+      month = row.month.slice(5, 7);
+    } else if (row.month instanceof Date) {
+      month = String(row.month.getMonth() + 1).padStart(2, '0');
+    } else {
+      // fallback: try to parse as date
+      const date = new Date(row.month);
+      if (!isNaN(date)) {
+        month = String(date.getMonth() + 1).padStart(2, '0');
+      }
+    }
+
+    downloadCsv({
+      userId: user_id,
+      powermeterId: selectedPowerMeter,
+      powermeterAlias,
+      month, // always MM
+      year: selectedYear,
+      environment: appModeState?.mode?.toLowerCase() || "production",
+      language: i18n.language,
+    });
+  };
   // Set selectedYear when validYears changes
   useEffect(() => {
     if (validYears.length > 0 && !validYears.includes(Number(selectedYear))) {
@@ -108,14 +144,7 @@ const MonthlyReportsTable = () => {
     appModeState?.mode || "PRODUCTION"
   );
 
-  if (isPowerMetersLoading || isRangeLoading) {
-    return <CircularProgress />;
-  }
-
-  if (isMonthlyReportLoading) {
-    return <CircularProgress />;
-  }
-
+  // Move loading check below the header section
   return (
     <Box sx={{ position: "relative" }}>
       <Box
@@ -180,10 +209,15 @@ const MonthlyReportsTable = () => {
         </Box>
       </Box>
 
+      {/* Only the table area shows loading */}
       <Box>
-        {monthlyReportError ? (
+        {(isPowerMetersLoading || isRangeLoading || isMonthlyReportLoading) ? (
+          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 200 }}>
+            <CircularProgress />
+          </Box>
+        ) : monthlyReportError ? (
           <Typography color="error">
-            Error: {monthlyReportError.message ||   t('dashboard.error')}
+            Error: {monthlyReportError.message || t('dashboard.error')}
           </Typography>
         ) : !Array.isArray(monthlyReport) || monthlyReport.length === 0 ? (
           <Typography>
@@ -247,7 +281,7 @@ const MonthlyReportsTable = () => {
                       <Typography variant="h6">{row.max_demand}</Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Button variant="contained" color="primary" disabled>
+                      <Button variant="contained" color="primary" onClick={() => handleDownload(row)}>
                         <Typography variant="h6">{t('monthlyReports.download')}</Typography>
                       </Button>
                     </TableCell>

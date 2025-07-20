@@ -54,6 +54,9 @@ const apiEndpoints = {
   // THD Voltage LN endpoints
   thdVoltageLNHistory: '/api/thdVoltageLNHistory',
   thdVoltageLNProfile: '/api/thdVoltageLNProfile',
+
+  //Download
+  downloadCsv: '/api/downloadCsv',
 };
 
 export { apiEndpoints, API_BASE_URL };
