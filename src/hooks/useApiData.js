@@ -27,6 +27,7 @@ import {
   fetchThdVoltageLLProfile,
   fetchThdVoltageLNHistory,
   fetchThdVoltageLNProfile,
+  pingAPI,
 } from '../api/httpRequests';
 
 /**
@@ -296,6 +297,21 @@ export const useApiData = () => {
     });
   };
 
+  // ========== API WARMUP HOOK ========== //
+  
+  /**
+   * Hook to ping the API for warming up Azure Functions
+   * @param {object} options - React Query options
+   * @returns {object} React Query mutation result
+   */
+  const apiPing = (options = {}) => {
+    return useMutation({
+      mutationFn: pingAPI,
+      retry: false, // Don't retry ping failures
+      ...options,
+    });
+  };
+
   // ========== RETURN ALL HOOKS ========== //
   
   return {
@@ -317,5 +333,8 @@ export const useApiData = () => {
     thdVoltageLLProfile,
     thdVoltageLNHistory,
     thdVoltageLNProfile,
+    
+    // API warmup
+    apiPing,
   };
 };

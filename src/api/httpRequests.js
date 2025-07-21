@@ -317,6 +317,33 @@ export async function testDBConnection(mode = 'PRODUCTION') {
   }
   return resData;
 }
+
+// Ping endpoint to warm up Azure Functions API
+export async function pingAPI() {
+  const url = `${API_BASE_URL}${apiEndpoints.ping}`;
+  console.log(`[API WARMUP] Pinging API to warm up: ${url}`);
+  
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      console.log(`[API WARMUP] API warmed up successfully. Response time: ${data.responseTime}ms, Cold start: ${data.coldStart}`);
+      return data;
+    } else {
+      console.warn(`[API WARMUP] Ping failed with status: ${response.status}`);
+      return null;
+    }
+  } catch (error) {
+    console.warn(`[API WARMUP] Ping failed:`, error.message);
+    return null;
+  }
+}
 export async function downloadCsv({
   userId,
   powermeterId,

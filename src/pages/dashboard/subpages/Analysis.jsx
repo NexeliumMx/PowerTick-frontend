@@ -84,6 +84,7 @@ const Analysis = ({ powerMeter }) => {
         <Grid size={isSmallScreen ? 12 : 6}>
           <ThdCurrentProfileCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} t={t} />
         </Grid>
+        {/* TO DO:
         <Grid size={isSmallScreen ? 12 : 6}>
           <ThdVoltageLLHistoryCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} t={t} />
         </Grid>
@@ -96,6 +97,7 @@ const Analysis = ({ powerMeter }) => {
         <Grid size={isSmallScreen ? 12 : 6}>
           <ThdVoltageLNProfileCard selectedPowerMeter={powerMeter} measurementRange={measurementRange} defaultTimeFilter={defaultTimeFilter} t={t} />
         </Grid>
+        */}
       </Grid>
     </Box>
   );

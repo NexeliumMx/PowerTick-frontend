@@ -21,6 +21,7 @@
  * - 2025-05-20: Added context for application mode management and theme switching.
  * - 2025-05-25: Implemented `ModeProvider` for managing application modes (Demo, Dev, Production).
  * - 2025-06-02: Remove React Strict Mode to avoid double rendering issues in production.
+ * - 2025-07-21: Added API warmup functionality to ping Azure Functions on app startup.
  */
 
 // React imports
@@ -42,6 +43,21 @@ import { msalInstance } from "./services/auth/msalConfig.js";
 import ReactQueryProvider from "./services/reactQuery/ReactQueryProvider.jsx";
 import './services/i18n/i18n';
 
+// API warmup imports
+import { useApiWarmup } from "./hooks/useApiWarmup.js";
+
+/**
+ * Component to handle API warmup on application startup
+ */
+function ApiWarmup() {
+  useApiWarmup({
+    enabled: true,
+    timeout: 10000, // 10 seconds timeout
+  });
+
+  return null; // This component doesn't render anything
+}
+
 function MainApp() {
   const [theme, colorMode] = useMode();
 
@@ -53,6 +69,7 @@ function MainApp() {
           <BrowserRouter>
             <ModeProvider>
               <ReactQueryProvider>
+                <ApiWarmup />
                 <App />
               </ReactQueryProvider>
             </ModeProvider>

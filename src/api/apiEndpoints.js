@@ -43,6 +43,9 @@ const apiEndpoints = {
   // Database test endpoint
   testDBconnection: '/api/testDBconnection',
   
+  // Health check endpoints
+  ping: '/api/ping',
+  
   // THD Current endpoints
   thdCurrentHistory: '/api/thdCurrentHistory',
   thdCurrentProfile: '/api/thdCurrentProfile',
