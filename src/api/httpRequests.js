@@ -320,7 +320,7 @@ export async function testDBConnection(mode = 'PRODUCTION') {
 
 // Ping endpoint to warm up Azure Functions API
 export async function pingAPI() {
-  const url = `${API_BASE_URL}${apiEndpoints.ping}`;
+  const url = `${API_BASE_URL}${apiEndpoints.ping}?warmup=true`;
   console.log(`[API WARMUP] Pinging API to warm up: ${url}`);
   
   try {
@@ -333,7 +333,7 @@ export async function pingAPI() {
     
     if (response.ok) {
       const data = await response.json();
-      console.log(`[API WARMUP] API warmed up successfully. Response time: ${data.responseTime}ms, Cold start: ${data.coldStart}`);
+      console.log(`[API WARMUP] API warmed up successfully. Response time: ${data.responseTime}ms, Cold start: ${data.coldStart}, Pre-warmed: ${data.preWarmed}`);
       return data;
     } else {
       console.warn(`[API WARMUP] Ping failed with status: ${response.status}`);
