@@ -54,6 +54,7 @@ export const themeSettings = (mode) => {
             background: {
               default: tokens.primary[100],
               paper: tokens.primary[200],
+              card: tokens.primary[200],
             },
           }
         : {
@@ -74,6 +75,7 @@ export const themeSettings = (mode) => {
             background: {
               default: tokens.grey[100],
               paper: tokens.grey[200],
+              card: "white",
             },
           }),
     },

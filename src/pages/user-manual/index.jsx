@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import Header from "../../components/ui/Header";
+import Header from "../../layout/Header";
 
 const UserManual = () => {
   return (

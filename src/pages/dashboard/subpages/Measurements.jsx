@@ -7,7 +7,7 @@ import { ModeContext } from "../../../context/AppModeContext";
 
 // Hooks
 import { useMsal } from "@azure/msal-react";
-import { useRealTimeData } from "../../../hooks/useRealTimeData";
+import { useApiData } from "../../../hooks/useApiData";
 import { useContext } from "react";
 import { useTranslation } from 'react-i18next';
 
@@ -30,7 +30,8 @@ export default function Measurements({ powerMeter }) {
   const { accounts } = useMsal();
   const user_id = accounts[0]?.idTokenClaims?.oid;
   const { state } = useContext(ModeContext); // Get current mode from context
-  const { data: realTimeData, isLoading } = useRealTimeData(user_id, powerMeter, state.mode); // Pass mode
+  const api = useApiData();
+  const { data: realTimeData, isLoading } = api.realTimeData(user_id, powerMeter, state.mode); // Use the new API hook
   const parsedData = Array.isArray(realTimeData) ? realTimeData[0] : realTimeData;
 
   return (

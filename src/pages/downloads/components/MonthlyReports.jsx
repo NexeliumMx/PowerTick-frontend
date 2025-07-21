@@ -1,5 +1,13 @@
-import { useState } from "react";
-import { Box, Select, MenuItem, Typography, FormControl, InputLabel } from "@mui/material";
+import { useContext, useState, useEffect } from "react";
+import {
+  Box,
+  Select,
+  MenuItem,
+  Typography,
+  FormControl,
+  InputLabel,
+  CircularProgress,
+} from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -9,157 +17,281 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { useTheme } from "@mui/material/styles";
-import Header from "../../../components/ui/Header";
+import Header from "../../../layout/Header";
+import { useApiData } from "../../../hooks/useApiData";
+import { ModeContext } from "../../../context/AppModeContext";
+import { useMsal } from "@azure/msal-react";
+import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import "dayjs/locale/en";
+import "dayjs/locale/es"; // Import Spanish locale
+import { downloadCsv } from "../../../api/httpRequests";
+
+
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const getValidYears = (measurementRange) => {
+  if (
+    measurementRange &&
+    measurementRange.min_utc &&
+    measurementRange.max_utc &&
+    dayjs.utc(measurementRange.min_utc).isValid() &&
+    dayjs.utc(measurementRange.max_utc).isValid()
+  ) {
+    const tz = dayjs.tz.guess();
+    const minYear = dayjs.utc(measurementRange.min_utc).tz(tz).year();
+    const maxYear = dayjs.utc(measurementRange.max_utc).tz(tz).year();
+    const years = [];
+    for (let year = minYear; year <= maxYear; year += 1) {
+      years.push(year);
+    }
+    return years.reverse();
+  }
+  return [];
+};
+
 
 const MonthlyReportsTable = () => {
-  // Placeholder data for serial numbers
   const theme = useTheme();
-  const powerMeters = [
-    { serial_number: "SN12345" },
-    { serial_number: "SN67890" },
-  ];
-  const [selectedSerialNumber, setSelectedSerialNumber] = useState(
-    powerMeters[0].serial_number
+  const { t, i18n } = useTranslation();
+  const { state } = useContext(ModeContext);
+  const { accounts } = useMsal ? useMsal() : { accounts: [] };
+  const user_id = accounts && accounts[0]?.idTokenClaims?.oid;
+  const { powermetersByUserAccess, measurementRange: useMeasurementRange, monthlyReport: useMonthlyReport } = useApiData();
+  const {
+    data: powerMeters = [],
+    isLoading: isPowerMetersLoading,
+    error: powerMetersError,
+  } = powermetersByUserAccess(user_id, state.mode);
+
+  const [selectedPowerMeter, setSelectedPowerMeter] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
+  const { state: appModeState } = useContext(ModeContext);
+  const [isOpen, setIsOpen] = useState(false);
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => setIsOpen(false);
+
+  // Use the measurement range hook for the selected powermeter
+  const {
+    data: measurementRange,
+    isLoading: isRangeLoading,
+    error: rangeError,
+  } = useMeasurementRange(selectedPowerMeter, state.mode);
+
+  // Compute valid years from measurementRange (like in Analysis/ConsumptionHistory)
+  const validYears = getValidYears(measurementRange);
+
+
+  //download CSV function
+  const handleDownload = (row) => {
+    if (!selectedPowerMeter || !selectedYear) return;
+    const powermeterAlias = powerMeters.find(
+      (m) => m.powermeter_id === selectedPowerMeter
+    )?.powermeter_alias || selectedPowerMeter;
+
+    // Extract MM from row.month (supports "YYYY-MM" or ISO string)
+    let month = '';
+    if (typeof row.month === 'string' && row.month.length >= 7) {
+      // Handles "YYYY-MM" or "YYYY-MM-DD..."
+      month = row.month.slice(5, 7);
+    } else if (row.month instanceof Date) {
+      month = String(row.month.getMonth() + 1).padStart(2, '0');
+    } else {
+      // fallback: try to parse as date
+      const date = new Date(row.month);
+      if (!isNaN(date)) {
+        month = String(date.getMonth() + 1).padStart(2, '0');
+      }
+    }
+
+    downloadCsv({
+      userId: user_id,
+      powermeterId: selectedPowerMeter,
+      powermeterAlias,
+      month, // always MM
+      year: selectedYear,
+      environment: appModeState?.mode?.toLowerCase() || "production",
+      language: i18n.language,
+    });
+  };
+  // Set selectedYear when validYears changes
+  useEffect(() => {
+    if (validYears.length > 0 && !validYears.includes(Number(selectedYear))) {
+      setSelectedYear(String(validYears[0]));
+    }
+    if (validYears.length === 0 && selectedYear !== "") {
+      setSelectedYear("");
+    }
+  }, [validYears, selectedYear]);
+
+  // Set dayjs locale when language changes
+  useEffect(() => {
+    dayjs.locale(i18n.language === "es" ? "es" : "en");
+  }, [i18n.language]);
+
+  const {
+    data: monthlyReport,
+    isMonthlyReportLoading,
+    error: monthlyReportError,
+  } = useMonthlyReport(
+    user_id,
+    selectedPowerMeter,
+    selectedYear,
+    appModeState?.mode || "PRODUCTION"
   );
-  const [selectedYear, setSelectedYear] = useState("2024");
 
-  const pf = [
-    0.76, 0.79, 0.82, 0.85, 0.88, 0.91, 0.93, 0.8, 0.83, 0.9, 0.95, 0.77,
-  ];
-  const consumption = [
-    18245, 23102, 19876, 16354, 21789, 24501, 17932, 22648, 20517, 15982,
-    25000, 18777,
-  ];
-  const maxDemand = [
-    45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100,
-  ];
-  const months = [
-    { name: "January", value: "1" },
-    { name: "February", value: "2" },
-    { name: "March", value: "3" },
-    { name: "April", value: "4" },
-    { name: "May", value: "5" },
-    { name: "June", value: "6" },
-    { name: "July", value: "7" },
-    { name: "August", value: "8" },
-    { name: "September", value: "9" },
-    { name: "October", value: "10" },
-    { name: "November", value: "11" },
-    { name: "December", value: "12" },
-  ];
-
+  // Move loading check below the header section
   return (
-    <Box sx={{ position: "relative"}}>
-           <Box
+    <Box sx={{ position: "relative" }}>
+      <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           flexDirection: "row",
           pt: 2,
-          paddingBottom: 1
-        }}>
-      <Header
-        title="MONTHLY REPORTS"
-        subtitle="Read and download all the Power Measurements Data"
-      />
-      
-      <Box sx={{ display: "flex", gap: 2 }}>
-        {/* Serial Number Dropdown */}
-        <FormControl size="small" sx={{ minWidth: 200 }}>
-          <InputLabel id="serial-number-label">Serial Number</InputLabel>
-          <Select
-            labelId="serial-number-label"
-            value={selectedSerialNumber}
-            label="Serial Number"
-            onChange={(e) => setSelectedSerialNumber(e.target.value)}
-          >
-            {powerMeters.map((meter, index) => (
-              <MenuItem key={index} value={meter.serial_number}>
-                {meter.serial_number}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+          paddingBottom: 1,
+        }}
+      >
+        <Header
+          title={t("monthlyReports.title")}
+          subtitle={t("monthlyReports.subtitle")}
+        />
 
-        {/* Year Dropdown */}
-        <FormControl size="small" sx={{ minWidth: 100 }}>
-          <InputLabel id="year-label">Year</InputLabel>
-          <Select
-            labelId="year-label"
-            value={selectedYear}
-            label="Year"
-            onChange={(e) => setSelectedYear(e.target.value)}
-          >
-            <MenuItem value="2023">2023</MenuItem>
-            <MenuItem value="2024">2024</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-      
+        <Box sx={{ display: "flex", gap: 2 }}>
+          {/* Serial Number Dropdown */}
+          <FormControl size="small" sx={{ minWidth: 200 }}>
+            <InputLabel id="serial-number-label">
+              {isOpen || selectedPowerMeter
+                ? t("dashboard.selectedPowerMeter")
+                : t("dashboard.selectPowerMeter")}
+            </InputLabel>
+            <Select
+              labelId="serial-number-label"
+              value={selectedPowerMeter || ""}
+              label={t("monthlyReports.powermeter")}
+              onChange={(e) => setSelectedPowerMeter(e.target.value)}
+              disabled={isPowerMetersLoading}
+              onOpen={handleOpen}
+              onClose={handleClose}
+            >
+              <MenuItem value="" disabled />
+              {powerMeters.map((meter) => (
+                <MenuItem key={meter.powermeter_id} value={meter.powermeter_id}>
+                  {meter.powermeter_alias || meter.powermeter_id}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {/* Year Dropdown */}
+          <FormControl size="small" sx={{ minWidth: 100 }} disabled={!validYears.length}>
+            <InputLabel id="year-label">{t('monthlyReports.year')}</InputLabel>
+            <Select
+              labelId="year-label"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+              label="Year"
+            >
+              {Array.isArray(validYears) &&
+                validYears.length > 0 &&
+                validYears.map((year) => (
+                  <MenuItem key={year} value={year}>
+                    {year}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+        </Box>
       </Box>
 
-      
-      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-        <Table>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: theme.palette.background.paper }}>
-              <TableCell align="center">
-                <Typography variant="h6" fontWeight={600}>Serial Number</Typography>
-              </TableCell>
-              <TableCell align="center">
-                <Typography variant="h6" fontWeight={600}>Month</Typography>
-              </TableCell>
-              <TableCell align="center">
-                <Typography variant="h6" fontWeight={600}>Consumption</Typography>
-              </TableCell>
-              <TableCell align="center">
-                <Typography variant="h6" fontWeight={600}>Power Factor</Typography>
-              </TableCell>
-              <TableCell align="center">
-                <Typography variant="h6" fontWeight={600}>Max Demand</Typography>
-              </TableCell>
-              <TableCell align="center">
-                <Typography variant="h6"fontWeight={600}>Download</Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {months.map((month, idx) => (
-              <TableRow
-                key={month.value}
-                sx={{
-                  backgroundColor:
-                    idx % 2 === 0
-                      ? theme.palette.background.default
-                      : theme.palette.background.default,
-                }}
-              >
-                <TableCell align="center">
-                  <Typography variant="h6">{selectedSerialNumber}</Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Typography variant="h6">{month.name}</Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Typography variant="h6">{consumption[idx]}</Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Typography variant="h6">{pf[idx]}</Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Typography variant="h6">{maxDemand[idx]}</Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Button variant="contained" color="primary" disabled>
-                    <Typography variant="h6">Download</Typography>
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {/* Only the table area shows loading */}
+      <Box>
+        {(isPowerMetersLoading || isRangeLoading || isMonthlyReportLoading) ? (
+          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 200 }}>
+            <CircularProgress />
+          </Box>
+        ) : monthlyReportError ? (
+          <Typography color="error">
+            Error: {monthlyReportError.message || t('dashboard.error')}
+          </Typography>
+        ) : !Array.isArray(monthlyReport) || monthlyReport.length === 0 ? (
+          <Typography>
+            {t('monthlyReports.noDataAvailable')}
+          </Typography>
+        ) : (
+          <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: theme.palette.background.paper }}>
+                  <TableCell align="center">
+                    <Typography variant="h6" fontWeight={600}>
+                      {t('monthlyReports.month')}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Typography variant="h6" fontWeight={600}>
+                      {t('monthlyReports.consumption')}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Typography variant="h6" fontWeight={600}>
+                      {t('monthlyReports.PowerFactor')}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Typography variant="h6" fontWeight={600}>
+                      {t('monthlyReports.maxDemand')}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Typography variant="h6" fontWeight={600}>
+                      {t('monthlyReports.download')}
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {monthlyReport.map((row, index) => (
+                  <TableRow
+                    key={row.month}
+                    sx={{
+                      backgroundColor:
+                        index % 2 === 0
+                          ? theme.palette.background.default
+                          : theme.palette.background.default,
+                    }}
+                  >
+                    <TableCell align="center">
+                      <Typography variant="h6">
+                        {dayjs(row.month, "YYYY-MM").format("MMMM")}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Typography variant="h6">{row.consumption}</Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Typography variant="h6">{(row.avg_power_factor/1000).toFixed(4)}</Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Typography variant="h6">{row.max_demand}</Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button variant="contained" color="primary" onClick={() => handleDownload(row)}>
+                        <Typography variant="h6">{t('monthlyReports.download')}</Typography>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </Box>
     </Box>
   );
 };

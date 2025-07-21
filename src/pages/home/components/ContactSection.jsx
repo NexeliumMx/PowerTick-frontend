@@ -1,8 +1,34 @@
-import { Box, Typography, TextField, Button, Paper } from "@mui/material";
+import { Box, Typography, TextField, Button, Paper, MenuItem } from "@mui/material";
 import { useState } from "react";
 
+const industrias = [
+  "Manufactura",
+  "Energía",
+  "Comercial",
+  "Educación",
+  "Salud",
+  "Tecnología",
+  "Otro",
+];
+
+const puestos = [
+  "Director",
+  "Gerente",
+  "Ingeniero",
+  "Técnico",
+  "Consultor",
+  "Otro",
+];
+
 const ContactSection = () => {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    company: "",
+    industria: "",
+    puesto: "",
+    message: "",
+  });
   const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
@@ -11,7 +37,7 @@ const ContactSection = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would send the form data to your backend or email service
+    // Aquí es donde enviarías los datos del formulario a tu backend o servicio de correo
     setSubmitted(true);
   };
 
@@ -19,14 +45,20 @@ const ContactSection = () => {
     <Box
       sx={{
         width: "100%",
-        maxWidth: 600,
-        mx: "auto",
-        my: 6,
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         px: 2,
-      }}
+        pb: 15,
+        pt:15,
+        background: "linear-gradient(180deg, neutral.main 0%, background.default 100%)", // fallback if theme not available
+        backgroundImage: (theme) =>
+      `linear-gradient(180deg, ${theme.palette.neutral.main} 0%, ${theme.palette.background.default} 100%)`,
+  }}
     >
-      <Paper elevation={3} sx={{ p: 4 }}>
-        <Typography variant="h4" gutterBottom>
+      <Paper elevation={3} sx={{ px: 4, py: 2, pt:3, boxShadow: "none", maxWidth: 600, width: "100%" }}>
+        <Typography variant="h4" gutterBottom sx={{fontWeight:700, mb:2}}>
           Contáctanos
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
@@ -58,6 +90,47 @@ const ContactSection = () => {
               sx={{ mb: 2 }}
             />
             <TextField
+              label="Compañía"
+              name="company"
+              value={form.company}
+              onChange={handleChange}
+              fullWidth
+              required
+              sx={{ mb: 2 }}
+            />
+            <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+              <TextField
+                select
+                label="Industria"
+                name="industria"
+                value={form.industria}
+                onChange={handleChange}
+                fullWidth
+                required
+              >
+                {industrias.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                select
+                label="Puesto"
+                name="puesto"
+                value={form.puesto}
+                onChange={handleChange}
+                fullWidth
+                required
+              >
+                {puestos.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
+            <TextField
               label="Mensaje"
               name="message"
               value={form.message}
@@ -68,14 +141,24 @@ const ContactSection = () => {
               minRows={4}
               sx={{ mb: 2 }}
             />
-            <Button type="submit" variant="contained" color="primary">
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                backgroundColor: "primary.main",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "secondary.main3",
+                },
+              }}
+            >
               Enviar
             </Button>
           </form>
         )}
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="subtitle1">Correo: soporte@powertick.com</Typography>
-          <Typography variant="subtitle1">Teléfono: +52 55 1234 5678</Typography>
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="subtitle1">Correo: contacto@nexelium.com.mx</Typography>
+          <Typography variant="subtitle1">Teléfono: +52 55 4901 5789</Typography>
         </Box>
       </Paper>
     </Box>

@@ -20,42 +20,10 @@
  * - 2025-02-16: Implemented ProtectedRoute for authenticated routes.
  */
 
-import { Routes, Route } from "react-router-dom";
-import Home from "./pages/home";
-import NotFound from "./pages/NotFound";
-import MainLayout from "./layout/MainLayout";
-import LoadCenter from "./pages/loadCenter";
-import Dashboard from "./pages/dashboard";
-import UserManual from "./pages/user-manual";
-import Downloads from "./pages/downloads";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
-
-// Test
-import SidebarMenuTest from "./pages/test/SidebarMenuTest";
-import MUIComponentsTest from "./pages/test/MUIComponentsTest";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-  return (
-    <Routes>
-      {/* Public Routes (Accessible to Everyone) */}
-      <Route path="/" element={<Home />} />
-      <Route path="*" element={<NotFound />} />
-
-      {/* Protected Routes (Require Authentication) */}
-      <Route element={<ProtectedRoute />}>
-        <Route element={<MainLayout />}>
-          <Route path="/load-center" element={<LoadCenter />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/user-manual" element={<UserManual />} />
-          <Route path="/downloads" element={<Downloads />} />
-        </Route>
-      </Route>
-
-      {/* Test Routes */}
-      <Route path="/mui-components-test" element={<MUIComponentsTest />} />
-      <Route path="/sidebar-menu-test" element={<SidebarMenuTest />} />
-    </Routes>
-  );
+  return <AppRoutes />;
 }
 
 export default App;

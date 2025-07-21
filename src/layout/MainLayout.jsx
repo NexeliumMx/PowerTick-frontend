@@ -30,11 +30,11 @@ import {
 } from "@mui/material";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useMsal } from "@azure/msal-react";
-import Topbar from "../components/ui/Topbar";
-import SidebarMenu from "../components/ui/SidebarMenu";
-import SmallScreenSidebarMenu from "../components/ui/SmallScreenSidebarMenu";
+import Topbar from "./Topbar";
+import SidebarMenu from "./SideBar/SidebarMenu";
+import SmallScreenSidebarMenu from "./SideBar/SmallScreenSidebarMenu";
 import BreakpointChecker from "../components/test/BreakpointChecker";
-import Footer from "../components/ui/Footer";
+import Footer from "./Footer";
 import { ModeContext } from "../context/AppModeContext";
 
 const MainLayout = () => {

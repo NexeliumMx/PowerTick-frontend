@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext } from "react";
+import PropTypes from 'prop-types';
 import { Card, CardHeader, CardContent, CardActions, Box, Typography, Divider } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
-import { useDemandProfile } from '../../../../hooks/useDemandProfile';
+import { useApiData } from '../../../../hooks/useApiData';
 import { useMsal } from "@azure/msal-react";
 import { BarChart } from '@mui/x-charts/BarChart';
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
@@ -12,6 +13,8 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { formatHourLocal, formatDayLocal, formatMonthLocal } from '../ui/TimestampFormatter';
 import { useTranslation } from 'react-i18next';
+import chartColors from "../../../../theme/chartColors";
+import { AnalyticsSharp } from "@mui/icons-material";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -46,21 +49,18 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
   const tz = dayjs.tz.guess();
   if (timeInterval === 'day') {
     apiTimeInterval = 'hour';
-    // Start: selected day at 00:00 local, End: next day at 00:00 local
     const start = dayjs.tz(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}T00:00:00`, tz);
     const end = start.add(1, 'day');
     start_utc = start.utc().format();
     end_utc = end.utc().format();
   } else if (timeInterval === 'month') {
     apiTimeInterval = 'day';
-    // Start: first day of month, End: first day of next month
     const start = dayjs.tz(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-01T00:00:00`, tz);
     const end = start.add(1, 'month');
     start_utc = start.utc().format();
     end_utc = end.utc().format();
   } else if (timeInterval === 'year') {
     apiTimeInterval = 'month';
-    // Start: Jan 1, End: Jan 1 next year
     const start = dayjs.tz(`${selectedYear}-01-01T00:00:00`, tz);
     const end = start.add(1, 'year');
     start_utc = start.utc().format();
@@ -96,8 +96,9 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     for (let d = startDay; d <= endDay; d++) validDays.push(d);
   }
 
+  const { demandProfile } = useApiData();
   // Fetch data
-  const { data: demandProfileData, isLoading } = useDemandProfile(
+  const { data: demandProfileData, isLoading } = demandProfile(
     user_id,
     selectedPowerMeter,
     apiTimeInterval,
@@ -105,19 +106,20 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     end_utc,
     mode
   );
+  console.log('Demand Profile Data:', demandProfileData);
 
   // X axis label and dataKey
   let xAxisLabel = '';
   let xDataKey = '';
   if (apiTimeInterval === 'month') {
-    xAxisLabel = t('dashboard.day', 'Día');
-    xDataKey = 'day';
-  } else if (apiTimeInterval === 'year') {
-    xAxisLabel = t('dashboard.month', 'Mes');
-    xDataKey = 'month';
+    xAxisLabel = t('analysis.month', 'Mes');
+    xDataKey = 'month_start_local';
+  } else if (apiTimeInterval === 'hour') {
+    xAxisLabel = t('analysis.hour', 'hora');
+    xDataKey = 'hour_start_utc';
   } else if (apiTimeInterval === 'day') {
-    xAxisLabel = t('dashboard.hour', 'Hora');
-    xDataKey = 'hour';
+    xAxisLabel = t('analysis.day', 'dia');
+    xDataKey = 'day_start_utc';
   } else {
     xAxisLabel = t('dashboard.time', 'Tiempo');
     xDataKey = 'time';
@@ -133,25 +135,26 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     } else if (apiTimeInterval === 'month') {
       formattedName = formatMonthLocal(item[xDataKey]);
     }
+     console.log( typeof item.w_avg)
     return {
       ...item,
       name: formattedName,
-      w_max: item.w_max,
-      w_avg: item.w_avg,
-      var_max: item.var_max,
-      var_avg: item.var_avg,
+      w_m: item.w_max/10,
+      w_a: parseFloat(parseFloat(item.w_avg).toFixed(3))/10,
+      var_m: item.var_max,
+      var_a: parseFloat(parseFloat(item.var_avg).toFixed(3))/10,
     };
   });
-
+  
   // Value formatters for chart
   const wFormatter = (value) => value != null ? `${value} W` : '';
   const varFormatter = (value) => value != null ? `${value} VAr` : '';
 
   // Use t('Analysis.demandProfile') for the card title
-  const cardTitle = t('Analysis.demandProfile');
+  const cardTitle = t('analysis.demandProfile');
 
   return (
-    <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" }}>
+    <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" , backgroundColor: theme.palette.background.card}}>
       <CardHeader
         title={cardTitle}
         titleTypographyProps={{
@@ -167,29 +170,60 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
         }}
       />
       <CardContent sx={{ flexGrow: 1, pt: 0 }}>
-        <Box sx={{ width: "100%", overflow: "auto", px: 2, py:1}}>
+        <Box sx={{ width: "100%", overflow: "auto", px: 2, my:-10}}>
           {isLoading ? (
             <ChartSkeletonCard/>
           ) : demandProfileData ? (
             <BarChart
+              
+              slotProps={{
+                legend: {
+                  hidden: false,
+                  position: { vertical: 'top', horizontal: 'center' },
+                  itemGap: 180, // Space between legend items
+                }}}
               dataset={chartData}
+              
               series={[
-                { dataKey: 'w_max', stack: 'w', label: 'W Max', valueFormatter: wFormatter },
-                { dataKey: 'w_avg', stack: 'w', label: 'W Avg', valueFormatter: wFormatter },
-                { dataKey: 'var_max', stack: 'var', label: 'VAR Max', valueFormatter: varFormatter },
-                { dataKey: 'var_avg', stack: 'var', label: 'VAR Avg', valueFormatter: varFormatter },
+                { dataKey: 'w_m', stack: 'w', label: t('analysis.realMax'), valueFormatter: wFormatter, color: chartColors.maxRealPower },
+                { dataKey: 'w_a', stack: 'w', label: t('analysis.realAvg'), valueFormatter: wFormatter, color: chartColors.avgRealPower },
+                { dataKey: 'var_m', stack: 'var', label: t('analysis.reactiveMax'), valueFormatter: varFormatter, color: chartColors.maxVar },
+                { dataKey: 'var_a', stack: 'var', label: t('analysis.reactiveAvg'), valueFormatter: varFormatter, color: chartColors.avgVar },
               ]}
-              xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band' }]}
-              height={350}
+              xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band', tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 }, minStep: 20, interval: 0 , labelStyle: { transform:'translateY(15px)' } }]}
+              yAxis={[{
+                label: t('analysis.demand'),
+                labelStyle: {
+                  transform: 'translate(-90px, 0px) rotate(-90deg)',
+                  transformOrigin: 'left center',
+                  dominantBaseline: 'middle',
+                  textAnchor: 'middle'
+                },
+                tickLabelStyle: {
+                  fontSize: 12
+                }
+              }]}
+              height={450}
+              margin={{ 
+                top: 150,
+                left: 70, 
+                bottom: 60 
+              }}
+              sx={{ background: 'transparent' }}
             />
           ) : (
-            <Typography variant="body1">Data not available</Typography>
+            <Typography variant="body1">{t('analysis.noData')}</Typography>
           )}
         </Box>
       </CardContent>
       <Divider
         variant="middle"
-        sx={{ mb: 1, borderColor: 'primary.main', borderBottomWidth: 3 }}
+        sx={{ 
+          mt: { xs: 4, sm: 4, md: 4 },
+          mb: 1, 
+          borderColor: 'primary.main', 
+          borderBottomWidth: 3 
+        }}
       />
       <CardActions
         sx={{
@@ -217,6 +251,22 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
       </CardActions>
     </Card>
   );
+};
+
+// PropTypes validation
+DemandProfileCard.propTypes = {
+  selectedPowerMeter: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  measurementRange: PropTypes.shape({
+    min_utc: PropTypes.string,
+    max_utc: PropTypes.string,
+  }),
+  defaultTimeFilter: PropTypes.shape({
+    year: PropTypes.number,
+    month: PropTypes.number,
+    day: PropTypes.number,
+    hour: PropTypes.number,
+  }),
+  t: PropTypes.func,
 };
 
 export default DemandProfileCard;

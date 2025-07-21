@@ -12,7 +12,6 @@ function ExtraInfoFooter() {
         padding: "7.5px 20px",
         backgroundColor: theme.palette.background.paper,
         color: theme.palette.text.primary,
-        mt: 2,
       }}
     >
       <Typography variant="h6">
