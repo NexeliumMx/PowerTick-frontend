@@ -196,7 +196,7 @@ const ThdCurrentProfileCard = ({ selectedPowerMeter, measurementRange, defaultTi
         <Box sx={{ width: "100%", overflow: "auto", px: 2, my:-5}}>
           {isLoading ? (
             <ChartSkeletonCard/>
-          ) : (thdCurrentProfileData && thdCurrentProfileData.length > 0 && hasActualData) ? (
+          ) : (thdCurrentProfileData && thdCurrentProfileData.length > 0) ? (
             <BarChart
               
               slotProps={{
@@ -228,22 +228,11 @@ const ThdCurrentProfileCard = ({ selectedPowerMeter, measurementRange, defaultTi
           ) : (
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 200, gap: 2 }}>
               <Typography variant="body1" color="text.secondary">
-                {thdCurrentProfileData && thdCurrentProfileData.length > 0 
-                  ? "THD Current Profile data contains no measurements (all values are null)"
-                  : "No THD Current Profile data available for the selected period"
-                }
+                No THD Current Profile data available for the selected period
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
-                {thdCurrentProfileData && thdCurrentProfileData.length > 0 
-                  ? "The API returned data structure but all THD current measurements are null. This suggests the measurement device may not support THD current measurements or no valid measurements were recorded during this period."
-                  : "This could be due to: no measurements in the selected time range, API endpoint not returning data, or the measurement device not supporting THD measurements."
-                }
+                This could be due to: no measurements in the selected time range, API endpoint not returning data, or the measurement device not supporting THD measurements.
               </Typography>
-              {thdCurrentProfileData && thdCurrentProfileData.length > 0 && (
-                <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', fontFamily: 'monospace', mt: 1 }}>
-                  Debug: API returned {thdCurrentProfileData.length} data points with null values
-                </Typography>
-              )}
             </Box>
           )}
         </Box>

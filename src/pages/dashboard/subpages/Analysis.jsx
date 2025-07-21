@@ -46,8 +46,16 @@ const Analysis = ({ powerMeter }) => {
 
   useEffect(() => {
     if (measurementRange && measurementRange.max_utc) {
+      console.log('[DEBUG] measurementRange.max_utc:', measurementRange.max_utc);
       const tz = dayjs.tz.guess();
       const max = dayjs.utc(measurementRange.max_utc).tz(tz);
+      console.log('[DEBUG] Parsed max date:', max.format());
+      console.log('[DEBUG] Setting defaultTimeFilter to:', {
+        year: max.year(),
+        month: max.month() + 1,
+        day: max.date(),
+        hour: max.hour(),
+      });
       setDefaultTimeFilter({
         year: max.year(),
         month: max.month() + 1,

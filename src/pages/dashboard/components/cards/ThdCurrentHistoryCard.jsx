@@ -49,6 +49,34 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
   // Default hour: 'last_hour' if timeInterval is 'hour', otherwise defaultTimeFilter.hour
   const [selectedHour, setSelectedHour] = useState(timeInterval === 'hour' ? LAST_HOUR_VALUE : (defaultTimeFilter?.hour || new Date().getHours()));
 
+  // Update time filter if defaultTimeFilter changes
+  useEffect(() => {
+    console.log('THD Current History - useEffect triggered with defaultTimeFilter:', defaultTimeFilter);
+    console.log('THD Current History - Current state before update:', { selectedYear, selectedMonth, selectedDay, selectedHour });
+    if (defaultTimeFilter) {
+      console.log('THD Current History - Setting state to:', {
+        year: defaultTimeFilter.year,
+        month: defaultTimeFilter.month,
+        day: defaultTimeFilter.day,
+        hour: defaultTimeFilter.hour
+      });
+      setSelectedYear(defaultTimeFilter.year);
+      setSelectedMonth(defaultTimeFilter.month);
+      setSelectedDay(defaultTimeFilter.day);
+      // Only update hour if not in hour interval mode or not using 'last_hour'
+      if (timeInterval !== 'hour' || selectedHour !== LAST_HOUR_VALUE) {
+        setSelectedHour(defaultTimeFilter.hour);
+      }
+    }
+  }, [defaultTimeFilter]);
+
+  // On mount or when timeInterval changes to 'hour', set default to 'Last Hour'
+  useEffect(() => {
+    if (timeInterval === 'hour') {
+      setSelectedHour(LAST_HOUR_VALUE);
+    }
+  }, [timeInterval]);
+
   // Compute start_utc and end_utc based on timeInterval and time filter
   const tz = dayjs.tz.guess();
   let start_utc = null;
@@ -84,14 +112,36 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
   }
 
   const { thdCurrentHistory } = useApiData();
-  // Use hook
+  // Use hook - only call API if we have valid UTC dates
   const { data: thdCurrentHistoryData, isLoading } = thdCurrentHistory(
     user_id,
     selectedPowerMeter,
     start_utc,
     end_utc,
-    appModeState?.mode || 'PRODUCTION'
+    appModeState?.mode || 'PRODUCTION',
+    {
+      enabled: !!(user_id && selectedPowerMeter && start_utc && end_utc) // Only run when all required params are available
+    }
   );
+
+  // Debug logging
+  console.log('THD Current History - defaultTimeFilter received:', defaultTimeFilter);
+  console.log('THD Current History - measurementRange:', measurementRange);
+  console.log('THD Current History - State Values:', {
+    selectedYear,
+    selectedMonth,
+    selectedDay,
+    selectedHour,
+    timeInterval
+  });
+  console.log('THD Current History - API Call Parameters:', {
+    user_id,
+    selectedPowerMeter,
+    start_utc,
+    end_utc,
+    mode: appModeState?.mode || 'PRODUCTION'
+  });
+  console.log('THD Current History - API Response:', thdCurrentHistoryData);
 
   const handleTimeIntervalChange = (event, newTimeInterval) => {
     if (newTimeInterval) {
@@ -132,11 +182,14 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
       value: i,
       label: `${String(i).padStart(2, '0')}:00`,
     }));
-    // If 'Last Hour' is selected but not available, reset to 0
-    if (selectedHour === LAST_HOUR_VALUE) {
+  }
+
+  // If 'Last Hour' is selected but not available for the selected date, reset to hour 0
+  useEffect(() => {
+    if (selectedHour === LAST_HOUR_VALUE && !isToday) {
       setSelectedHour(0);
     }
-  }
+  }, [selectedHour, isToday]);
 
   // Compute valid years, months, days, and hours based on measurementRange
   let validYears = years;
@@ -196,9 +249,9 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
   const chartData = thdCurrentHistoryData?.map((item) => ({
     name: dayjs.utc(item.utc_time).tz(tz).format('HH:mm'),
     timestamp_local: dayjs.utc(item.utc_time).tz(tz).format('YYYY-MM-DD HH:mm'),
-    thdCurrentA: item.thd_current_a,
-    thdCurrentB: item.thd_current_b,
-    thdCurrentC: item.thd_current_c,
+    thdCurrentL1: item.thd_current_l1 || 0,
+    thdCurrentL2: item.thd_current_l2 || 0,
+    thdCurrentL3: item.thd_current_l3 || 0,
   }));
 
   // Custom tooltip to show local time
@@ -239,25 +292,6 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
     payload: PropTypes.arrayOf(PropTypes.object),
   };
 
-  // Update time filter if defaultTimeFilter changes (e.g., when measurementRange loads)
-  useEffect(() => {
-    if (defaultTimeFilter) {
-      setSelectedYear(defaultTimeFilter.year);
-      setSelectedMonth(defaultTimeFilter.month);
-      setSelectedDay(defaultTimeFilter.day);
-      if (timeInterval !== 'hour') {
-        setSelectedHour(defaultTimeFilter.hour);
-      }
-    }
-  }, [defaultTimeFilter, timeInterval]);
-
-  // On mount or when timeInterval changes to 'hour', set default to 'Last Hour'
-  useEffect(() => {
-    if (timeInterval === 'hour') {
-      setSelectedHour(LAST_HOUR_VALUE);
-    }
-  }, [timeInterval]);
-
   // Use t for the card title
   const cardTitle = t('Analysis.thdCurrentHistory', 'THD Current History');
 
@@ -282,58 +316,63 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
           {isLoading ? (
             <ChartSkeletonCard />
           ) : thdCurrentHistoryData && thdCurrentHistoryData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={chartData} margin={{ top: 100, right: 30, left: 40, bottom: 60 }}>
+            <ResponsiveContainer width="100%" height={350}>
+              <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
                 <XAxis 
                   dataKey="name" 
                   stroke={theme.palette.text.primary}
-                  angle={-45}
-                  textAnchor="end"
-                  height={60}
-                  interval={0}
+                  tick={{ fill: theme.palette.text.primary }}
+                  tickFormatter={v => v}
                 >
                   <Label 
                     value={xAxisLabel} 
-                    position="insideBottom" 
-                    offset={-10}
-                    style={{ textAnchor: 'middle', fill: theme.palette.text.primary }}
+                    offset={-5}
+                    position="insideBottom"
+                    style={{ fill: theme.palette.text.primary, fontWeight: 600 }}
                   />
                 </XAxis>
                 <YAxis 
                   stroke={theme.palette.text.primary}
-                  label={{ 
-                    value: 'THD (%)', 
-                    angle: -90, 
-                    position: 'insideLeft',
-                    style: { textAnchor: 'middle', fill: theme.palette.text.primary }
-                  }}
-                />
+                  tick={{ fill: theme.palette.text.primary }}
+                >
+                  <Label 
+                    value="THD (%)" 
+                    angle={-90} 
+                    position="insideLeft"
+                    offset={-10}
+                    style={{ 
+                      textAnchor: 'middle', 
+                      fill: theme.palette.text.primary,
+                      fontWeight: 600
+                    }}
+                  />
+                </YAxis>
                 <Tooltip content={<CustomTooltip />} />
-                <Legend />
+                <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{marginRight: 40, paddingBottom: 8}} />
                 <Line 
                   type="monotone" 
-                  dataKey="thdCurrentA" 
+                  dataKey="thdCurrentL1" 
                   stroke={chartColors.phaseA || "#ff7300"} 
-                  strokeWidth={2}
-                  name="THD Current A"
-                  dot={{ fill: chartColors.phaseA || "#ff7300", strokeWidth: 1, r: 3 }}
+                  strokeWidth={3}
+                  name="THD Current L1"
+                  dot={false}
                 />
                 <Line 
                   type="monotone" 
-                  dataKey="thdCurrentB" 
+                  dataKey="thdCurrentL2" 
                   stroke={chartColors.phaseB || "#8884d8"} 
-                  strokeWidth={2}
-                  name="THD Current B"
-                  dot={{ fill: chartColors.phaseB || "#8884d8", strokeWidth: 1, r: 3 }}
+                  strokeWidth={3}
+                  name="THD Current L2"
+                  dot={false}
                 />
                 <Line 
                   type="monotone" 
-                  dataKey="thdCurrentC" 
+                  dataKey="thdCurrentL3" 
                   stroke={chartColors.phaseC || "#82ca9d"} 
-                  strokeWidth={2}
-                  name="THD Current C"
-                  dot={{ fill: chartColors.phaseC || "#82ca9d", strokeWidth: 1, r: 3 }}
+                  strokeWidth={3}
+                  name="THD Current L3"
+                  dot={false}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -376,7 +415,9 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
           validMonths={validMonths}
           validDays={validDays}
           validHours={validHours}
+          hours={hours}
           handleTimeIntervalChange={handleTimeIntervalChange}
+          t={t}
         />
       </CardActions>
     </Card>
