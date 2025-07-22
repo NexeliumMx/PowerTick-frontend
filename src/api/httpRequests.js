@@ -352,17 +352,9 @@ export async function downloadCsv({
   year,
   environment = 'production',
   language = 'en',
-}) {
-  const params = new URLSearchParams({
-    user_id: userId,
-    powermeter_id: powermeterId,
-    month,
-    year,
-    environment,
-    language,
-  });
+}){
 
-  const url = `/api/downloads?${params.toString()}`;
+  const url = `${API_BASE_URL}${apiEndpoints.downloadCsv}?user_id=${userId}&powermeter_id=${powermeterId}&powermeter_alias=${encodeURIComponent(powermeterAlias)}&month=${month}&year=${year}&language=${language}&environment=${environment}`;
   console.log(`[API CALL] downloadCsv: ${url}`);
 
   const response = await fetch(url, {
