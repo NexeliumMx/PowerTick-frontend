@@ -45,63 +45,12 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
   const user_id = accounts[0]?.idTokenClaims?.oid;
   const [timeInterval, setTimeInterval] = useState("day");
   const [selectedYear, setSelectedYear] = useState(defaultTimeFilter?.year || new Date().getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState(defaultTimeFilter?.month || new Date().getMonth() + 1);
+  const [selectedMonth, setSelectedMonth] = useState(defaultTimeFilter?.month || new Date().getMonth()+1);
   const [selectedDay, setSelectedDay] = useState(defaultTimeFilter?.day || new Date().getDate());
   // Default hour: 'last_hour' if timeInterval is 'hour', otherwise defaultTimeFilter.hour
   const [selectedHour, setSelectedHour] = useState(timeInterval === 'hour' ? LAST_HOUR_VALUE : (defaultTimeFilter?.hour || new Date().getHours()));
   const { state: appModeState } = useContext(ModeContext);
-
-  // Compute start_utc and end_utc based on timeInterval and time filter
-  const tz = dayjs.tz.guess();
-  let start_utc = null;
-  let end_utc = null;
-  if (timeInterval === "hour") {
-    if (selectedHour === LAST_HOUR_VALUE) {
-      // Last hour: now - 1 hour to now
-      const now = dayjs();
-      const start = now.subtract(1, 'hour');
-      start_utc = start.utc().format();
-      end_utc = now.utc().format();
-    } else {
-      // For hour: range is from selected hour to selected hour + 1 (local time)
-      const start = dayjs.tz(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}T${String(selectedHour).padStart(2, '0')}:00:00`, tz);
-      let end;
-      if (selectedHour < 23) {
-        end = start.add(1, 'hour');
-      } else {
-        // If 23:00, end at 23:59:59
-        end = start.endOf('hour');
-      }
-      start_utc = start.utc().format();
-      end_utc = end.utc().format();
-    }
-  } else if (timeInterval === "day") {
-    // For day: range is from 00:00 to now (local time)
-    const now = dayjs();
-    const isToday = now.year() === selectedYear && (now.month() + 1) === selectedMonth && now.date() === selectedDay;
-    const start = dayjs.tz(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}T00:00:00`, tz);
-    const end = isToday ? now : start.endOf('day');
-    start_utc = start.utc().format();
-    end_utc = end.utc().format();
-  }
-
-  const { consumptionHistory } = useApiData();
-  // Use new hook
-  const { data: consumptionHistoryData, isLoading } = consumptionHistory(
-    user_id,
-    selectedPowerMeter,
-    start_utc,
-    end_utc,
-    appModeState?.mode || 'PRODUCTION'
-  );
-
-  const handleTimeIntervalChange = (event, newTimeInterval) => {
-    if (newTimeInterval) {
-      setTimeInterval(newTimeInterval);
-    }
-  };
-  //Hacer que despliegue los meses y años disponibles
-  const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
+   const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
   // Use date library for month names (localized, maintainable)
   const months = Array.from({ length: 12 }, (_, i) =>
   dayjs().month(i).format('MMMM')
@@ -109,6 +58,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
   // Generate hour options: 'Last Hour' + 00:00-23:00
   const now = dayjs();
+ // Compute valid years, months, days, and hours based on measurementRange
   const isToday =
     selectedYear === now.year() &&
     selectedMonth === now.month() + 1 &&
@@ -138,12 +88,11 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
       setSelectedHour(0);
     }
   }
-
-  // Compute valid years, months, days, and hours based on measurementRange
   let validYears = years;
   let validMonths = months;
   let validDays = days;
   let validHours = hours;
+  let offset=0;
   if (measurementRange && measurementRange.min_utc && measurementRange.max_utc) {
     const tz = dayjs.tz.guess();
     const min = dayjs.utc(measurementRange.min_utc).tz(tz);
@@ -161,6 +110,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
     } else {
       validMonths = months;
     }
+    console.log('selected month: ',(selectedMonth))
     // Days
     const daysInMonth = dayjs(`${selectedYear}-${selectedMonth}-01`).daysInMonth();
     let startDay = 1, endDay = daysInMonth;
@@ -169,6 +119,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
     validDays = [];
     for (let d = startDay; d <= endDay; d++) validDays.push(d);
     // Hours
+    offset=min.month();
     if (
       selectedYear === min.year() && selectedMonth === min.month() + 1 && selectedDay === min.date() &&
       selectedYear === max.year() && selectedMonth === max.month() + 1 && selectedDay === max.date()
@@ -186,6 +137,60 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
     }
   }
 
+  // Compute start_utc and end_utc based on timeInterval and time filter
+  const tz = dayjs.tz.guess();
+  let start_utc = null;
+  let end_utc = null;
+  if (timeInterval === "hour") {
+    if (selectedHour === LAST_HOUR_VALUE) {
+      // Last hour: now - 1 hour to now
+      const now = dayjs();
+      const start = now.subtract(1, 'hour');
+      start_utc = start.utc().format();
+      end_utc = now.utc().format();
+    } else {
+      // For hour: range is from selected hour to selected hour + 1 (local time)
+      const start = dayjs.tz(`${selectedYear}-${String(selectedMonth+offset).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}T${String(selectedHour).padStart(2, '0')}:00:00`, tz);
+      let end;
+      if (selectedHour < 23) {
+        end = start.add(1, 'hour');
+      } else {
+        // If 23:00, end at 23:59:59
+        end = start.endOf('hour');
+      }
+      start_utc = start.utc().format();
+      end_utc = end.utc().format();
+    }
+  } else if (timeInterval === "day") {
+    // For day: range is from 00:00 to now (local time)
+    const now = dayjs();
+    const isToday = now.year() === selectedYear && (now.month()+1) === selectedMonth && now.date() === selectedDay;
+    const start = dayjs.tz(`${selectedYear}-${String(selectedMonth+offset).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}T00:00:00`, tz);
+    const end = isToday ? now : start.endOf('day');
+    start_utc = start.utc().format();
+    end_utc = end.utc().format();
+  }
+  
+  const { consumptionHistory } = useApiData();
+  // Use new hook
+  const { data: consumptionHistoryData, isLoading } = consumptionHistory(
+    user_id,
+    selectedPowerMeter,
+    start_utc,
+    end_utc,
+    appModeState?.mode || 'PRODUCTION'
+  );
+
+  const handleTimeIntervalChange = (event, newTimeInterval) => {
+    if (newTimeInterval) {
+      setTimeInterval(newTimeInterval);
+    }
+  };
+  //Hacer que despliegue los meses y años disponibles
+ 
+ 
+
+ 
   // X lable variable title
   const xAxisLabel = timeInterval === "year"
     ? t('analysis.month', 'Mes')

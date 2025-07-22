@@ -50,57 +50,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
   const [selectedDay, setSelectedDay] = useState(defaultTimeFilter?.day || new Date().getDate());
   // Default hour: 'last_hour' if timeInterval is 'hour', otherwise defaultTimeFilter.hour
   const [selectedHour, setSelectedHour] = useState(timeInterval === 'hour' ? LAST_HOUR_VALUE : (defaultTimeFilter?.hour || new Date().getHours()));
-
-  // Compute start_utc and end_utc based on timeInterval and time filter
-  const tz = dayjs.tz.guess();
-  let start_utc = null;
-  let end_utc = null;
-  if (timeInterval === "hour") {
-    if (selectedHour === LAST_HOUR_VALUE) {
-      // Last hour: now - 1 hour to now
-      const now = dayjs();
-      const start = now.subtract(1, 'hour');
-      start_utc = start.utc().format();
-      end_utc = now.utc().format();
-    } else {
-      // For hour: range is from selected hour to selected hour + 1 (local time)
-      const start = dayjs.tz(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}T${String(selectedHour).padStart(2, '0')}:00:00`, tz);
-      let end;
-      if (selectedHour < 23) {
-        end = start.add(1, 'hour');
-      } else {
-        // If 23:00, end at 23:59:59
-        end = start.endOf('hour');
-      }
-      start_utc = start.utc().format();
-      end_utc = end.utc().format();
-    }
-  } else if (timeInterval === "day") {
-    // For day: range is from 00:00 to now (local time)
-    const now = dayjs();
-    const isToday = now.year() === selectedYear && (now.month() + 1) === selectedMonth && now.date() === selectedDay;
-    const start = dayjs.tz(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}T00:00:00`, tz);
-    const end = isToday ? now : start.endOf('day');
-    start_utc = start.utc().format();
-    end_utc = end.utc().format();
-  }
-
-  const { demandHistory } = useApiData();
-  // Use hook
-  const { data: demandHistoryData, isLoading } = demandHistory(
-    user_id,
-    selectedPowerMeter,
-    start_utc,
-    end_utc,
-    appModeState?.mode || 'PRODUCTION'
-  );
-
-  const handleTimeIntervalChange = (event, newTimeInterval) => {
-    if (newTimeInterval) {
-      setTimeInterval(newTimeInterval);
-    }
-  };
-  //Hacer que despliegue los meses y años disponibles
+ //Hacer que despliegue los meses y años disponibles
   const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
   // Use date library for month names (localized, maintainable)
   const months = Array.from({ length: 12 }, (_, i) =>
@@ -144,6 +94,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
   let validMonths = months;
   let validDays = days;
   let validHours = hours;
+  let offset=0;
   if (measurementRange && measurementRange.min_utc && measurementRange.max_utc) {
     const tz = dayjs.tz.guess();
     const min = dayjs.utc(measurementRange.min_utc).tz(tz);
@@ -161,6 +112,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     } else {
       validMonths = months;
     }
+    offset=min.month();
     // Days
     const daysInMonth = dayjs(`${selectedYear}-${selectedMonth}-01`).daysInMonth();
     let startDay = 1, endDay = daysInMonth;
@@ -186,7 +138,57 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     }
   }
 
-  // X label variable title
+
+  // Compute start_utc and end_utc based on timeInterval and time filter
+  const tz = dayjs.tz.guess();
+  let start_utc = null;
+  let end_utc = null;
+  if (timeInterval === "hour") {
+    if (selectedHour === LAST_HOUR_VALUE) {
+      // Last hour: now - 1 hour to now
+      const now = dayjs();
+      const start = now.subtract(1, 'hour');
+      start_utc = start.utc().format();
+      end_utc = now.utc().format();
+    } else {
+      // For hour: range is from selected hour to selected hour + 1 (local time)
+      const start = dayjs.tz(`${selectedYear}-${String(selectedMonth+offset).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}T${String(selectedHour).padStart(2, '0')}:00:00`, tz);
+      let end;
+      if (selectedHour < 23) {
+        end = start.add(1, 'hour');
+      } else {
+        // If 23:00, end at 23:59:59
+        end = start.endOf('hour');
+      }
+      start_utc = start.utc().format();
+      end_utc = end.utc().format();
+    }
+  } else if (timeInterval === "day") {
+    // For day: range is from 00:00 to now (local time)
+    const now = dayjs();
+    const isToday = now.year() === selectedYear && (now.month() + 1) === selectedMonth && now.date() === selectedDay;
+    const start = dayjs.tz(`${selectedYear}-${String(selectedMonth+offset).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}T00:00:00`, tz);
+    const end = isToday ? now : start.endOf('day');
+    start_utc = start.utc().format();
+    end_utc = end.utc().format();
+  }
+
+  const { demandHistory } = useApiData();
+  // Use hook
+  const { data: demandHistoryData, isLoading } = demandHistory(
+    user_id,
+    selectedPowerMeter,
+    start_utc,
+    end_utc,
+    appModeState?.mode || 'PRODUCTION'
+  );
+
+  const handleTimeIntervalChange = (event, newTimeInterval) => {
+    if (newTimeInterval) {
+      setTimeInterval(newTimeInterval);
+    }
+  };
+   // X label variable title
   const xAxisLabel = timeInterval === "year"
     ? t('analysis.month', 'Mes')
     : timeInterval === "month"
