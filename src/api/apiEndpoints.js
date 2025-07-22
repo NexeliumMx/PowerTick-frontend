@@ -59,7 +59,7 @@ const apiEndpoints = {
   thdVoltageLNProfile: '/api/thdVoltageLNProfile',
 
   //Download
-  downloadCsv: '/api/downloadCsv',
+  downloadCsv: '/api/downloads',
 };
 
 export { apiEndpoints, API_BASE_URL };
