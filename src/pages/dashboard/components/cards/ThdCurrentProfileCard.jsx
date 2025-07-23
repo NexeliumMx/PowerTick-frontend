@@ -4,7 +4,17 @@ import { Card, CardHeader, CardContent, CardActions, Box, Typography, Divider } 
 import { useTheme } from '@mui/material/styles';
 import { useApiData } from '../../../../hooks/useApiData';
 import { useMsal } from "@azure/msal-react";
-import { BarChart } from '@mui/x-charts/BarChart';
+import {
+  ResponsiveChartContainer,
+  BarPlot,
+  LinePlot,
+  ChartsXAxis,
+  ChartsYAxis,
+  ChartsLegend,
+  ChartsTooltip,
+  ChartsGrid,
+  MarkPlot,
+} from '@mui/x-charts';
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import TimeFilterProfile from '../ui/TimeFilterProfile';
 import { ModeContext } from '../../../../context/AppModeContext';
@@ -118,13 +128,13 @@ const ThdCurrentProfileCard = ({ selectedPowerMeter, measurementRange, defaultTi
   let xAxisLabel = '';
   let xDataKey = '';
   if (apiTimeInterval === 'month') {
-    xAxisLabel = t('dashboard.month', 'Mes');
+    xAxisLabel = t('analysis.month', 'Mes');
     xDataKey = 'month_start_local';
   } else if (apiTimeInterval === 'hour') {
-    xAxisLabel = t('dashboard.hour', 'Hora');
+    xAxisLabel = t('analysis.hour', 'Hora');
     xDataKey = 'hour_start_utc';
   } else if (apiTimeInterval === 'day') {
-    xAxisLabel = t('dashboard.day', 'Día');
+    xAxisLabel = t('analysis.day', 'Día');
     xDataKey = 'day_start_utc';
   }
 
@@ -152,10 +162,13 @@ const ThdCurrentProfileCard = ({ selectedPowerMeter, measurementRange, defaultTi
     return {
       name: formattedName,
       thd_current_a_max: item.thd_current_l1_max || 0,
+      thd_current_a_diff: Math.max(item.thd_current_l1_max - item.thd_current_l1_avg, 0),
       thd_current_a_avg: item.thd_current_l1_avg || 0,
       thd_current_b_max: item.thd_current_l2_max || 0,
+      thd_current_b_diff: Math.max(item.thd_current_l2_max - item.thd_current_l2_avg, 0),
       thd_current_b_avg: item.thd_current_l2_avg || 0,
       thd_current_c_max: item.thd_current_l3_max || 0,
+      thd_current_c_diff: Math.max(item.thd_current_l3_max - item.thd_current_l3_avg, 0),
       thd_current_c_avg: item.thd_current_l3_avg || 0,
     };
   });
@@ -174,10 +187,10 @@ const ThdCurrentProfileCard = ({ selectedPowerMeter, measurementRange, defaultTi
   const percentFormatter = (value) => value != null ? `${value.toFixed(2)}%` : '';
 
   // Use t for the card title
-  const cardTitle = t('Analysis.thdCurrentProfile', 'THD Current Profile');
+  const cardTitle = t('analysis.thdCurrentProfile');
 
   return (
-    <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column" , backgroundColor: theme.palette.background.card}}>
+    <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column", backgroundColor: theme.palette.background.card }}>
       <CardHeader
         title={cardTitle}
         titleTypographyProps={{
@@ -187,44 +200,94 @@ const ThdCurrentProfileCard = ({ selectedPowerMeter, measurementRange, defaultTi
             paddingLeft: 2,
             alignSelf: 'flex-start',
             paddingTop: '2px',
-            fontWeight:600 ,
-            paddingBottom: 0
-          }
+            fontWeight: 600,
+            paddingBottom: 0,
+          },
         }}
       />
       <CardContent sx={{ flexGrow: 1, pt: 0 }}>
-        <Box sx={{ width: "100%", overflow: "auto", px: 2, my:-5}}>
+        <Box sx={{ width: "100%", overflow: "auto", px: 2, my: -7 }}>
           {isLoading ? (
-            <ChartSkeletonCard/>
+            <Box sx={{ my: 8 }}>
+              <ChartSkeletonCard />
+            </Box>
           ) : (thdCurrentProfileData && thdCurrentProfileData.length > 0) ? (
-            <BarChart
-              
-              slotProps={{
-                legend: {
-                  hidden: false,
-                  position: { vertical: 'top', horizontal: 'center' },
-                  itemGap: 50,
-                }
-              }}
+            <ResponsiveChartContainer
               dataset={chartData}
-              
-              series={[
-                { dataKey: 'thd_current_a_max', stack: 'a', label: 'A Max', valueFormatter: percentFormatter, color: chartColors.phaseAMax || '#ff5722' },
-                { dataKey: 'thd_current_a_avg', stack: 'a', label: 'A Avg', valueFormatter: percentFormatter, color: chartColors.phaseAAvg || '#ff7043' },
-                { dataKey: 'thd_current_b_max', stack: 'b', label: 'B Max', valueFormatter: percentFormatter, color: chartColors.phaseBMax || '#2196f3' },
-                { dataKey: 'thd_current_b_avg', stack: 'b', label: 'B Avg', valueFormatter: percentFormatter, color: chartColors.phaseBAvg || '#42a5f5' },
-                { dataKey: 'thd_current_c_max', stack: 'c', label: 'C Max', valueFormatter: percentFormatter, color: chartColors.phaseCMax || '#4caf50' },
-                { dataKey: 'thd_current_c_avg', stack: 'c', label: 'C Avg', valueFormatter: percentFormatter, color: chartColors.phaseCAvg || '#66bb6a' },
-              ]}
-              xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band', tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 }, minStep: 20, interval: 0 , labelStyle: { transform:'translateY(15px)' } }]}
-              height={400}
-              margin={{ 
-                top: 100,
-                left: 40, 
-                bottom: 60 
-              }}
+               series={[
+    // Bars for averages
+    { type: 'bar', dataKey: 'thd_current_a_avg', label: t('analysis.THDphase1Avg'), valueFormatter: percentFormatter, color: chartColors.phaseAAvg || '#ff7043' },
+    { type: 'bar', dataKey: 'thd_current_b_avg', label: t('analysis.THDphase2Avg'), valueFormatter: percentFormatter, color: chartColors.phaseBAvg || '#42a5f5' },
+    { type: 'bar', dataKey: 'thd_current_c_avg', label: t('analysis.THDphase3Avg'), valueFormatter: percentFormatter, color: chartColors.phaseCAvg || '#66bb6a' },
+    // Lines for max
+    { type: 'line', dataKey: 'thd_current_a_max', label: t('analysis.THDphase1Max'), valueFormatter: percentFormatter, color: chartColors.phaseAMax || '#ff5722' },
+    { type: 'line', dataKey: 'thd_current_b_max', label: t('analysis.THDphase2Max'), valueFormatter: percentFormatter, color: chartColors.phaseBMax || '#2196f3' },
+    { type: 'line', dataKey: 'thd_current_c_max', label: t('analysis.THDphase3Max'), valueFormatter: percentFormatter, color: chartColors.phaseCMax || '#4caf50' },
+  ]}
+              xAxis={[{
+                dataKey: 'name',
+                label: xAxisLabel,
+                scaleType: 'band',
+                tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 },
+                minStep: 20,
+                interval: 0,
+                labelStyle: { transform: 'translateY(15px)' },
+              }]}
+              yAxis={[{
+                label: t('analysis.thdCurrent'),
+                labelStyle: {
+                  transform: 'translate(-50px, 0px) rotate(-90deg)',
+                  transformOrigin: 'left center',
+                  dominantBaseline: 'middle',
+                  textAnchor: 'middle',
+                },
+                tickLabelStyle: { fontSize: 12 },
+                tickCount: 8, // More steps
+              }]}
+              height={430}
+              margin={{ top: 100, left: 40, bottom: 60 }}
               sx={{ background: 'transparent' }}
-            />
+            >
+              <BarPlot />
+              <LinePlot />
+              <MarkPlot />
+              <ChartsGrid horizontal vertical />
+              <ChartsLegend
+                position={{ vertical: 'top', horizontal: 'center' }}
+                itemGap={110}
+              />
+              <ChartsTooltip
+                content={({ dataIndex }) => {
+                  if (!chartData || dataIndex == null) return null;
+                  const row = chartData[dataIndex];
+                  return (
+                    <Box sx={{ p: 1 }}>
+                      <Typography variant="subtitle2">{row.name}</Typography>
+  <Typography variant="body2" color={chartColors.phaseAAvg}>
+  {t('analysis.THDphase1Avg')}: {percentFormatter(row.thd_current_a_avg)}
+</Typography>
+<Typography variant="body2" color={chartColors.phaseAMax}>
+  {t('analysis.THDphase1Max')}: {percentFormatter(row.thd_current_a_max)}
+</Typography>
+<Typography variant="body2" color={chartColors.phaseBAvg}>
+  {t('analysis.THDphase2Avg')}: {percentFormatter(row.thd_current_b_avg)}
+</Typography>
+<Typography variant="body2" color={chartColors.phaseBMax}>
+  {t('analysis.THDphase2Max')}: {percentFormatter(row.thd_current_b_max)}
+</Typography>
+<Typography variant="body2" color={chartColors.phaseCAvg}>
+  {t('analysis.THDphase3Avg')}: {percentFormatter(row.thd_current_c_avg)}
+</Typography>
+<Typography variant="body2" color={chartColors.phaseCMax}>
+  {t('analysis.THDphase3Max')}: {percentFormatter(row.thd_current_c_max)}
+</Typography>
+                    </Box>
+                  );
+                }}
+              />
+              <ChartsXAxis />
+              <ChartsYAxis />
+            </ResponsiveChartContainer>
           ) : (
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 200, gap: 2 }}>
               <Typography variant="body1" color="text.secondary">
@@ -239,11 +302,10 @@ const ThdCurrentProfileCard = ({ selectedPowerMeter, measurementRange, defaultTi
       </CardContent>
       <Divider
         variant="middle"
-        sx={{ 
-          mt: { xs: 4, sm: 4, md: 4 },
-          mb: 1, 
-          borderColor: 'primary.main', 
-          borderBottomWidth: 3 
+        sx={{
+          mb: 1,
+          borderColor: 'primary.main',
+          borderBottomWidth: 3,
         }}
       />
       <CardActions

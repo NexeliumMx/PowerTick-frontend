@@ -170,7 +170,9 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
       <CardContent sx={{ flexGrow: 1, pt: 0 }}>
         <Box sx={{ width: "100%", overflow: "auto", px: 2, my:-9}}>
           {isLoading ? (
-            <ChartSkeletonCard/>
+           <Box sx={{ mt: 10 }}>
+            <ChartSkeletonCard />
+          </Box>
           ) : consumptionProfileData ? (
             <BarChart
               slotProps={{

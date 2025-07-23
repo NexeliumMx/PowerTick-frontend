@@ -236,14 +236,14 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
 
   // X label variable title
   const xAxisLabel = timeInterval === "year"
-    ? t('dashboard.month', 'Mes')
+    ? t('analysis.month', 'Mes')
     : timeInterval === "month"
-    ? t('dashboard.day', 'Día')
+    ? t('analysis.day', 'Día')
     : timeInterval === "day"
-    ? t('dashboard.hour', 'Hora')
+    ? t('analysis.hour', 'Hora')
     : timeInterval === "hour"
-    ? t('dashboard.minutes', 'Minutos')
-    : t('dashboard.time', 'Tiempo');
+    ? t('analysis.minutes', 'Minutos')
+    : t('analysis.time', 'Tiempo');
 
   // Transform data for Recharts (show local time)
   const chartData = thdCurrentHistoryData?.map((item) => ({
@@ -293,7 +293,7 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
   };
 
   // Use t for the card title
-  const cardTitle = t('Analysis.thdCurrentHistory', 'THD Current History');
+  const cardTitle = t('analysis.thdCurrentHistory');
 
   return (
     <Card sx={{ minHeight: "580px", display: "flex", flexDirection: "column", backgroundColor: theme.palette.background.card }}>
@@ -312,9 +312,11 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
         }}
       />
       <CardContent sx={{ flexGrow: 1, pt: 0 }}>
-        <Box sx={{ width: "100%", overflow: "auto", px: 2, my: -5 }}>
+        <Box sx={{ width: "100%", overflow: "hidden", px: 2, my: 0 }}>
           {isLoading ? (
-            <ChartSkeletonCard />
+            <Box sx={{ mt: 0 }}>
+              <ChartSkeletonCard />
+            </Box>
           ) : thdCurrentHistoryData && thdCurrentHistoryData.length > 0 ? (
             <ResponsiveContainer width="100%" height={350}>
               <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
@@ -337,7 +339,7 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
                   tick={{ fill: theme.palette.text.primary }}
                 >
                   <Label 
-                    value="THD (%)" 
+                    value={t('analysis.thdCurrent', 'THD (%)')} 
                     angle={-90} 
                     position="insideLeft"
                     offset={-10}
@@ -349,13 +351,18 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
                   />
                 </YAxis>
                 <Tooltip content={<CustomTooltip />} />
-                <Legend layout="horizontal" verticalAlign="top" align="right" wrapperStyle={{marginRight: 40, paddingBottom: 8}} />
+                <Legend 
+                  layout="horizontal" 
+                  verticalAlign="top" 
+                  align="right" 
+                  wrapperStyle={{marginRight: 40, paddingBottom: 8}} 
+                />
                 <Line 
                   type="monotone" 
                   dataKey="thdCurrentL1" 
                   stroke={chartColors.phaseA || "#ff7300"} 
                   strokeWidth={3}
-                  name="THD Current L1"
+                  name={t('analysis.THDphase1Avg', 'THD Current L1')}
                   dot={false}
                 />
                 <Line 
@@ -363,7 +370,7 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
                   dataKey="thdCurrentL2" 
                   stroke={chartColors.phaseB || "#8884d8"} 
                   strokeWidth={3}
-                  name="THD Current L2"
+                  name={t('analysis.THDphase2Avg', 'THD Current L2')}
                   dot={false}
                 />
                 <Line 
@@ -371,7 +378,7 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
                   dataKey="thdCurrentL3" 
                   stroke={chartColors.phaseC || "#82ca9d"} 
                   strokeWidth={3}
-                  name="THD Current L3"
+                  name={t('analysis.THDphase3Avg', 'THD Current L3')}
                   dot={false}
                 />
               </LineChart>
@@ -384,7 +391,6 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
       <Divider
         variant="middle"
         sx={{ 
-          mt: { xs: 4, sm: 4, md: 4 },
           mb: 1, 
           borderColor: 'primary.main', 
           borderBottomWidth: 3 

@@ -93,7 +93,16 @@
     "year": "Año",
     "month": "Mes",
     "day": "Día",
-    "hour": "Hora"
+    "hour": "Hora",
+    "THDphase1Avg": "Promedio Fase 1",
+    "THDphase1Max": "Máximo Fase 1",
+    "THDphase2Avg": "Promedio Fase 2",
+    "THDphase2Max": "Máximo Fase 2",
+    "THDphase3Avg": "Promedio Fase 3",
+    "THDphase3Max": "Máximo Fase 3",
+    "thdCurrent": "Corriente (%)",
+    "thdCurrentProfile": "Perfil de Corriente Armónica Total",
+    "thdCurrentHistory": "Historial de Corriente Armónica Total"
   },
   "monthlyReports": {
     "title": "Reporte Mensuales",
