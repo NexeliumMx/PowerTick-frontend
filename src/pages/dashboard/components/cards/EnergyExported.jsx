@@ -9,14 +9,14 @@ const EnergyExported = ({ data, title }) => {
   const theme = useTheme();
 
   // Use 0 if value is null or undefined
-  const kwh_exported_total = data?.kwh_exported_total ?? 0;
-  const kwh_exported_l1 = data?.kwh_exported_l1 ?? 0;
-  const kwh_exported_l2 = data?.kwh_exported_l2 ?? 0;
-  const kwh_exported_l3 = data?.kwh_exported_l3 ?? 0;
-  const varh_exported_q4 = data?.varh_exported_q4 ?? 0;
-  const varh_exported_q4_l1 = data?.varh_exported_q4_l1 ?? 0;
-  const varh_exported_q4_l2 = data?.varh_exported_q4_l2 ?? 0;
-  const varh_exported_q4_l3 = data?.varh_exported_q4_l3 ?? 0;
+  const kwh_exported_total = data?.kwh_exported_total;
+  const kwh_exported_l1 = data?.kwh_exported_l1;
+  const kwh_exported_l2 = data?.kwh_exported_l2;
+  const kwh_exported_l3 = data?.kwh_exported_l3;
+  const varh_exported_q4 = data?.varh_exported_q4;
+  const varh_exported_q4_l1 = data?.varh_exported_q4_l1;
+  const varh_exported_q4_l2 = data?.varh_exported_q4_l2;
+  const varh_exported_q4_l3 = data?.varh_exported_q4_l3;
 
   const hasValidData =
     typeof kwh_exported_total === 'number' &&

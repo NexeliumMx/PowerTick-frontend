@@ -249,9 +249,9 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
   const chartData = thdCurrentHistoryData?.map((item) => ({
     name: dayjs.utc(item.utc_time).tz(tz).format('HH:mm'),
     timestamp_local: dayjs.utc(item.utc_time).tz(tz).format('YYYY-MM-DD HH:mm'),
-    thdCurrentL1: item.thd_current_l1 || 0,
-    thdCurrentL2: item.thd_current_l2 || 0,
-    thdCurrentL3: item.thd_current_l3 || 0,
+    thdCurrentL1: item.thd_current_l1 ,
+    thdCurrentL2: item.thd_current_l2 ,
+    thdCurrentL3: item.thd_current_l3 ,
   }));
 
   // Custom tooltip to show local time

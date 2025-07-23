@@ -9,18 +9,18 @@ const Power = ({ data, title }) => {
   const theme = useTheme();
 
   // Use 0 if value is null or undefined
-  const watts = data?.watts ?? 0;
-  const watts_l1 = data?.watts_l1 ?? 0;
-  const watts_l2 = data?.watts_l2 ?? 0;
-  const watts_l3 = data?.watts_l3 ?? 0;
-  const va = data?.va ?? 0;
-  const va_l1 = data?.va_l1 ?? 0;
-  const va_l2 = data?.va_l2 ?? 0;
-  const va_l3 = data?.va_l3 ?? 0;
-  const var_ = data?.var ?? 0;
-  const var_l1 = data?.var_l1 ?? 0;
-  const var_l2 = data?.var_l2 ?? 0;
-  const var_l3 = data?.var_l3 ?? 0;
+  const watts = data?.watts;
+  const watts_l1 = data?.watts_l1;
+  const watts_l2 = data?.watts_l2;
+  const watts_l3 = data?.watts_l3;
+  const va = data?.va;
+  const va_l1 = data?.va_l1;
+  const va_l2 = data?.va_l2;
+  const va_l3 = data?.va_l3;
+  const var_ = data?.var;
+  const var_l1 = data?.var_l1;
+  const var_l2 = data?.var_l2;
+  const var_l3 = data?.var_l3;
 
   const hasValidData =
     typeof watts === 'number' &&
