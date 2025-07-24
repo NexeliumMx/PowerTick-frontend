@@ -60,6 +60,9 @@ const apiEndpoints = {
 
   //Download
   downloadCsv: '/api/downloads',
+  
+  //Powermeter Info
+  meterInfo: '/api/meterInfo',
 };
 
 export { apiEndpoints, API_BASE_URL };

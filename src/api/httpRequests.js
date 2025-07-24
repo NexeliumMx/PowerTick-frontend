@@ -378,3 +378,19 @@ export async function downloadCsv({
   link.remove();
   window.URL.revokeObjectURL(objectUrl);
 }
+
+export async function fetchMeterInfo(user_id, powermeterId, mode = 'PRODUCTION') {
+  let url = `${API_BASE_URL}${apiEndpoints.meterInfo}?user_id=${user_id}&powermeter_id=${powermeterId}`;
+  if (mode === 'DEMO') {
+    url += (url.includes('?') ? '&' : '?') + "enviroment=demo";
+  } else if (mode === 'DEV') {
+    url += (url.includes('?') ? '&' : '?') + "enviroment=dev";
+  }
+  console.log(`[API CALL] fetchMeterInfo: ${url}`);
+  const response = await fetch(url);
+  const resData = await response.json();
+  if (!response.ok) {
+    throw new Error('Failed to fetch meter info');
+  }
+  return resData;
+}

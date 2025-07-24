@@ -115,5 +115,17 @@
   "maxDemand": "Maximum Demand (kW)",
   "download": "Download",
   "noDataAvailable": "No data available for the selected power meter and year."
+},
+"configuration": {
+  "powermeterAlias": "Power Meter Alias",
+  "installationAlias": "Installation Alias",
+  "tariff": "Electricity Tariff",
+  "region": "Tariff Region",
+  "installedCapacity": "Installed Capacity",
+  "location": "Location",
+  "registrationDate": "Registration Date",
+  "maintenanceDate": "Maintenance Date",
+  "allowedUsers": "Allowed Users",
+  "noPowermeterSelected": "Select a power meter."
 }
 }

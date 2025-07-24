@@ -1,12 +1,61 @@
+import React, { useEffect, useState , useContext} from "react";
+
 import { Box, Card, CardHeader, CardContent, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { fetchMeterInfo } from "../../../api/httpRequests";
+import { useMsal } from "@azure/msal-react";
+import { ModeContext } from "../../../context/AppModeContext"; 
+import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
 
-const Configuration = () => {
+
+
+
+const Configuration = ({ powerMeter }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm")); // Check if the screen size is small
+  const { accounts } = useMsal();
+  const userId = accounts[0]?.idTokenClaims?.oid; 
+    const { state } = useContext(ModeContext); // <-- Get mode from context
+  const mode = state?.mode;
+  const [meterInfo, setMeterInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { t } = useTranslation();
 
+  useEffect(() => {
+    if (!userId || !powerMeter|| !mode) return;
+    setLoading(true);
+    setError(null);
+    fetchMeterInfo(userId, powerMeter, mode)
+.then((data) => {
+      console.log('Fetching Meter Info for user:', userId, 'powerMeter:', powerMeter, 'mode:', mode);
+      console.log('Meter Info response:', data);
+      setMeterInfo(data);
+    })      
+    .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [userId, powerMeter]);
+console.log('meterInfo:', meterInfo);
+
+if (!powerMeter) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: 300,
+        }}
+      >
+        <Typography variant="h5" color="text.secondary">
+          {t('configuration.noPowermeterSelected')}
+        </Typography>
+      </Box>
+    );
+  }
   return (
     <Box
       sx={{
@@ -27,7 +76,7 @@ const Configuration = () => {
               }}
             >
               <CardHeader
-                title="ID"
+                title={t('configuration.powermeterAlias')}
                 titleTypographyProps={{
                   variant: "h3",
                   fontWeight: "bold",
@@ -35,7 +84,9 @@ const Configuration = () => {
               />
               <CardContent>
                 <Typography variant="h6" color="text.secondary">
-                  12345
+                {meterInfo && meterInfo[0]?.powermeter_alias
+                  ? meterInfo[0].powermeter_alias
+                  : t('dashboard.dataNotAvailable')}
                 </Typography>
               </CardContent>
             </Card>
@@ -49,7 +100,7 @@ const Configuration = () => {
               }}
             >
               <CardHeader
-                title="Client"
+                title={t('configuration.installationAlias')}
                 titleTypographyProps={{
                   variant: "h3",
                   fontWeight: "bold",
@@ -57,7 +108,9 @@ const Configuration = () => {
               />
               <CardContent>
                 <Typography variant="h6" color="text.secondary">
-                  ABC Corporation
+                  {meterInfo && meterInfo[0]?.installation_alias
+                  ? meterInfo[0].installation_alias
+                  : t('dashboard.dataNotAvailable')}
                 </Typography>
               </CardContent>
             </Card>
@@ -71,7 +124,7 @@ const Configuration = () => {
               }}
             >
               <CardHeader
-                title="Location"
+                title={t('configuration.tariff')}
                 titleTypographyProps={{
                   variant: "h3",
                   fontWeight: "bold",
@@ -79,7 +132,9 @@ const Configuration = () => {
               />
               <CardContent>
                 <Typography variant="h6" color="text.secondary">
-                  New York, NY
+                  {meterInfo && meterInfo[0]?.tariff
+                  ? meterInfo[0].tariff
+                  : t('dashboard.dataNotAvailable')}
                 </Typography>
               </CardContent>
             </Card>
@@ -93,7 +148,7 @@ const Configuration = () => {
               }}
             >
               <CardHeader
-                title="Load Center"
+                title={t('configuration.region')}
                 titleTypographyProps={{
                   variant: "h3",
                   fontWeight: "bold",
@@ -101,7 +156,9 @@ const Configuration = () => {
               />
               <CardContent>
                 <Typography variant="h6" color="text.secondary">
-                  Main Load Center 1
+                  {meterInfo && meterInfo[0]?.region
+                  ? meterInfo[0].region
+                  : t('dashboard.dataNotAvailable')}
                 </Typography>
               </CardContent>
             </Card>
@@ -115,7 +172,7 @@ const Configuration = () => {
               }}
             >
               <CardHeader
-                title="Model"
+                title={t('configuration.installedCapacity')}
                 titleTypographyProps={{
                   variant: "h3",
                   fontWeight: "bold",
@@ -123,7 +180,9 @@ const Configuration = () => {
               />
               <CardContent>
                 <Typography variant="h6" color="text.secondary">
-                  Model X123
+                  {meterInfo && meterInfo[0]?.installed_capacity
+                  ? meterInfo[0].installed_capacity
+                  : t('dashboard.dataNotAvailable')}
                 </Typography>
               </CardContent>
             </Card>
@@ -137,7 +196,7 @@ const Configuration = () => {
               }}
             >
               <CardHeader
-                title="Manufacturer"
+                title={t('configuration.location')}
                 titleTypographyProps={{
                   variant: "h3",
                   fontWeight: "bold",
@@ -145,7 +204,9 @@ const Configuration = () => {
               />
               <CardContent>
                 <Typography variant="h6" color="text.secondary">
-                  ACME Corp.
+                  {meterInfo && meterInfo[0]?.location
+                  ? meterInfo[0].location
+                  : t('dashboard.dataNotAvailable')}
                 </Typography>
               </CardContent>
             </Card>
@@ -159,7 +220,7 @@ const Configuration = () => {
               }}
             >
               <CardHeader
-                title="Firmware Version"
+                title={t('configuration.registrationDate')}
                 titleTypographyProps={{
                   variant: "h3",
                   fontWeight: "bold",
@@ -167,7 +228,9 @@ const Configuration = () => {
               />
               <CardContent>
                 <Typography variant="h6" color="text.secondary">
-                  v1.2.3
+                  {meterInfo && meterInfo[0]?.register_date
+                  ? dayjs(meterInfo[0].register_date).format('YYYY-MM-DD')
+                  : t('dashboard.dataNotAvailable')}
                 </Typography>
               </CardContent>
             </Card>
@@ -181,7 +244,7 @@ const Configuration = () => {
               }}
             >
               <CardHeader
-                title="Serial Number"
+                title={t('configuration.maintenanceDate')}
                 titleTypographyProps={{
                   variant: "h3",
                   fontWeight: "bold",
@@ -189,7 +252,9 @@ const Configuration = () => {
               />
               <CardContent>
                 <Typography variant="h6" color="text.secondary">
-                  SN123456789
+                  {meterInfo && meterInfo[0]?.maintenance_date
+                  ? dayjs(meterInfo[0].maintenance_date).format('YYYY-MM-DD')
+                  : t('dashboard.dataNotAvailable')}
                 </Typography>
               </CardContent>
             </Card>
@@ -203,7 +268,7 @@ const Configuration = () => {
               }}
             >
               <CardHeader
-                title="Registration Date"
+                title={t('configuration.allowedUsers')}
                 titleTypographyProps={{
                   variant: "h3",
                   fontWeight: "bold",
@@ -211,7 +276,9 @@ const Configuration = () => {
               />
               <CardContent>
                 <Typography variant="h6" color="text.secondary">
-                  2024-09-15
+                  {meterInfo && meterInfo[0]?.user_count
+                  ? meterInfo[0].user_count
+                  : t('dashboard.dataNotAvailable')}
                 </Typography>
               </CardContent>
             </Card>
