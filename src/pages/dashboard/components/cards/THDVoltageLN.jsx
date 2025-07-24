@@ -7,10 +7,10 @@ const THDVoltageLN = ({ data, title }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   // Use 0 if value is null or undefined
-  const thd_voltage_ln = data?.thd_voltage_ln ?? 0;
-  const thd_voltage_l1 = data?.thd_voltage_l1 ?? 0;
-  const thd_voltage_l2 = data?.thd_voltage_l2 ?? 0;
-  const thd_voltage_l3 = data?.thd_voltage_l3 ?? 0;
+  const thd_voltage_ln = data?.thd_voltage_ln;
+  const thd_voltage_l1 = data?.thd_voltage_l1;
+  const thd_voltage_l2 = data?.thd_voltage_l2;
+  const thd_voltage_l3 = data?.thd_voltage_l3;
 console.log(thd_voltage_ln, thd_voltage_l1, thd_voltage_l2, thd_voltage_l3);
   const hasValidData =
     typeof thd_voltage_ln === 'number' &&

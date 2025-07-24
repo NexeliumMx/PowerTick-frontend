@@ -1,5 +1,3 @@
-
-
 const chartColors = {
   //Analysis
   //f9a824 naranja
@@ -17,6 +15,18 @@ const chartColors = {
   avgVar: "#cca42e",
   maxRealPower: "#F25C05",
   maxVar: "#E6C85C",
+
+
+// THD Current Profile colors -
+  phaseAAvg: "#cca42e", 
+  phaseAMax: "#E6C85C",  
+  phaseBAvg: "#F25C05",
+  phaseBMax: "#FF8C42",   
+  phaseCAvg: "#A0522D",  
+  phaseCMax: "#8B5C2D",   
+  phaseA: "#F29F05",    // Yellow for Phase 1 (L1)
+  phaseB: "#F25C05",    // Orange for Phase 2 (L2)
+  phaseC: "#A0522D",    // Brown for Phase 3 (L3)
 
   //Measurements
   phase1: "#eaeb81",

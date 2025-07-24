@@ -9,9 +9,9 @@ const THDCurrent = ({ data, title }) => {
   const theme = useTheme();
 
   // Use 0 if value is null or undefined
-  const thd_current_l1 = data?.thd_current_l1 ?? 0;
-  const thd_current_l2 = data?.thd_current_l2 ?? 0;
-  const thd_current_l3 = data?.thd_current_l3 ?? 0;
+  const thd_current_l1 = data?.thd_current_l1;
+  const thd_current_l2 = data?.thd_current_l2;
+  const thd_current_l3 = data?.thd_current_l3;
 
   const hasValidData =
     typeof thd_current_l1 === 'number' &&

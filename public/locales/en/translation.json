@@ -92,7 +92,16 @@
   "year": "Year",
   "month": "Month",
   "day": "Day",
-  "hour": "Hour"
+  "hour": "Hour",
+  "THDphase1Avg": "Phase 1 Average",
+  "THDphase1Max": "Phase 1 Max",
+  "THDphase2Avg": "Phase 2 Average",
+  "THDphase2Max": "Phase 2 Max",
+  "THDphase3Avg": "Phase 3 Average",
+  "THDphase3Max": "Phase 3 Max",
+  "thdCurrent": "Current (%)",
+  "thdCurrentProfile": "Total Harmonic Distortion Current Profile",
+  "thdCurrentHistory": "Total Harmonic Distortion Current History"
 },
 "monthlyReports": {
   "title": "Monthly Reports",

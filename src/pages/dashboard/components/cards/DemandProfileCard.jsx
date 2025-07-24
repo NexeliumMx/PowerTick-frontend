@@ -4,7 +4,18 @@ import { Card, CardHeader, CardContent, CardActions, Box, Typography, Divider } 
 import { useTheme } from '@mui/material/styles';
 import { useApiData } from '../../../../hooks/useApiData';
 import { useMsal } from "@azure/msal-react";
-import { BarChart } from '@mui/x-charts/BarChart';
+import {
+  ResponsiveChartContainer,
+  BarPlot,
+  LinePlot,
+  ChartsXAxis,
+  ChartsYAxis,
+  ChartsLegend,
+  ChartsTooltip,
+  ChartsGrid,
+  MarkPlot,
+} from '@mui/x-charts';
+
 import ChartSkeletonCard from "../cards/ChartSkeletonCard";
 import TimeFilterProfile from '../ui/TimeFilterProfile';
 import { ModeContext } from '../../../../context/AppModeContext';
@@ -136,13 +147,20 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
       formattedName = formatMonthLocal(item[xDataKey]);
     }
      console.log( typeof item.w_avg)
+
+  const wMax = item.w_max / 10;
+  const wAvg = parseFloat(parseFloat(item.w_avg).toFixed(3)) / 10;
+  const varMax = item.var_max;
+  const varAvg = parseFloat(parseFloat(item.var_avg).toFixed(3)) / 10;
     return {
       ...item,
       name: formattedName,
-      w_m: item.w_max/10,
-      w_a: parseFloat(parseFloat(item.w_avg).toFixed(3))/10,
-      var_m: item.var_max,
-      var_a: parseFloat(parseFloat(item.var_avg).toFixed(3))/10,
+      w_m: wMax,
+      w_a: wAvg,
+      w_diff: wMax - wAvg,
+      var_m: varMax,
+      var_a: varAvg,
+      var_diff: varMax - varAvg,
     };
   });
   
@@ -172,45 +190,81 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
       <CardContent sx={{ flexGrow: 1, pt: 0 }}>
         <Box sx={{ width: "100%", overflow: "auto", px: 2, my:-10}}>
           {isLoading ? (
-            <ChartSkeletonCard/>
+            <Box sx={{ mt: 11 }}>
+            <ChartSkeletonCard />
+          </Box>
           ) : demandProfileData ? (
-            <BarChart
-              
-              slotProps={{
-                legend: {
-                  hidden: false,
-                  position: { vertical: 'top', horizontal: 'center' },
-                  itemGap: 180, // Space between legend items
-                }}}
-              dataset={chartData}
-              
-              series={[
-                { dataKey: 'w_m', stack: 'w', label: t('analysis.realMax'), valueFormatter: wFormatter, color: chartColors.maxRealPower },
-                { dataKey: 'w_a', stack: 'w', label: t('analysis.realAvg'), valueFormatter: wFormatter, color: chartColors.avgRealPower },
-                { dataKey: 'var_m', stack: 'var', label: t('analysis.reactiveMax'), valueFormatter: varFormatter, color: chartColors.maxVar },
-                { dataKey: 'var_a', stack: 'var', label: t('analysis.reactiveAvg'), valueFormatter: varFormatter, color: chartColors.avgVar },
-              ]}
-              xAxis={[{ dataKey: 'name', label: xAxisLabel, scaleType: 'band', tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 }, minStep: 20, interval: 0 , labelStyle: { transform:'translateY(15px)' } }]}
-              yAxis={[{
-                label: t('analysis.demand'),
-                labelStyle: {
-                  transform: 'translate(-90px, 0px) rotate(-90deg)',
-                  transformOrigin: 'left center',
-                  dominantBaseline: 'middle',
-                  textAnchor: 'middle'
-                },
-                tickLabelStyle: {
-                  fontSize: 12
-                }
-              }]}
-              height={450}
-              margin={{ 
-                top: 150,
-                left: 70, 
-                bottom: 60 
-              }}
-              sx={{ background: 'transparent' }}
-            />
+  <ResponsiveChartContainer
+  series={[
+    { type: 'bar', dataKey: 'w_a', label: t('analysis.realAvg'), valueFormatter: wFormatter, color: chartColors.avgRealPower },
+    { type: 'line', dataKey: 'w_m', label: t('analysis.realMax'), valueFormatter: wFormatter, color: chartColors.maxRealPower },
+    { type: 'bar', dataKey: 'var_a', label: t('analysis.reactiveAvg'), valueFormatter: varFormatter, color: chartColors.avgVar },
+    { type: 'line', dataKey: 'var_m', label: t('analysis.reactiveMax'), valueFormatter: varFormatter, color: chartColors.maxVar },
+  ]}
+  dataset={chartData}
+  xAxis={[{
+    dataKey: 'name',
+    label: xAxisLabel,
+    scaleType: 'band',
+    tickLabelStyle: { angle: -45, textAnchor: 'end', fontSize: 12 },
+    minStep: 20,
+    interval: 0,
+    labelStyle: { transform:'translateY(15px)' }
+  }]}
+  yAxis={[{
+    label: t('analysis.demand'),
+    labelStyle: {
+      transform: 'translate(-90px, 0px) rotate(-90deg)',
+      transformOrigin: 'left center',
+      dominantBaseline: 'middle',
+      textAnchor: 'middle'
+    },
+    tickLabelStyle: { fontSize: 12 }
+  }]}
+  height={450}
+  margin={{ top: 150, left: 70, bottom: 60 }}
+  sx={{ background: 'transparent' }}
+>
+
+  <BarPlot />
+  <LinePlot />
+  <MarkPlot />
+  <ChartsGrid horizontal vertical/>
+
+
+  <ChartsLegend
+    position={{ vertical: 'top', horizontal: 'center' }}
+    itemGap={180}
+  />
+
+  <ChartsTooltip
+    content={({ dataIndex }) => {
+      if (!chartData || dataIndex == null) return null;
+      const row = chartData[dataIndex];
+      return (
+        <Box sx={{ p: 1 }}>
+          <Typography variant="subtitle2">{row.name}</Typography>
+          <Typography variant="body2" color={chartColors.avgRealPower}>
+            {t('analysis.realAvg')}: {wFormatter(row.w_a)}
+          </Typography>
+          <Typography variant="body2" color={chartColors.maxRealPower}>
+            {t('analysis.realMax')}: {wFormatter(row.w_m)}
+          </Typography>
+          <Typography variant="body2" color={chartColors.avgVar}>
+            {t('analysis.reactiveAvg')}: {varFormatter(row.var_a)}
+          </Typography>
+          <Typography variant="body2" color={chartColors.maxVar}>
+            {t('analysis.reactiveMax')}: {varFormatter(row.var_m)}
+          </Typography>
+        </Box>
+      );
+    }}
+  />
+
+  <ChartsXAxis />
+  <ChartsYAxis />
+</ResponsiveChartContainer>
+
           ) : (
             <Typography variant="body1">{t('analysis.noData')}</Typography>
           )}

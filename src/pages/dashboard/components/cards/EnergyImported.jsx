@@ -9,18 +9,18 @@ const EnergyImported = ({ data, title }) => {
   const theme = useTheme();
 
   // Use 0 if value is null or undefined
-  const kwh_imported_total = data?.kwh_imported_total ?? 0;
-  const kwh_imported_l1 = data?.kwh_imported_l1 ?? 0;
-  const kwh_imported_l2 = data?.kwh_imported_l2 ?? 0;
-  const kwh_imported_l3 = data?.kwh_imported_l3 ?? 0;
-  const varh_imported_q1 = data?.varh_imported_q1 ?? 0;
-  const varh_imported_q1_l1 = data?.varh_imported_q1_l1 ?? 0;
-  const varh_imported_q1_l2 = data?.varh_imported_q1_l2 ?? 0;
-  const varh_imported_q1_l3 = data?.varh_imported_q1_l3 ?? 0;
-  const varh_imported_q2 = data?.varh_imported_q2 ?? 0;
-  const varh_imported_q2_l1 = data?.varh_imported_q2_l1 ?? 0;
-  const varh_imported_q2_l2 = data?.varh_imported_q2_l2 ?? 0;
-  const varh_imported_q2_l3 = data?.varh_imported_q2_l3 ?? 0;
+  const kwh_imported_total = data?.kwh_imported_total;
+  const kwh_imported_l1 = data?.kwh_imported_l1 ;
+  const kwh_imported_l2 = data?.kwh_imported_l2;
+  const kwh_imported_l3 = data?.kwh_imported_l3;
+  const varh_imported_q1 = data?.varh_imported_q1;
+  const varh_imported_q1_l1 = data?.varh_imported_q1_l1;
+  const varh_imported_q1_l2 = data?.varh_imported_q1_l2;
+  const varh_imported_q1_l3 = data?.varh_imported_q1_l3;
+  const varh_imported_q2 = data?.varh_imported_q2;
+  const varh_imported_q2_l1 = data?.varh_imported_q2_l1;
+  const varh_imported_q2_l2 = data?.varh_imported_q2_l2;
+  const varh_imported_q2_l3 = data?.varh_imported_q2_l3;
 
   const hasValidData =
     typeof kwh_imported_total === 'number' &&
