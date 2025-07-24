@@ -134,6 +134,8 @@ const Topbar = () => {
           Try Demo
         </Button>
         <Button
+          component={Link}
+          to="/"
           variant="contained"
           color="primary"
           sx={{ fontWeight: 600, textTransform: "none" }}
