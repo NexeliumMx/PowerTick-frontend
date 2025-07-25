@@ -394,3 +394,62 @@ export async function fetchMeterInfo(user_id, powermeterId, mode = 'PRODUCTION')
   }
   return resData;
 }
+
+export async function updatePowermeterAlias(userId, powermeterId, newAlias, mode = 'PRODUCTION') {
+  if (!userId || !powermeterId || !newAlias || !newAlias.trim()) {
+    throw new Error('Missing or invalid parameters');
+  }
+
+  let url = `${API_BASE_URL}${apiEndpoints.updatePowermeterAlias}?user_id=${userId}&powermeter_id=${powermeterId}&new_alias=${(newAlias)}`;
+  if (mode === 'DEMO') {
+    url += (url.includes('?') ? '&' : '?') + "enviroment=demo";
+  } else if (mode === 'DEV') {
+    url += (url.includes('?') ? '&' : '?') + "enviroment=dev";
+  }
+  console.log(`[API CALL] updatePowermeterAlias: ${url}`);
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const resData = await response.json();
+  if (!response.ok) {
+    throw new Error(resData.error || 'Failed to update powermeter alias');
+  }
+  return resData;
+}
+
+export async function updateInstallationAlias(userId, installationId, newAlias, mode = 'PRODUCTION') {
+  if (
+    !userId ||
+    !installationId ||
+    !newAlias ||
+    !newAlias.trim()
+  ) {
+    throw new Error('Missing or invalid parameters');
+  }
+
+  let url = `${API_BASE_URL}${apiEndpoints.updateInstallationAlias}?user_id=${userId}&installation_id=${installationId}&new_alias=${encodeURIComponent(newAlias)}`;
+  if (mode === 'DEMO') {
+    url += (url.includes('?') ? '&' : '?') + "enviroment=demo";
+  } else if (mode === 'DEV') {
+    url += (url.includes('?') ? '&' : '?') + "enviroment=dev";
+  }
+  console.log(`[API CALL] updateInstallationAlias: ${url}`);
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const resData = await response.json();
+  if (!response.ok) {
+    throw new Error(resData.error || 'Failed to update installation alias');
+  }
+  return resData;
+}
