@@ -52,9 +52,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
   const { state: appModeState } = useContext(ModeContext);
    const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
   // Use date library for month names (localized, maintainable)
-  const months = Array.from({ length: 12 }, (_, i) =>
-  dayjs().month(i).format('MMMM')
-);
+  const months = Array.from({ length: 12 }, (_, i) => ({ label: dayjs().month(i).format('MMMM'), value: i + 1 }));
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
   // Generate hour options: 'Last Hour' + 00:00-23:00
   const now = dayjs();
@@ -119,7 +117,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
     validDays = [];
     for (let d = startDay; d <= endDay; d++) validDays.push(d);
     // Hours
-    offset=min.month();
+    
     if (
       selectedYear === min.year() && selectedMonth === min.month() + 1 && selectedDay === min.date() &&
       selectedYear === max.year() && selectedMonth === max.month() + 1 && selectedDay === max.date()

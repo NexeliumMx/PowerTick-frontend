@@ -53,9 +53,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
  //Hacer que despliegue los meses y años disponibles
   const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
   // Use date library for month names (localized, maintainable)
-  const months = Array.from({ length: 12 }, (_, i) =>
-    dayjs().month(i).format('MMMM')
-  );
+  const months = Array.from({ length: 12 }, (_, i) => ({ label: dayjs().month(i).format('MMMM'), value: i + 1 }));
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
   // Generate hour options: 'Last Hour' + 00:00-23:00
   const now = dayjs();
@@ -112,7 +110,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     } else {
       validMonths = months;
     }
-    offset=min.month();
+    
     // Days
     const daysInMonth = dayjs(`${selectedYear}-${selectedMonth}-01`).daysInMonth();
     let startDay = 1, endDay = daysInMonth;
