@@ -3,17 +3,18 @@ import { Card, Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import chartColors from '../../../../theme/chartColors';
 import { useTheme } from '@mui/material/styles';
+import { SvgContext } from '@mui/x-charts/internals';
 
 const VoltageLN = ({ data, title }) => {
   const { t } = useTranslation();
   const theme = useTheme();
-
+  console.log('VoltageLN data:', typeof data.voltage_l1, data.voltage_l2, data.voltage_l3, data.voltage_ln);
   const hasValidData =
-    data &&
-    typeof data.voltage_l1 === 'number' &&
-    typeof data.voltage_l2 === 'number' &&
-    typeof data.voltage_l3 === 'number' &&
-    typeof data.voltage_ln === 'number';
+    
+    typeof data.voltage_l1 == 'number' &&
+    typeof data.voltage_l2 == 'number' &&
+    typeof data.voltage_l3 == 'number' 
+    data.voltage_ln = data.voltage_ln || 0; 
 
   if (!hasValidData) {
     return (
@@ -40,7 +41,7 @@ const VoltageLN = ({ data, title }) => {
     );
   }
 
-  const { voltage_l1, voltage_l2, voltage_l3, voltage_ln } = data;
+  const { voltage_l1, voltage_l2, voltage_l3,voltage_ln} = data;
 
   return (
     <Card

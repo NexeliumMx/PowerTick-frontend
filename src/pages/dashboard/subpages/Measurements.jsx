@@ -32,7 +32,7 @@ export default function Measurements({ powerMeter }) {
   const { state } = useContext(ModeContext); // Get current mode from context
   const api = useApiData();
   const { data: realTimeData, isLoading } = api.realTimeData(user_id, powerMeter, state.mode); // Use the new API hook
-  const parsedData = Array.isArray(realTimeData) ? realTimeData[0] : realTimeData;
+  const parsedData = Array.isArray(realTimeData) ? realTimeData[0] : realTimeData.data;
 
   return (
     <Box>
