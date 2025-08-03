@@ -8,13 +8,17 @@ import { SvgContext } from '@mui/x-charts/internals';
 const VoltageLN = ({ data, title }) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  console.log('VoltageLN data:', typeof data.voltage_l1, data.voltage_l2, data.voltage_l3, data.voltage_ln);
-  const hasValidData =
+  let hasValidData = true;
+  if(data === undefined || data === null) {
+    hasValidData = false;
+    }
+    else{
+   hasValidData =
     
     typeof data.voltage_l1 == 'number' &&
     typeof data.voltage_l2 == 'number' &&
     typeof data.voltage_l3 == 'number' 
-    data.voltage_ln = data.voltage_ln || 0; 
+    data.voltage_ln = data.voltage_ln || 0; }
 
   if (!hasValidData) {
     return (

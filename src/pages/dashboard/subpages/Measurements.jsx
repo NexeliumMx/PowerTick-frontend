@@ -1,4 +1,5 @@
 // MUI Components
+// MUI Components
 import Grid2 from "@mui/material/Grid2";
 import { Box } from "@mui/material";
 
@@ -32,7 +33,7 @@ export default function Measurements({ powerMeter }) {
   const { state } = useContext(ModeContext); // Get current mode from context
   const api = useApiData();
   const { data: realTimeData, isLoading } = api.realTimeData(user_id, powerMeter, state.mode); // Use the new API hook
-  const parsedData = Array.isArray(realTimeData) ? realTimeData[0] : realTimeData.data;
+  const parsedData = Array.isArray(realTimeData) ? realTimeData[0] : realTimeData===undefined? realTimeData : realTimeData?.data;
 
   return (
     <Box>
@@ -70,9 +71,7 @@ export default function Measurements({ powerMeter }) {
         <Grid2 size={{ xs: 12, lg: 6 }}>
           <EnergyExported data={parsedData} title={t('measurements.energyExported')} />
         </Grid2>
-        <Grid2 size={{ xs: 12, lg: 6 }}>
-          <Power data={parsedData} title={t('measurements.realPower')} />
-        </Grid2>
+        
       </Grid2>
     </Box>
   );

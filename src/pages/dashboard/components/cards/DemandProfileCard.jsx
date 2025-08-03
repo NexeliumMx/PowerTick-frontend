@@ -150,7 +150,7 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
 
   const wMax = item.w_max / 10;
   const wAvg = parseFloat(parseFloat(item.w_avg).toFixed(3)) / 10;
-  const varMax = item.var_max;
+  const varMax = item.var_max/10;
   const varAvg = parseFloat(parseFloat(item.var_avg).toFixed(3)) / 10;
     return {
       ...item,

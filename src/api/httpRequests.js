@@ -52,6 +52,7 @@ export async function fetchMeasurementRange(powermeter_id, mode = 'PRODUCTION') 
 
 // Fetch real-time data
 export async function fetchRealTimeData(user_id, powermeter_id, mode = 'PRODUCTION') {
+  console.log(`[API CALL] fetchRealTimeData: user_id=${user_id}, powermeter_id=${powermeter_id}, mode=${mode}`);
   let url = `${API_BASE_URL}${apiEndpoints.fetchRealTimeData}?user_id=${user_id}&powermeter_id=${powermeter_id}`;
   if (mode === 'DEMO') {
     url += "&enviroment=demo";
@@ -61,7 +62,7 @@ export async function fetchRealTimeData(user_id, powermeter_id, mode = 'PRODUCTI
   console.log(`[API CALL] fetchRealTimeData: ${url}`);
   const response = await fetch(url);
   const resData = await response.json();
-
+  console.log(`[API RESPONSE] fetchRealTimeData:`, resData);
   if (!response.ok) {
     throw new Error('Failed to fetch real-time data');
   }

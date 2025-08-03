@@ -30,7 +30,9 @@ const Dashboard = () => {
   const user_id = accounts && accounts[0]?.idTokenClaims?.oid;
   const { powermetersByUserAccess } = useApiData();
   const { data: powerMeters = [], isLoading: isPowerMetersLoading, error: powerMetersError } = powermetersByUserAccess(user_id, state.mode);
-  const [selectedPowerMeter, setSelectedPowerMeter] = useState("");
+  const [selectedPowerMeter, setSelectedPowerMeter] = useState(powerMeters[0]?.powermeter_id || '');
+
+  console.log('Dashboard component - user_id:', user_id, 'powerMeters:', powerMeters, 'isPowerMetersLoading:', isPowerMetersLoading, 'powerMetersError:', powerMetersError);
   const [activePage, setActivePage] = useState("Measurements");
   const location = useLocation();
 
@@ -42,7 +44,7 @@ const Dashboard = () => {
       setSelectedPowerMeter(powermeterIdFromQuery);
     }
   }, [location.search, powerMeters]);
-
+console.log('Dashboard component - selectedPowerMeter:', selectedPowerMeter);
   const renderPage = () => {
     switch (activePage) {
       case "Analysis":
