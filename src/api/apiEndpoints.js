@@ -66,6 +66,6 @@ const apiEndpoints = {
   meterInfo: '/api/meterInfo',
   updatePowermeterAlias: '/api/updatePowermeterAlias',
   updateInstallationAlias: '/api/updateInstallationAlias'
-
+}
 
 export { apiEndpoints, API_BASE_URL };
