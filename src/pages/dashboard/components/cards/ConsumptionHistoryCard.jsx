@@ -117,7 +117,7 @@ const ConsumptionHistoryCard = ({ selectedPowerMeter, measurementRange, defaultT
     validDays = [];
     for (let d = startDay; d <= endDay; d++) validDays.push(d);
     // Hours
-    
+
     if (
       selectedYear === min.year() && selectedMonth === min.month() + 1 && selectedDay === min.date() &&
       selectedYear === max.year() && selectedMonth === max.month() + 1 && selectedDay === max.date()

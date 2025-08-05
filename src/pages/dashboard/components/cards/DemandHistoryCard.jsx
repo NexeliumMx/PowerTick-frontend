@@ -110,7 +110,7 @@ const DemandHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     } else {
       validMonths = months;
     }
-    
+
     // Days
     const daysInMonth = dayjs(`${selectedYear}-${selectedMonth}-01`).daysInMonth();
     let startDay = 1, endDay = daysInMonth;
