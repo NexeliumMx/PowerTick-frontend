@@ -110,8 +110,8 @@ const TimeFilterHistory = ({
                 onChange={(e) => setSelectedMonth(e.target.value)}
                 label={t('analysis.month')}
               >
-                {validMonths.map((month, idx) => (
-                  <MenuItem key={month} value={idx + 1}>{month}</MenuItem>
+                {validMonths.map((month) => (
+                  <MenuItem key={month} value={month.value}>{month.label}</MenuItem>
                 ))}
               </Select>
             </FormControl>

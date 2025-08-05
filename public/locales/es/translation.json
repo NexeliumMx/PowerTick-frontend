@@ -116,5 +116,17 @@
     "maxDemand": "Demanda Máxima (kW)",
     "download": "Descargar",
     "noDataAvailable": "No hay datos disponibles para el medidor seleccionado y el año."
-  }
+  },
+  "configuration": {
+  "powermeterAlias": "Alias del Medidor",
+  "installationAlias": "Alias de la Instalación",
+  "tariff": "Tarifa Eléctrica",
+  "region": "Región Tarifaria",
+  "installedCapacity": "Capacidad Instalada",
+  "location": "Ubicación",
+  "registrationDate": "Fecha de Registro",
+  "maintenanceDate": "Fecha de Mantenimiento",
+  "allowedUsers": "Usuarios Permitidos",
+  "noPowermeterSelected": "Seleccione un medidor."
+}
 }

@@ -151,9 +151,7 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
 
   // Generate time filter options
   const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
-  const months = Array.from({ length: 12 }, (_, i) =>
-    dayjs().month(i).format('MMMM')
-  );
+  const months = Array.from({ length: 12 }, (_, i) => ({ label: dayjs().month(i).format('MMMM'), value: i + 1 }));
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
   
   // Generate hour options: 'Last Hour' + 00:00-23:00
