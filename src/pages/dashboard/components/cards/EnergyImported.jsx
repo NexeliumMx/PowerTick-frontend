@@ -70,21 +70,21 @@ const EnergyImported = ({ data, title }) => {
       >
         {title || t('measurements.energyImported')}
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: -12 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: -10 }}>
         <BarChart
           slotProps={{
             legend: {
               direction: 'row',
               position: { vertical: 'top', horizontal: 'center' },
-              itemGap: 240,
+              itemGap: 170,
               shrink: true,
               markShape: 'rect',
             },
           }}
           borderRadius={10}
           grid={{ horizontal: true }}
-          height={480}
-          margin={{ left: 70, right: 20, top: 180, bottom: 40 }}
+          height={450}
+          margin={{ left: 80, right: 20, top: 150, bottom: 40 }}
           xAxis={[{
           data: [t('measurements.l1'), t('measurements.l2'), t('measurements.l3'), t('measurements.total')],            
           scaleType: 'band',
@@ -94,7 +94,7 @@ const EnergyImported = ({ data, title }) => {
           yAxis={[{
             label: t('measurements.energyAxis'),
             labelStyle: {
-              transform: 'translateX(-20px)',
+              transform: 'translateX(-35px)',
               writingMode: 'sideways-lr',
               textAnchor: 'middle',
             },

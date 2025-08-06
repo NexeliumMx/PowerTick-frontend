@@ -190,7 +190,7 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
         }}
       />
       <CardContent sx={{ flexGrow: 1, pt: 0 }}>
-        <Box sx={{ width: "100%", overflow: "auto", px: 2, my:-10}}>
+        <Box sx={{ width: "100%", overflow: "auto", px: 2, my:-6}}>
           {isLoading ? (
             <Box sx={{ mt: 11 }}>
             <ChartSkeletonCard />
@@ -223,8 +223,8 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
     },
     tickLabelStyle: { fontSize: 12 }
   }]}
-  height={450}
-  margin={{ top: 150, left: 70, bottom: 60 }}
+  height={420}
+  margin={{ top: 120, left: 70, bottom: 60 }}
   sx={{ background: 'transparent' }}
 >
 
@@ -236,7 +236,7 @@ const DemandProfileCard = ({ selectedPowerMeter, measurementRange, defaultTimeFi
 
   <ChartsLegend
     position={{ vertical: 'top', horizontal: 'center' }}
-    itemGap={180}
+    itemGap={125}
   />
 
   <ChartsTooltip

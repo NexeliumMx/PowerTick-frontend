@@ -10,11 +10,11 @@ const chartColors = {
   // F25C05 naranja opaco
   // d92525 rojo
   realEnergy: "#F29F05",
-  reactiveEnergy: "#cca42e",
-  avgRealPower: "#F29F05",
-  avgVar: "#cca42e",
-  maxRealPower: "#F25C05",
-  maxVar: "#E6C85C",
+  reactiveEnergy: "#F25C05",
+  avgRealPower: "#cca42e",
+  avgVar: "#F25C05",
+  maxRealPower: "#F29F05",
+  maxVar: "#c03900",
 
 
 // THD Current Profile colors -

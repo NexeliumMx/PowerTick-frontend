@@ -49,8 +49,8 @@ const PowerFactor = ({ data, title }) => {
 
   const gauges = [
     { label: t('measurements.l1'), value: data.pf_l1 / 1000 },
-    { label: t('measurements.l1'), value: data.pf_l2 / 1000 },
-    { label: t('measurements.l1'), value: data.pf_l3 / 1000 },
+    { label: t('measurements.l2'), value: data.pf_l2 / 1000 },
+    { label: t('measurements.l3'), value: data.pf_l3 / 1000 },
     { label: t('measurements.avg'), value: data.power_factor / 1000 },
   ];
 
