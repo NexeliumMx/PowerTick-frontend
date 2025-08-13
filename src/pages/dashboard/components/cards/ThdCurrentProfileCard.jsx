@@ -206,7 +206,7 @@ const ThdCurrentProfileCard = ({ selectedPowerMeter, measurementRange, defaultTi
         }}
       />
       <CardContent sx={{ flexGrow: 1, pt: 0 }}>
-        <Box sx={{ width: "100%", overflow: "auto", px: 2, my: -7 }}>
+        <Box sx={{ width: "100%", overflow: "auto", px: 2, my: -5 }}>
           {isLoading ? (
             <Box sx={{ my: 8 }}>
               <ChartSkeletonCard />
@@ -244,8 +244,8 @@ const ThdCurrentProfileCard = ({ selectedPowerMeter, measurementRange, defaultTi
                 tickLabelStyle: { fontSize: 12 },
                 tickCount: 8, // More steps
               }]}
-              height={430}
-              margin={{ top: 100, left: 40, bottom: 60 }}
+              height={410}
+              margin={{ top: 90, left: 40, bottom: 60 }}
               sx={{ background: 'transparent' }}
             >
               <BarPlot />
@@ -254,7 +254,7 @@ const ThdCurrentProfileCard = ({ selectedPowerMeter, measurementRange, defaultTi
               <ChartsGrid horizontal vertical />
               <ChartsLegend
                 position={{ vertical: 'top', horizontal: 'center' }}
-                itemGap={110}
+                itemGap={80}
               />
               <ChartsTooltip
                 content={({ dataIndex }) => {
@@ -291,10 +291,7 @@ const ThdCurrentProfileCard = ({ selectedPowerMeter, measurementRange, defaultTi
           ) : (
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 200, gap: 2 }}>
               <Typography variant="body1" color="text.secondary">
-                No THD Current Profile data available for the selected period
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
-                This could be due to: no measurements in the selected time range, API endpoint not returning data, or the measurement device not supporting THD measurements.
+                {t('analysis.noData')}
               </Typography>
             </Box>
           )}

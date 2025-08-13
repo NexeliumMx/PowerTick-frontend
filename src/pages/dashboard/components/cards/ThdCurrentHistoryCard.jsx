@@ -382,7 +382,9 @@ const ThdCurrentHistoryCard = ({ selectedPowerMeter, measurementRange, defaultTi
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <Typography variant="body1">Data not available</Typography>
+            <Typography variant="body1" color="text.secondary">
+          {t('analysis.noData')}
+        </Typography>
           )}
         </Box>
       </CardContent>

@@ -208,7 +208,9 @@ const ConsumptionProfileCard = ({ selectedPowerMeter, measurementRange, defaultT
               sx={{ background: 'transparent' }}
             />
           ) : (
-            <Typography variant="body1">{t('analysis.noData')}</Typography>
+            <Typography variant="body1" color="text.secondary">
+          {t('analysis.noData')}
+        </Typography>
           )}
         </Box>
       </CardContent>
