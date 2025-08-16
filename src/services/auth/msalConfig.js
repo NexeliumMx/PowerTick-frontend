@@ -26,8 +26,8 @@ const isAzureProd = !isLocalhost && !isDevelopment; // Running in Azure Static W
 
 const msalConfig = {
   auth: {
-    clientId: "9a8d0881-7579-403a-bdd6-1742c267b394", // Azure AD B2C App ID
-    authority: "https://powertickb2c.b2clogin.com/powertickb2c.onmicrosoft.com/B2C_1_SignIn",
+    clientId: "b77cca23-65ff-47ea-8b87-21e06a927d9b", // Azure AD B2C App ID
+    authority: "https://powerticktest.ciamlogin.com/",
     knownAuthorities: ["powertickb2c.b2clogin.com"],
     redirectUri: isLocalhost
       ? "http://localhost:5173/"  // Local Dev
@@ -35,6 +35,7 @@ const msalConfig = {
     postLogoutRedirectUri: isLocalhost
       ? "http://localhost:5173/"
       : "https://www.power-tick.nexelium.mx/",
+      navigateToLoginRequestUrl: false,
   },
   cache: {
     cacheLocation: "sessionStorage",
